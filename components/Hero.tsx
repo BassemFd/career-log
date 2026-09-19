@@ -2,7 +2,8 @@ import type { Profile, Project } from "@/lib/types";
 import { shortHash } from "@/lib/hash";
 import CommitGraphBackdrop from "./CommitGraphBackdrop";
 import GlitchText from "./GlitchText";
-import RevealTitle from "./RevealTitle";
+import HeroPaint from "./HeroPaint";
+import NameHeading from "./NameHeading";
 
 // The hero opens like the top of a `git log --oneline`: the most recent work,
 // framed as HEAD. It doubles as proof-of-activity and a teaser for the log below.
@@ -18,14 +19,15 @@ export default function Hero({
   return (
     <header className="relative overflow-hidden border-b border-rule">
       <CommitGraphBackdrop />
+      <HeroPaint />
       <div className="relative max-w-3xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:px-16">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
           {profile.location}
         </p>
 
-        <RevealTitle className="mt-5 font-display font-semibold leading-[0.95] tracking-tight text-[clamp(2.75rem,9vw,7rem)]">
+        <NameHeading className="mt-5 font-display font-semibold leading-[0.95] tracking-tight text-[clamp(2.75rem,9vw,7rem)]">
           <GlitchText text={profile.name} />
-        </RevealTitle>
+        </NameHeading>
         <p className="mt-4 font-display text-2xl text-accent sm:text-3xl">
           <GlitchText text={profile.tagline} />
         </p>

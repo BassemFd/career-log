@@ -4,31 +4,28 @@ import { useEffect, useRef } from "react";
 import { useTheme } from "./ThemeProvider";
 
 const HEAL_TAIL_MS = 2000; // how long the canvas keeps healing after the last brush stroke
-const BRUSH_RADIUS = 70;
+const BRUSH_RADIUS = 130;
+const TRACK_MARGIN = 200; // stop tracking pointer once this far outside the hero
 
-// A scratch-card style reveal: the canvas starts painted solid in the page
-// background color, hiding a gradient panel underneath. Moving the cursor
-// over it erases a soft circular hole (destination-out); the hole slowly
-// heals back to solid once the cursor leaves or stops moving. Light theme
-// only — the gradient is tuned for the light palette.
-export default function RevealTitle({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
+// Full-hero paint layer: a canvas starts painted solid in the page background
+// color, hiding a gradient panel underneath. Moving the cursor anywhere over
+// the hero erases a soft hole (destination-out) — like painting the
+// background in — that heals back to solid once the cursor moves away.
+// Tracked on window (not the layer itself, which stays pointer-events-none so
+// it never blocks the hero's actual links/content) so the whole header is
+// paintable, not just the text. Light theme only.
+export default function HeroPaint() {
   const { theme } = useTheme();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (theme !== "light") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const container = containerRef.current;
+    const root = rootRef.current;
     const canvas = canvasRef.current;
-    if (!container || !canvas) return;
+    if (!root || !canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -52,7 +49,7 @@ export default function RevealTitle({
     }
 
     function resize() {
-      const rect = container!.getBoundingClientRect();
+      const rect = root!.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
       const dpr = window.devicePixelRatio || 1;
@@ -108,32 +105,35 @@ export default function RevealTitle({
     }
 
     function onMove(e: PointerEvent) {
-      const rect = canvas!.getBoundingClientRect();
+      const rect = root!.getBoundingClientRect();
+      if (
+        e.clientY < rect.top - TRACK_MARGIN ||
+        e.clientY > rect.bottom + TRACK_MARGIN
+      ) {
+        return; // scrolled well past the hero — don't bother
+      }
       pointer = { x: e.clientX - rect.left, y: e.clientY - rect.top };
       start();
     }
 
     const ro = new ResizeObserver(resize);
-    ro.observe(container);
+    ro.observe(root);
     resize();
 
-    container.addEventListener("pointermove", onMove);
+    window.addEventListener("pointermove", onMove);
     return () => {
       ro.disconnect();
-      container.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointermove", onMove);
       cancelAnimationFrame(raf);
     };
   }, [theme]);
 
+  if (theme !== "light") return null;
+
   return (
-    <div ref={containerRef} className="relative inline-block">
-      {theme === "light" && (
-        <>
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-accent via-teal to-violet opacity-70" />
-          <canvas ref={canvasRef} className="pointer-events-none absolute inset-0" />
-        </>
-      )}
-      <h1 className={`relative select-none ${className ?? ""}`}>{children}</h1>
+    <div ref={rootRef} className="pointer-events-none absolute inset-0">
+      <div className="absolute inset-0 bg-gradient-to-br from-accent via-teal to-violet opacity-70" />
+      <canvas ref={canvasRef} className="absolute inset-0" />
     </div>
   );
 }
