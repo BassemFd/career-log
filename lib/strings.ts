@@ -36,6 +36,8 @@ export const STRINGS: Record<Locale, {
   footerSource: string;
   themeLabel: string;
   langLabel: string;
+  crazyLight: string;
+  crazyDark: string;
   typeHelp: string;
   help: string;
   crazyHelp: string;
@@ -76,6 +78,8 @@ export const STRINGS: Record<Locale, {
     footerSource: "source",
     themeLabel: "theme:",
     langLabel: "lang:",
+    crazyLight: "Light",
+    crazyDark: "Dark",
     typeHelp: "type `help`",
     help: "commands: log, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "PRESS LIGHT OR DARK THEME",
@@ -116,6 +120,8 @@ export const STRINGS: Record<Locale, {
     footerSource: "source",
     themeLabel: "thème :",
     langLabel: "langue :",
+    crazyLight: "Clair",
+    crazyDark: "Sombre",
     typeHelp: "tapez `help`",
     help: "commandes : log, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "APPUYEZ SUR LE THÈME CLAIR OU SOMBRE",

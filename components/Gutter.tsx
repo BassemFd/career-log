@@ -87,7 +87,7 @@ const ROUTES: Route[] = [
 // sections in order, plus the command prompt that actually drives navigation.
 // On narrow screens it collapses to the same prompt as a bottom bar.
 export default function Gutter() {
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { locale } = useLocale();
   const t = STRINGS[locale];
   const profile = contentByLocale[locale].profile;
@@ -198,19 +198,41 @@ export default function Gutter() {
         </div>
       </aside>
 
-      {/* Mobile / tablet: fixed bottom prompt */}
-      <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-gutter-line bg-gutter lg:hidden">
-        <div className="flex items-center gap-3 px-6 py-3">
-          {prompt}
-          <span className={`hidden shrink-0 truncate sm:block ${outputClass}`}>
-            {output}
-          </span>
-          <div className="ml-auto shrink-0 text-right">
-            <ThemeToggle t={t} />
-            <LangToggle t={t} />
+      {/* Mobile / tablet crazy escape: two big theme buttons pinned to the TOP.
+          A fixed-bottom bar is unreachable on iOS — Safari's bottom address bar
+          sits over it until you scroll — so the way out lives at the top, clear
+          of both toolbars, always tappable without scrolling. */}
+      {theme === "crazy" ? (
+        <div className="fixed inset-x-0 top-0 z-[70] grid grid-cols-2 gap-3 border-b border-gutter-line bg-gutter px-4 pb-3 pt-[calc(0.75rem+env(safe-area-inset-top))] lg:hidden">
+          <button
+            onClick={() => setTheme("light")}
+            className="exit-glow flex min-h-[52px] items-center justify-center gap-2 rounded-lg bg-white text-base font-bold text-neutral-900"
+          >
+            <span aria-hidden="true">☀</span>
+            {t.crazyLight}
+          </button>
+          <button
+            onClick={() => setTheme("dark")}
+            className="exit-glow flex min-h-[52px] items-center justify-center gap-2 rounded-lg border border-white/30 bg-neutral-900 text-base font-bold text-white"
+          >
+            <span aria-hidden="true">🌙</span>
+            {t.crazyDark}
+          </button>
+        </div>
+      ) : (
+        <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-gutter-line bg-gutter lg:hidden">
+          <div className="flex items-center gap-3 px-6 py-3">
+            {prompt}
+            <span className={`hidden shrink-0 truncate sm:block ${outputClass}`}>
+              {output}
+            </span>
+            <div className="ml-auto shrink-0 text-right">
+              <ThemeToggle t={t} />
+              <LangToggle t={t} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
