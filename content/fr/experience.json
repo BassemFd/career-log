@@ -27,7 +27,7 @@
     "start": "Juin 2021",
     "end": "Juin 2022",
     "location": "Paris",
-    "summary": "Startup d'inspection automobile. Développement de fonctionnalités web et mobile sur le dashboard pro et l'app mobile — nouvelles routes API Node/Express, contrôle d'accès par rôle avec validation JOI, floutage de plaques d'immatriculation via AWS Lambda (Rekognition), suivi de mission interactif sur Google Maps, et couverture de tests E2E Cypress/testRigor.",
+    "summary": "Startup d'inspection automobile. Développement de fonctionnalités web et mobile sur le dashboard pro et l'app mobile — nouvelles routes API Node/Express, contrôle d'accès par rôle avec validation JOI, floutage de plaques d'immatriculation via AWS Lambda (Rekor ai), suivi de mission interactif sur Google Maps, et couverture de tests E2E Cypress/testRigor.",
     "stack": ["React", "Node.js", "Express", "MongoDB", "Cypress", "AWS Lambda"],
     "confidential": false,
     "flagship": false
