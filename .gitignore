@@ -37,3 +37,4 @@ next-env.d.ts
 /.agents/
 /.claude/skills/
 skills-lock.json
+/.claude/launch.json

@@ -51,7 +51,7 @@ in `/content`.** You change the site by editing a file, committing, and running
 
 `content/stats.json` has two deliberately separate blocks:
 
-- **`manual`** — hand-recorded numbers that can't be fetched (e.g. Tap to Pay
+- **`manual`** — hand-recorded numbers that can't be fetched (e.g. all-time merged
   PRs, years shipping). Edit these by hand, in both `content/` and `content/fr/`.
 - **`live`** — pulled from the GitHub API. **Only ever rewritten by**
   `npm run refresh-stats`, which updates `live` + `liveFetchedAt` in both locales.
