@@ -168,17 +168,20 @@
   },
   {
     "slug": "my-moviz",
-    "title": "My-moviz",
-    "blurb": "Une app de navigation de films façon Netflix construite en React — recherche de titres, navigation par catégorie, constitution d'une liste à voir.",
+    "title": "mymoviz",
+    "blurb": "Un catalogue de films et de séries, reconstruit en 2026 à partir de mon projet de bootcamp de 2021. Tendances, navigation par genre et recherche conservée dans l'URL, servis par un Worker Cloudflare qui garde la clé TMDB côté serveur et met en cache en périphérie. Prochaine étape : le suivi des épisodes des séries suivies.",
     "role": "owner",
     "stack": [
+      "TypeScript",
       "React",
-      "JavaScript"
+      "Cloudflare Workers",
+      "Tailwind CSS",
+      "TMDB API"
     ],
-    "year": "2021",
+    "year": "2026",
     "links": {
       "github": "https://github.com/BassemFd/My-moviz",
-      "live": null
+      "live": "https://moviz.bassemfayed.com"
     },
     "featured": false,
     "category": "personal"
