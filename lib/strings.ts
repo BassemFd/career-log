@@ -37,6 +37,9 @@ export const STRINGS: Record<Locale, {
   footerBuiltWith: string;
   footerContentLives: string;
   footerSource: string;
+  footerMadeWith: string;
+  footerBy: string;
+  footerEmail: string;
   themeLabel: string;
   langLabel: string;
   crazyLight: string;
@@ -82,6 +85,9 @@ export const STRINGS: Record<Locale, {
     footerBuiltWith: "Built with Next.js · content lives in",
     footerContentLives: "/content/*.json",
     footerSource: "source",
+    footerMadeWith: "made with",
+    footerBy: "by",
+    footerEmail: "email",
     themeLabel: "theme:",
     langLabel: "lang:",
     crazyLight: "Light",
@@ -127,6 +133,9 @@ export const STRINGS: Record<Locale, {
     footerBuiltWith: "Construit avec Next.js · le contenu vit dans",
     footerContentLives: "/content/*.json",
     footerSource: "source",
+    footerMadeWith: "fait avec",
+    footerBy: "par",
+    footerEmail: "e-mail",
     themeLabel: "thème :",
     langLabel: "langue :",
     crazyLight: "Clair",

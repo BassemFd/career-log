@@ -24,16 +24,40 @@ export default function Home() {
       <EducationSection education={education} certifications={certifications} t={t} />
 
       <footer className="max-w-3xl px-6 py-10 lg:px-16">
-        <p className="font-mono text-xs text-muted">
-          {t.footerBuiltWith} <span className="text-ink">{t.footerContentLives}</span> ·{" "}
-          <a
-            href={profile.socials.github}
-            className="underline decoration-rule underline-offset-4 hover:text-accent"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {t.footerSource}
-          </a>
+        <div className="flex flex-col gap-3 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            {t.footerMadeWith} <span role="img" aria-label="love">❤️‍🔥</span> {t.footerBy}{" "}
+            <a
+              href="#top"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="font-semibold text-accent hover:underline"
+            >
+              BF
+            </a>
+          </p>
+          <nav aria-label="Author links" className="flex flex-wrap gap-x-4 gap-y-1">
+            {[
+              { label: "GitHub", href: profile.socials.github },
+              { label: "LinkedIn", href: profile.socials.linkedin },
+              { label: t.footerSource, href: `${profile.socials.github}/career-log` },
+              { label: t.footerEmail, href: `mailto:${profile.socials.email}` },
+            ].map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                {...(l.href.startsWith("http") && { target: "_blank", rel: "noreferrer" })}
+                className="underline decoration-rule underline-offset-4 hover:text-accent"
+              >
+                {l.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+        <p className="mt-4 font-mono text-xs text-muted">
+          {t.footerBuiltWith} <span className="text-ink">{t.footerContentLives}</span>
         </p>
       </footer>
     </main>
