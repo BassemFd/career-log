@@ -15,7 +15,7 @@
     "blurb": "Une veille IA quotidienne rédigée, vérifiée et publiée par un pipeline d'agents, sans relecture humaine. Chaque phrase est rattachée à une citation retrouvée mot pour mot dans sa source ; c'est le code, pas le modèle, qui décide de ce qui est publié, et chaque refus est affiché avec sa raison.",
     "links": {
       "github": "https://github.com/BassemFd/ai-watch",
-      "live": "https://ai-watch-by-bf.pages.dev"
+      "live": "https://ai-watch.bassemfayed.com"
     }
   },
   {
