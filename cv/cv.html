@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>CV — Bassem Fayed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  :root { --navy: #1c2635; --chip: #2c3748; --muted-d: #9aa5b5; --ink: #1d2433; --grey: #5f6b7a; --rule: #e3e7ec; --orange: #e8562a; --tile: #f1f3f6; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: Inter, "Helvetica Neue", Arial, sans-serif; color: var(--ink); font-size: 8.6pt; line-height: 1.38; }
+  a { color: inherit; text-decoration: none; }
+  .page { width: 210mm; height: 297mm; display: grid; grid-template-columns: 66mm 1fr; overflow: hidden; }
+
+  /* sidebar */
+  .side { background: var(--navy); color: #fff; padding: 11mm 7mm 10mm; }
+  .photo { display: block; width: 37mm; height: 37mm; margin: 0 auto 9mm; border-radius: 50%; border: 2.4pt solid var(--orange); padding: 1.6pt; background: #fff; }
+  .photo img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+  .side h2 { display: flex; align-items: center; gap: 6pt; font-size: 7.6pt; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 6pt; }
+  .side h2::before { content: ""; width: 11pt; height: 1.6pt; background: var(--orange); }
+  .side section + section { margin-top: 10pt; }
+  .label { font-size: 6.3pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-d); margin-top: 5pt; }
+  .value { font-size: 8.4pt; overflow-wrap: anywhere; }
+  .group { font-weight: 600; font-size: 8.2pt; margin: 6pt 0 3pt; }
+  .chips { display: flex; flex-wrap: wrap; gap: 2.6pt; }
+  .chips span { background: var(--chip); border-radius: 2.5pt; padding: 1.4pt 4pt; font-size: 6.7pt; }
+  .edu strong { display: block; font-size: 8.3pt; margin-top: 5pt; }
+  .edu span, .lang { font-size: 8.2pt; color: #dfe4ea; }
+
+  /* main */
+  .main { padding: 11mm 9mm 9mm 10mm; }
+  h1 { font-size: 27pt; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+  h1 em { font-style: normal; color: var(--orange); }
+  .title { margin-top: 5pt; font-size: 10.4pt; font-weight: 600; color: var(--grey); line-height: 1.3; }
+  .summary { margin: 9pt 0 0; padding-left: 8pt; border-left: 1.8pt solid var(--orange); font-size: 8.7pt; color: #2a3140; }
+  .main h2 { margin: 13pt 0 7pt; padding-bottom: 4pt; border-bottom: 0.7pt solid var(--rule); font-size: 8.6pt; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+  .job + .job { margin-top: 8pt; }
+  .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8pt; }
+  .job-head h3 { font-size: 10pt; font-weight: 700; }
+  .job-head h3 span { font-weight: 400; color: var(--grey); }
+  .date { flex: none; font-size: 7.4pt; font-weight: 700; color: var(--orange); }
+  .sub { margin-top: 1.5pt; font-size: 7.1pt; color: var(--grey); }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4pt; margin: 6pt 0 5pt; }
+  .kpis div { background: var(--tile); border-radius: 3pt; padding: 4pt 5pt; }
+  .kpis b { display: block; font-size: 11pt; font-weight: 800; color: var(--orange); line-height: 1.15; }
+  .kpis small { font-size: 6.6pt; color: var(--grey); }
+  ul { list-style: none; margin-top: 3pt; }
+  li { position: relative; padding-left: 9pt; margin-bottom: 2.6pt; }
+  li::before { content: ""; position: absolute; left: 1pt; top: 0.5em; width: 3.4pt; height: 3.4pt; border-radius: 50%; background: var(--orange); }
+  .projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5pt; }
+  .card { border: 0.7pt solid var(--rule); border-radius: 3pt; padding: 6pt 7pt; }
+  .card h3 { font-size: 8.8pt; font-weight: 700; margin-bottom: 2pt; }
+  .card p { font-size: 7.8pt; color: #2a3140; }
+  .card a { display: inline-block; margin-top: 4pt; font-size: 6.9pt; font-weight: 600; color: var(--orange); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="page">
+  <aside class="side">
+    <div class="photo"><img src="photo.jpg" alt="Bassem Fayed"></div>
+
+    <section>
+      <h2>Contact</h2>
+      <div class="label">Email</div><div class="value"><a href="mailto:bassem.fayed@gmail.com">bassem.fayed@gmail.com</a></div>
+      <div class="label">Localisation</div><div class="value">Saint-Ouen</div>
+      <div class="label">Portfolio</div><div class="value"><a href="https://bassemfayed.com">bassemfayed.com</a></div>
+      <div class="label">GitHub</div><div class="value"><a href="https://github.com/BassemFd">github.com/BassemFd</a></div>
+    </section>
+
+    <section>
+      <h2>Compétences</h2>
+      <div class="group">Front &amp; mobile</div>
+      <div class="chips"><span>React</span><span>React Native</span><span>Next.js</span><span>TypeScript</span><span>Redux-Saga</span><span>Expo</span><span>Design System</span><span>i18n</span><span>Responsive</span></div>
+      <div class="group">Back &amp; cloud</div>
+      <div class="chips"><span>Node.js</span><span>Express</span><span>AWS Lambda</span><span>S3</span><span>DynamoDB</span><span>GCP Cloud Functions</span><span>Firestore</span><span>Supabase</span><span>MongoDB</span><span>Elasticsearch</span><span>Algolia</span></div>
+      <div class="group">Paiement</div>
+      <div class="chips"><span>Stripe Terminal</span><span>Tap to Pay iOS &amp; Android</span></div>
+      <div class="group">Qualité &amp; CI/CD</div>
+      <div class="chips"><span>Cypress</span><span>TestRigor</span><span>Jest</span><span>Playwright</span><span>GitHub Actions</span><span>CircleCI</span><span>Datadog</span><span>Bugsnag</span><span>Code review</span></div>
+      <div class="group">IA</div>
+      <div class="chips"><span>Claude Code</span><span>GitHub Copilot</span><span>Skills</span><span>MCP (Figma)</span><span>Agents &amp; sous-agents</span><span>TDD</span></div>
+    </section>
+
+    <section class="edu">
+      <h2>Formation</h2>
+      <strong>Augmented Engineer</strong><span>eXalt Academy · 2026</span>
+      <strong>Développeur web &amp; mobile</strong><span>La Capsule · 2021</span>
+    </section>
+
+    <section>
+      <h2>Langues</h2>
+      <div class="lang">Français · natif<br>Anglais · courant</div>
+    </section>
+  </aside>
+
+  <main class="main">
+    <h1>Bassem <em>Fayed</em></h1>
+    <p class="title">Développeur Full Stack Web &amp; Mobile · React, React Native, Node.js</p>
+    <p class="summary">Développeur Full Stack depuis plus de cinq ans, sur le web et le mobile, avec une vraie pratique du back-end. Quatre ans en mission chez Planity sur un produit utilisé par des millions de personnes. Référent technique, très investi sur l'IA appliquée au développement.</p>
+
+    <h2>Expériences</h2>
+
+    <div class="job">
+      <div class="job-head"><h3>Planity <span>· Développeur Full Stack Web &amp; Mobile</span></h3><span class="date">2022 – 2026 · 4 ans</span></div>
+      <p class="sub">Mission via eXalt · leader français de la réservation beauté · équipe tech d'une quarantaine de développeurs</p>
+      <div class="kpis">
+        <div><b>15 M+</b><small>utilisateurs</small></div>
+        <div><b>60 000+</b><small>établissements pros</small></div>
+        <div><b>6 M</b><small>RDV/jour en pic</small></div>
+        <div><b>200+</b><small>PR Tap to Pay</small></div>
+      </div>
+      <ul>
+        <li><strong>Tap to Pay iOS &amp; Android</strong> : ownership du POC à la mise en production sur 18 mois. SDK Stripe Terminal en React Native, reprise d'état après perte de connexion, prévention des doubles déclenchements, onboarding interactif.</li>
+        <li><strong>Refonte de planity.com</strong> et contribution à l'architecture monorepo (app mobile, app tablette, webapp).</li>
+        <li><strong>Design System</strong> : composants React / React Native réutilisables, en lien direct avec les designers (Figma, Dev Mode).</li>
+        <li><strong>International</strong> : ouverture en Belgique (francophone et flamande) et en Allemagne, i18n (traductions, formats de date), widgets et marques blanches.</li>
+        <li><strong>Back-end (~30 %)</strong> : authentification passwordless par magic link, console interne React + AWS Lambda, optimisation des Lambda et Cloud Functions, Elasticsearch, monitoring Datadog.</li>
+        <li><strong>IA</strong> : skills Claude Code pour les devs (PR générée depuis le ticket Jira, la maquette Figma et le code), les PO et la QA.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head"><h3>eXalt <span>· Consultant &amp; Référent technique</span></h3><span class="date">Depuis 2022</span></div>
+      <ul>
+        <li>Accompagnement des développeurs sur les workflows assistés par IA, entretiens techniques et mentorat.</li>
+        <li>Projet interne conçu avec des agents IA : application de commande pour le séminaire eXalt (Node.js, TypeScript, TDD).</li>
+        <li>Bénévolat Safemate (2026) : <strong>TILA</strong>, réseau social pour les femmes, fork de Bluesky (React, React Native, TypeScript · web, iOS, Android).</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head"><h3>Mon Spécialiste Auto <span>· Développeur Full Stack</span></h3><span class="date">2021 – 2022 · 1 an</span></div>
+      <ul>
+        <li>Dashboard client / admin et app mobile : API Node.js / Express, carte Google Maps interactive, Google Autocomplete.</li>
+        <li>Floutage de plaques d'immatriculation (Rekor, AWS Lambda), tests E2E Cypress et TestRigor.</li>
+      </ul>
+    </div>
+
+    <h2>Projets perso</h2>
+    <div class="projects">
+      <div class="card"><h3>ai/watch</h3><p>Veille IA quotidienne publiée par un pipeline d'agents, chaque phrase liée à une citation exacte de sa source.</p><a href="https://ai-watch.bassemfayed.com">ai-watch.bassemfayed.com ↗</a></div>
+      <div class="card"><h3>Neja</h3><p>Design system construit par un pipeline multi-agents Claude Code : tokens, Style Dictionary, WCAG AA.</p><a href="https://neja.bassemfayed.com">neja.bassemfayed.com ↗</a></div>
+      <div class="card"><h3>Career log</h3><p>Portfolio Next.js sur Cloudflare Workers, développé avec des sous-agents en TDD.</p><a href="https://bassemfayed.com">bassemfayed.com ↗</a></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,8 +1,9 @@
 {
   "name": "Bassem Fayed",
-  "tagline": "Fullstack Developer",
-  "summary": "Fullstack developer based in Paris. I build web and mobile products end to end — from Node/TypeScript APIs to React and React Native front ends.",
+  "tagline": "Full-Stack Web & Mobile Developer",
+  "summary": "Full-stack developer based in Paris. I build web and mobile products end to end — from Node/TypeScript APIs to React and React Native front ends.",
   "location": "Paris, France",
+  "cv": "/cv-bassem-fayed.pdf",
   "socials": {
     "github": "https://github.com/BassemFd",
     "linkedin": "https://www.linkedin.com/in/bassem-fd",
