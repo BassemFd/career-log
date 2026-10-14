@@ -23,6 +23,9 @@ export const STRINGS: Record<Locale, {
   certIssued: string;
   certExpires: string;
   activityMix: string;
+  numberLocale: string;
+  statContributions: string;
+  statContributionsNote: string;
   statPublicRepos: string;
   statPublicPRs: string;
   statPublicPRsNote: string;
@@ -64,6 +67,9 @@ export const STRINGS: Record<Locale, {
     certIssued: "issued",
     certExpires: "expires",
     activityMix: "Activity mix",
+    numberLocale: "en-US",
+    statContributions: "Contributions",
+    statContributionsNote: "since 2021, public + private",
     statPublicRepos: "Public repositories",
     statPublicPRs: "Public PRs merged",
     statPublicPRsNote: "authored, public repos only",
@@ -106,6 +112,9 @@ export const STRINGS: Record<Locale, {
     certIssued: "délivré",
     certExpires: "expire",
     activityMix: "Répartition de l'activité",
+    numberLocale: "fr-FR",
+    statContributions: "Contributions",
+    statContributionsNote: "depuis 2021, public + privé",
     statPublicRepos: "Dépôts publics",
     statPublicPRs: "PR publiques fusionnées",
     statPublicPRsNote: "auteur, dépôts publics uniquement",

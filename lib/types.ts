@@ -68,6 +68,9 @@ export interface LiveStats {
   publicRepos: number;
   totalStars: number;
   mergedPRs: number;
+  // Calendar total since CONTRIBUTIONS_SINCE, private included (the profile shows
+  // private contributions, so restrictedContributionsCount is visible to any token).
+  contributions: number;
 }
 
 export interface ActivityShare {

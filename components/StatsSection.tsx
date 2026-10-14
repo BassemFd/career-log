@@ -15,6 +15,11 @@ export default function StatsSection({
 
   const live: { label: string; value: string; note: string }[] = [
     {
+      label: t.statContributions,
+      value: stats.live.contributions.toLocaleString(t.numberLocale),
+      note: t.statContributionsNote,
+    },
+    {
       label: t.statPublicRepos,
       value: String(stats.live.publicRepos),
       note: "github.com/BassemFd",

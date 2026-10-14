@@ -1,12 +1,6 @@
 {
   "manual": [
     {
-      "label": "Contributions",
-      "value": "3,000+",
-      "note": "Commits, PRs & code reviews since 2021 (public + private)",
-      "source": "manual"
-    },
-    {
       "label": "PRs merged",
       "value": "200+",
       "note": "Tap to Pay — iOS & Android, across 3 repos",
@@ -22,16 +16,29 @@
   "activity": {
     "note": "GitHub contribution activity — includes private repos",
     "breakdown": [
-      { "label": "Pull requests", "pct": 42 },
-      { "label": "Code review", "pct": 34 },
-      { "label": "Commits", "pct": 21 },
-      { "label": "Issues", "pct": 3 }
+      {
+        "label": "Pull requests",
+        "pct": 42
+      },
+      {
+        "label": "Code review",
+        "pct": 34
+      },
+      {
+        "label": "Commits",
+        "pct": 21
+      },
+      {
+        "label": "Issues",
+        "pct": 3
+      }
     ]
   },
-  "liveFetchedAt": "2026-09-04T10:05:18.421Z",
+  "liveFetchedAt": "2026-10-14T11:42:33.479Z",
   "live": {
-    "publicRepos": 8,
-    "totalStars": 3,
-    "mergedPRs": 2
+    "publicRepos": 12,
+    "totalStars": 5,
+    "mergedPRs": 3,
+    "contributions": 3376
   }
 }

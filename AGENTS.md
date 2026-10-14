@@ -16,7 +16,7 @@ in `/content`.** You change the site by editing a file, committing, and running
 2. Run `npm run build` — it **must pass** before you commit.
 3. Commit with a Conventional Commit message.
 4. Push to `main`, then run `npm run deploy` to publish to Cloudflare
-   Workers. There is no deploy-on-push automation.
+   Workers. There is no deploy-on-push; only the weekly refresh workflow deploys.
 
 ## Content model — where things live
 
@@ -42,7 +42,7 @@ in `/content`.** You change the site by editing a file, committing, and running
   public account only.
 - **Never name, link, or expose private employer codebases.** Concretely:
   - Experience entries from private/employer work stay `confidential: true`.
-  - The aggregate production commit number is a `manual` stat with **no repo named
+  - The contributions total (live, private included) is shown with **no repo named
     or linked**.
 - When in doubt, leave it out. Do not surface a client/employer name, private repo
   URL, or internal project detail that isn't already public.
@@ -51,24 +51,30 @@ in `/content`.** You change the site by editing a file, committing, and running
 
 `content/stats.json` has two deliberately separate blocks:
 
-- **`manual`** — hand-recorded numbers (e.g. the production commit aggregate). Edit
-  these by hand when they change.
-- **`live`** — pulled from the public GitHub API. **Only ever rewritten by**
-  `npm run refresh-stats`, which updates the `live` block and `liveFetchedAt` and
-  nothing else, then you commit the result.
+- **`manual`** — hand-recorded numbers that can't be fetched (e.g. Tap to Pay
+  PRs, years shipping). Edit these by hand, in both `content/` and `content/fr/`.
+- **`live`** — pulled from the GitHub API. **Only ever rewritten by**
+  `npm run refresh-stats`, which updates `live` + `liveFetchedAt` in both locales.
+  `contributions` is the contribution-calendar total since 2021 (private
+  included — the profile shows private contributions publicly).
+
+`refresh-stats` also appends any new public, non-fork repo not yet linked from
+`projects.json` (EN + FR) as a draft entry from its GitHub description. Repos that
+must never get their own entry go in `IGNORED_REPOS` in the script. Polish drafted
+blurbs (and translate the FR one) by hand.
+
+It runs weekly in `.github/workflows/refresh.yml` (refresh → test → build →
+commit → deploy), or locally (token from `GITHUB_TOKEN` or `gh auth token`).
+It is still **not** part of `npm run build`.
 
 Rules:
 - Never hand-edit the `live` block — run the script.
-- Never invent a "live total commits" figure: the public API doesn't expose a
-  lifetime cross-repo commit count, so the site never claims one as live.
-- `refresh-stats` is a **local** script. It is **not** part of the build —
-  `npm run build` just builds the committed JSON. Don't wire it into CI expecting a
-  deploy-time refresh.
+- Merged-PR search is restricted to `is:public`: a personal token would
+  otherwise count private-repo PRs.
 - The `activity` block (contribution-type breakdown: PRs / reviews / commits /
-  issues) is **manual and cannot be fetched live.** GitHub's API lumps all private
+  issues) is **manual and cannot be fetched live.** GitHub lumps all private
   contributions into an untyped `restrictedContributionsCount` and never exposes
-  the per-type split, so the real breakdown (which is mostly private work) is only
-  visible on the signed-in profile page. Update it by hand; do not try to automate it.
+  the per-type split. Update it by hand; do not try to automate it.
 
 ## Code standards
 
