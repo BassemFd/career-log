@@ -29,7 +29,7 @@
     "location": "Paris",
     "summary": "Auto-inspection startup. Built web and mobile features across the pro dashboard and mobile app — new Node/Express API routes, role-based access with JOI validation, license-plate blurring via an AWS Lambda (Rekor ai), interactive Google Maps mission tracking, and Cypress/testRigor E2E coverage.",
     "stack": ["React", "Node.js", "Express", "MongoDB", "Cypress", "AWS Lambda"],
-    "confidential": false,
+    "confidential": true,
     "flagship": false
   }
 ]
