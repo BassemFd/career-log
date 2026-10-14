@@ -1,33 +1,33 @@
 import type { Profile, Project } from "@/lib/types";
+import type { STRINGS } from "@/lib/strings";
 import { shortHash } from "@/lib/hash";
 import CommitGraphBackdrop from "./CommitGraphBackdrop";
 import GlitchText from "./GlitchText";
-import HeroPaint from "./HeroPaint";
-import NameHeading from "./NameHeading";
 
 // The hero opens like the top of a `git log --oneline`: the most recent work,
 // framed as HEAD. It doubles as proof-of-activity and a teaser for the log below.
 export default function Hero({
   profile,
   recent,
+  t,
 }: {
   profile: Profile;
   recent: Project[];
+  t: (typeof STRINGS)["en"];
 }) {
   const handle = profile.socials.github.split("/").pop() ?? "";
 
   return (
     <header className="relative overflow-hidden border-b border-rule">
       <CommitGraphBackdrop />
-      <HeroPaint />
       <div className="relative max-w-3xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:px-16">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
           {profile.location}
         </p>
 
-        <NameHeading className="mt-5 font-display font-semibold leading-[0.95] tracking-tight text-[clamp(2.75rem,9vw,7rem)]">
+        <h1 className="relative mt-5 select-none font-display font-semibold leading-[0.95] tracking-tight text-[clamp(2.75rem,9vw,7rem)]">
           <GlitchText text={profile.name} />
-        </NameHeading>
+        </h1>
         <p className="mt-4 font-display text-2xl text-accent sm:text-3xl">
           <GlitchText text={profile.tagline} />
         </p>
@@ -54,7 +54,7 @@ export default function Hero({
               >
                 <span className="text-accent">{shortHash(p.slug)}</span>
                 {i === 0 && (
-                  <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-accent">
+                  <span className="rounded bg-accent-soft px-1.5 py-0.5 text-xs uppercase tracking-wider text-accent">
                     HEAD
                   </span>
                 )}
@@ -67,10 +67,29 @@ export default function Hero({
           </ul>
         </div>
 
-        <nav className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-sm">
+        {/* The recruiter's two actions, first-class: contact and the CV. */}
+        <div className="mt-8 flex flex-wrap gap-3">
+          <a
+            href={`mailto:${profile.socials.email}`}
+            className="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 font-mono text-sm font-medium text-card transition-opacity hover:opacity-90"
+          >
+            {t.ctaContact} →
+          </a>
+          {profile.cv && (
+            <a
+              href={profile.cv}
+              download
+              className="inline-flex min-h-11 items-center rounded-lg border border-rule bg-card px-5 font-mono text-sm font-medium text-ink transition-colors hover:border-accent hover:text-accent"
+            >
+              {t.ctaCv} ↓
+            </a>
+          )}
+        </div>
+
+        <nav className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-sm">
           <a
             href={profile.socials.github}
-            className="text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+            className="inline-block py-2 text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
             target="_blank"
             rel="noreferrer"
           >
@@ -79,7 +98,7 @@ export default function Hero({
           {profile.socials.linkedin && (
             <a
               href={profile.socials.linkedin}
-              className="text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+              className="inline-block py-2 text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
               target="_blank"
               rel="noreferrer"
             >
@@ -88,7 +107,7 @@ export default function Hero({
           )}
           <a
             href={`mailto:${profile.socials.email}`}
-            className="text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+            className="inline-block py-2 text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
           >
             {profile.socials.email}
           </a>

@@ -36,12 +36,12 @@ export default function ExperienceTimeline({
                     <GlitchText text={e.company} />
                   </h3>
                   {e.flagship && (
-                    <span className="rounded bg-accent px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-card">
+                    <span className="rounded bg-accent px-1.5 py-0.5 font-mono text-xs uppercase tracking-wider text-card">
                       {t.flagship}
                     </span>
                   )}
                   {e.confidential && (
-                    <span className="rounded bg-manual-soft px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-manual">
+                    <span className="rounded bg-manual-soft px-1.5 py-0.5 font-mono text-xs uppercase tracking-wider text-manual">
                       {t.underNda}
                     </span>
                   )}
@@ -54,7 +54,7 @@ export default function ExperienceTimeline({
                   {e.summary}
                 </p>
                 {e.stack.length > 0 && (
-                  <ul className="mt-3 flex flex-wrap gap-1.5 font-mono text-[11px] text-muted">
+                  <ul className="mt-3 flex flex-wrap gap-1.5 font-mono text-xs text-muted">
                     {e.stack.map((s) => (
                       <li
                         key={s}

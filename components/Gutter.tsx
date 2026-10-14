@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type RefObject } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { useTheme, type Theme } from "./ThemeProvider";
 import { useLocale } from "./LocaleProvider";
 import { contentByLocale } from "@/lib/content";
@@ -17,7 +17,10 @@ const THEMES: { id: Theme; label: string }[] = [
 // While crazy is active, "lgt"/"drk" grow and glow — they're the only way
 // out, and the gutter itself sits above every chaos layer so they stay
 // clickable and calm.
-function ThemeToggle({ t }: { t: (typeof STRINGS)["en"] }) {
+// `large` = the mobile sheet's version: 44px tap targets instead of 24px.
+const toggleSize = (large: boolean) => (large ? "px-3 py-3 text-sm" : "px-1.5 py-1");
+
+function ThemeToggle({ t, large = false }: { t: (typeof STRINGS)["en"]; large?: boolean }) {
   const { theme, setTheme } = useTheme();
   return (
     <div className="flex items-center gap-1.5 font-mono text-xs">
@@ -34,8 +37,8 @@ function ThemeToggle({ t }: { t: (typeof STRINGS)["en"] }) {
               isExit
                 ? "exit-glow rounded px-2.5 py-1 text-base font-bold text-white"
                 : isActive
-                ? "rounded px-1.5 py-0.5 text-accent"
-                : "rounded px-1.5 py-0.5 text-gutter-muted transition-colors hover:text-white"
+                ? `rounded ${toggleSize(large)} text-gutter-accent`
+                : `rounded ${toggleSize(large)} text-gutter-muted transition-colors hover:text-white`
             }
           >
             {th.label}
@@ -51,10 +54,10 @@ const LOCALES: { id: Locale; label: string }[] = [
   { id: "fr", label: "fr" },
 ];
 
-function LangToggle({ t }: { t: (typeof STRINGS)["en"] }) {
+function LangToggle({ t, large = false }: { t: (typeof STRINGS)["en"]; large?: boolean }) {
   const { locale, setLocale } = useLocale();
   return (
-    <div className="mt-2 flex items-center gap-1.5 font-mono text-xs">
+    <div className="mt-1 flex items-center gap-1.5 font-mono text-xs">
       <span className="text-gutter-muted">{t.langLabel}</span>
       {LOCALES.map((l) => (
         <button
@@ -63,8 +66,8 @@ function LangToggle({ t }: { t: (typeof STRINGS)["en"] }) {
           aria-pressed={locale === l.id}
           className={
             locale === l.id
-              ? "rounded px-1.5 py-0.5 text-accent"
-              : "rounded px-1.5 py-0.5 text-gutter-muted transition-colors hover:text-white"
+              ? `rounded ${toggleSize(large)} text-gutter-accent`
+              : `rounded ${toggleSize(large)} text-gutter-muted transition-colors hover:text-white`
           }
         >
           {l.label}
@@ -85,7 +88,8 @@ const ROUTES: Route[] = [
 
 // The gutter is the page's line-number column: a persistent index of the
 // sections in order, plus the command prompt that actually drives navigation.
-// On narrow screens it collapses to the same prompt as a bottom bar.
+// On narrow screens it collapses to a floating "$" button that opens the same
+// prompt in a bottom sheet (a permanent bar cost 15% of every phone screen).
 export default function Gutter() {
   const { theme, setTheme } = useTheme();
   const { locale } = useLocale();
@@ -107,6 +111,14 @@ export default function Gutter() {
   // its own ref — a shared one would point at whichever mounted last.
   const desktopInput = useRef<HTMLInputElement>(null);
   const mobileInput = useRef<HTMLInputElement>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  useEffect(() => {
+    if (!sheetOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSheetOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [sheetOpen]);
 
   function run(raw: string) {
     const line = raw.trim().toLowerCase();
@@ -150,6 +162,7 @@ export default function Gutter() {
   function goTo(route: Route) {
     document.getElementById(route.id)?.scrollIntoView({ behavior: "smooth" });
     setOutput(t.goToFeedback(routeLabels[route.id]));
+    setSheetOpen(false); // on mobile, get out of the way so the section shows
   }
 
   const outputClass = urgent
@@ -161,7 +174,7 @@ export default function Gutter() {
       onClick={() => inputRef.current?.focus()}
       className="flex min-w-0 flex-1 cursor-text items-center gap-2 font-mono text-sm"
     >
-      <span className="text-accent">$</span>
+      <span className="text-gutter-accent">$</span>
       <input
         ref={inputRef}
         aria-label="terminal"
@@ -174,7 +187,7 @@ export default function Gutter() {
         }}
         placeholder="help"
         spellCheck={false}
-        className="w-full min-w-0 bg-transparent text-white caret-accent outline-none placeholder:text-white/40"
+        className="w-full min-w-0 bg-transparent text-white caret-gutter-accent outline-none placeholder:text-white/40"
       />
     </div>
   );
@@ -191,7 +204,7 @@ export default function Gutter() {
                 onClick={() => goTo(r)}
                 className="group flex items-baseline gap-3 rounded px-2 py-1.5 text-left transition-colors hover:bg-white/5"
               >
-                <span className="font-mono text-xs text-accent">{r.number}</span>
+                <span className="font-mono text-xs text-gutter-accent">{r.number}</span>
                 <span className="font-display text-sm text-white/70 group-hover:text-white">
                   {routeLabels[r.id]}
                 </span>
@@ -203,7 +216,7 @@ export default function Gutter() {
               the nav where the eye already is, so it reads as something to use. */}
           <div
             onClick={() => desktopInput.current?.focus()}
-            className="mt-8 cursor-text overflow-hidden rounded-lg border border-accent/60 bg-white/5 transition-colors hover:border-accent focus-within:border-accent"
+            className="mt-8 cursor-text overflow-hidden rounded-lg border border-gutter-accent/60 bg-white/5 transition-colors hover:border-gutter-accent focus-within:border-gutter-accent"
           >
             <div className="flex items-center gap-1.5 border-b border-gutter-line px-3 py-2">
               <span className="h-2 w-2 rounded-full bg-white/20" />
@@ -247,8 +260,22 @@ export default function Gutter() {
             {t.crazyDark}
           </button>
         </div>
-      ) : (
-        <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-gutter-line bg-gutter lg:hidden">
+      ) : sheetOpen ? (
+        <div
+          role="dialog"
+          aria-label={t.terminalLabel}
+          className="fixed inset-x-0 bottom-0 z-[70] border-t border-gutter-line bg-gutter pb-[env(safe-area-inset-bottom)] lg:hidden"
+        >
+          <div className="flex items-center justify-between border-b border-gutter-line pl-6 pr-2">
+            <span className="font-mono text-xs text-gutter-muted">~/career-log</span>
+            <button
+              onClick={() => setSheetOpen(false)}
+              aria-label={t.terminalClose}
+              className="flex h-11 w-11 items-center justify-center font-mono text-lg text-gutter-muted hover:text-white"
+            >
+              ×
+            </button>
+          </div>
           {output && (
             <p
               onClick={() => mobileInput.current?.focus()}
@@ -258,16 +285,24 @@ export default function Gutter() {
               {output}
             </p>
           )}
-          <div className="flex items-center gap-3 px-6 py-3">
-            <div className="flex min-w-0 flex-1 rounded border border-accent/60 bg-white/5 px-2.5 py-1.5 focus-within:border-accent">
+          <div className="px-6 py-3">
+            <div className="flex min-h-11 rounded border border-gutter-accent/60 bg-white/5 px-3 focus-within:border-gutter-accent">
               {prompt(mobileInput)}
             </div>
-            <div className="ml-auto shrink-0 text-right">
-              <ThemeToggle t={t} />
-              <LangToggle t={t} />
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-x-4">
+              <ThemeToggle t={t} large />
+              <LangToggle t={t} large />
             </div>
           </div>
         </div>
+      ) : (
+        <button
+          onClick={() => setSheetOpen(true)}
+          aria-label={t.terminalOpen}
+          className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[70] flex h-12 w-12 items-center justify-center rounded-full border border-gutter-accent/60 bg-gutter font-mono text-lg text-gutter-accent shadow-lg transition-colors hover:border-gutter-accent lg:hidden"
+        >
+          $
+        </button>
       )}
     </>
   );

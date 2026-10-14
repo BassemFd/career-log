@@ -113,7 +113,7 @@ function ActivityMixBlock({
         ))}
       </div>
 
-      <p className="mt-3 flex items-center gap-2 font-mono text-[11px] text-muted">
+      <p className="mt-3 flex items-center gap-2 font-mono text-xs text-muted">
         <span className="text-manual">○ {t.manualLabel}</span>
         <span>{activity.note}</span>
       </p>
@@ -138,7 +138,7 @@ function StatRow({
     <div className="crazy-item flex items-baseline justify-between gap-4 bg-card px-5 py-5">
       <div>
         <div className="text-sm font-medium text-ink">{label}</div>
-        <div className="mt-0.5 flex items-center gap-2 font-mono text-[11px] text-muted">
+        <div className="mt-0.5 flex items-center gap-2 font-mono text-xs text-muted">
           <span className={source === "live" ? "text-live" : "text-manual"}>
             {source === "live" ? `● ${t.liveLabel}` : `○ ${t.manualLabel}`}
           </span>

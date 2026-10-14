@@ -50,7 +50,7 @@ export default function ProjectsGrid({
               <button
                 key={f.key}
                 onClick={() => setFilter(f.key)}
-                className={`rounded-full border px-3 py-1 transition-colors ${
+                className={`inline-flex min-h-11 items-center rounded-full border px-4 transition-colors sm:min-h-8 sm:px-3 ${
                   active
                     ? `${color?.border ?? "border-accent"} ${color?.bg ?? "bg-accent-soft"} ${color?.text ?? "text-accent"}`
                     : "border-rule text-muted hover:border-accent hover:text-accent"
@@ -109,7 +109,7 @@ function ProjectCard({
           {p.title}
         </h3>
         {p.role === "contributor" && (
-          <span className="rounded bg-accent-soft px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-accent">
+          <span className="rounded bg-accent-soft px-1.5 py-0.5 font-mono text-xs uppercase tracking-wider text-accent">
             {t.contributor}
           </span>
         )}
@@ -119,7 +119,7 @@ function ProjectCard({
       <p className="mt-2 text-[14px] leading-relaxed text-ink/75">{p.blurb}</p>
 
       {p.stack.length > 0 && (
-        <ul className="mt-3 flex flex-wrap gap-1.5 font-mono text-[11px] text-muted">
+        <ul className="mt-3 flex flex-wrap gap-1.5 font-mono text-xs text-muted">
           {p.stack.map((s) => (
             <li key={s} className="rounded border border-rule px-1.5 py-0.5">
               {s}

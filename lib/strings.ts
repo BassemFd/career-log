@@ -40,6 +40,12 @@ export const STRINGS: Record<Locale, {
   footerMadeWith: string;
   footerBy: string;
   footerEmail: string;
+  introSkip: string;
+  terminalLabel: string;
+  terminalOpen: string;
+  terminalClose: string;
+  ctaContact: string;
+  ctaCv: string;
   themeLabel: string;
   langLabel: string;
   crazyLight: string;
@@ -88,6 +94,12 @@ export const STRINGS: Record<Locale, {
     footerMadeWith: "made with",
     footerBy: "by",
     footerEmail: "email",
+    introSkip: "skip",
+    terminalLabel: "Terminal",
+    terminalOpen: "Open the terminal",
+    terminalClose: "Close the terminal",
+    ctaContact: "Get in touch",
+    ctaCv: "Download CV",
     themeLabel: "theme:",
     langLabel: "lang:",
     crazyLight: "Light",
@@ -136,6 +148,12 @@ export const STRINGS: Record<Locale, {
     footerMadeWith: "fait avec",
     footerBy: "par",
     footerEmail: "e-mail",
+    introSkip: "passer",
+    terminalLabel: "Terminal",
+    terminalOpen: "Ouvrir le terminal",
+    terminalClose: "Fermer le terminal",
+    ctaContact: "Me contacter",
+    ctaCv: "Télécharger le CV",
     themeLabel: "thème :",
     langLabel: "langue :",
     crazyLight: "Clair",

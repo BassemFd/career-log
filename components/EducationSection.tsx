@@ -54,11 +54,11 @@ export default function EducationSection({
                 >
                   <div>
                     <div className="text-sm font-medium text-ink">{c.name}</div>
-                    <div className="mt-0.5 font-mono text-[11px] text-muted">
+                    <div className="mt-0.5 font-mono text-xs text-muted">
                       {c.issuer} · {t.certIssued} {c.issued} · {t.certExpires} {c.expires}
                     </div>
                   </div>
-                  <span className="font-mono text-[11px] text-muted">
+                  <span className="font-mono text-xs text-muted">
                     {t.credentialId}: {c.credentialId}
                   </span>
                 </li>

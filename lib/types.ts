@@ -3,6 +3,9 @@ export interface Profile {
   tagline: string;
   summary: string;
   location: string;
+  // Public path of the CV PDF under /public (e.g. "/cv-bassem-fayed.pdf").
+  // Optional: the hero's "Download CV" button only renders when it's set.
+  cv?: string;
   socials: {
     github: string;
     linkedin: string;

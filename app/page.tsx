@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <main>
-      <Hero profile={profile} recent={projects.slice(0, 4)} />
+      <Hero profile={profile} recent={projects.slice(0, 4)} t={t} />
       <ExperienceTimeline experience={experience} t={t} />
       <StatsSection stats={stats} t={t} />
       <ProjectsGrid projects={projects} t={t} />
@@ -33,7 +33,7 @@ export default function Home() {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="font-semibold text-accent hover:underline"
+              className="inline-block py-2 font-semibold text-accent hover:underline"
             >
               BF
             </a>
@@ -49,7 +49,7 @@ export default function Home() {
                 key={l.href}
                 href={l.href}
                 {...(l.href.startsWith("http") && { target: "_blank", rel: "noreferrer" })}
-                className="underline decoration-rule underline-offset-4 hover:text-accent"
+                className="inline-block py-2 underline decoration-rule underline-offset-4 hover:text-accent"
               >
                 {l.label}
               </a>

@@ -33,6 +33,7 @@ export default {
         gutter: "rgb(var(--color-gutter) / <alpha-value>)",
         "gutter-line": "rgb(var(--color-gutter-line) / <alpha-value>)",
         "gutter-muted": "rgb(var(--color-gutter-muted) / <alpha-value>)",
+        "gutter-accent": "rgb(var(--color-gutter-accent) / <alpha-value>)",
       },
       fontFamily: {
         display: ["var(--font-display)", "ui-sans-serif", "system-ui"],

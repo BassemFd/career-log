@@ -16,7 +16,8 @@
   --color-muted: 107 114 128;
   --color-accent: 31 75 255;
   --color-accent-soft: 233 238 255;
-  --color-live: 14 159 110;
+  /* 4 120 87: the 14 159 110 green failed AA (3.4:1) as 11–12px label text. */
+  --color-live: 4 120 87;
   --color-live-soft: 225 249 240;
   --color-manual: 180 83 9;
   --color-manual-soft: 253 241 222;
@@ -26,7 +27,10 @@
   --color-violet-soft: 241 235 254;
   --color-gutter: 15 17 21;
   --color-gutter-line: 36 40 51;
-  --color-gutter-muted: 107 114 128;
+  /* The gutter is dark in every theme: its muted/accent are the dark-theme
+     values, or they fail contrast there (3.9:1 and 3.2:1). */
+  --color-gutter-muted: 145 153 166;
+  --color-gutter-accent: 91 124 255;
 }
 
 /* Dark: not the light hex on a dark bg — accents are lifted so live/manual/
@@ -51,6 +55,7 @@
   --color-gutter: 12 13 17;
   --color-gutter-line: 42 46 55;
   --color-gutter-muted: 145 153 166;
+  --color-gutter-accent: 91 124 255;
 }
 
 /* Crazy: 70s psychedelic — burnt orange, hot pink, mustard, deep purple,
@@ -75,6 +80,7 @@
   --color-gutter: 26 7 38;
   --color-gutter-line: 82 18 58;
   --color-gutter-muted: 227 158 201;
+  --color-gutter-accent: 255 45 149;
 }
 
 html {
@@ -277,4 +283,179 @@ body {
     box-shadow: 0 0 8px 2px currentColor;
     text-shadow: 0 0 6px currentColor;
   }
+}
+
+/* ── Intro curtain ──────────────────────────────────────────────────────────
+   A character pushes an ink-colored wall off the screen, revealing the page:
+   1. first push to a third of the screen, 2. stuck: the wall resists, he
+   crouches into a harder push, 3. second push, the wall gives way and shoots
+   off, 4. he loses his support and falls over, then the overlay fades.
+   It only exists while <html data-intro="play">, which the no-flash script in
+   layout.tsx sets once per session (never for reduced motion or crazy mode).
+   Wall and character are separate elements on ONE timeline (same keyframe
+   percentages and timing functions), so his hands stay on the wall's edge
+   until 82%, where the wall keeps going and he doesn't. The overlay fades
+   and hides itself at the end even if JavaScript never loads. */
+.intro-curtain {
+  display: none;
+}
+html[data-intro="play"] {
+  overflow: hidden;
+}
+html[data-intro="play"] .intro-curtain {
+  --intro-char-h: clamp(150px, 26vh, 240px);
+  --intro-char-w: calc(var(--intro-char-h) * 0.6);
+  /* Timing knobs. Keep FALLBACK_MS in IntroCurtain.tsx above their sum + 0.4s. */
+  --intro-hold: 0.5s;
+  --intro-push: 4.4s;
+  display: block;
+  animation: intro-out 0.4s ease-out calc(var(--intro-hold) + var(--intro-push)) forwards;
+}
+@keyframes intro-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.intro-wall,
+.intro-mover {
+  animation-duration: var(--intro-push);
+  animation-delay: var(--intro-hold);
+  animation-fill-mode: both;
+}
+.intro-wall {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100vw;
+  background: rgb(var(--color-ink));
+  animation-name: intro-wall;
+}
+.intro-mover {
+  position: absolute;
+  top: calc(50% - var(--intro-char-h) / 2);
+  left: 0;
+  width: var(--intro-char-w);
+  height: var(--intro-char-h);
+  animation-name: intro-mover;
+}
+
+/* Same stops, same easing per segment, for wall (left edge) and character
+   (right edge = wall's left edge) until 82%. */
+@keyframes intro-wall {
+  0% { transform: translateX(0); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
+  34% { transform: translateX(33vw); animation-timing-function: ease-in-out; }
+  38% { transform: translateX(33.8vw); animation-timing-function: ease-in-out; }
+  42% { transform: translateX(32.8vw); animation-timing-function: ease-in-out; }
+  50% { transform: translateX(33vw); animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.6); }
+  82% { transform: translateX(78vw); animation-timing-function: cubic-bezier(0.6, 0, 1, 1); }
+  92%, 100% { transform: translateX(102vw); }
+}
+@keyframes intro-mover {
+  0% { transform: translateX(calc(0vw - var(--intro-char-w))); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
+  34% { transform: translateX(calc(33vw - var(--intro-char-w))); animation-timing-function: ease-in-out; }
+  38% { transform: translateX(calc(33.8vw - var(--intro-char-w))); animation-timing-function: ease-in-out; }
+  42% { transform: translateX(calc(32.8vw - var(--intro-char-w))); animation-timing-function: ease-in-out; }
+  50% { transform: translateX(calc(33vw - var(--intro-char-w))); animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.6); }
+  82%, 100% { transform: translateX(calc(78vw - var(--intro-char-w))); }
+}
+
+/* The fall wraps the character AND his scream, so both drop together. */
+.intro-faller {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: 48% 97%;
+  animation: intro-fall var(--intro-push) var(--intro-hold) both;
+}
+/* Wall gone (82%): he lurches forward, hangs in the air for a beat like a
+   cartoon character over a cliff, then tumbles off the bottom of the screen
+   (happily: "WHEEE!"), spinning, with gravity's ease-in. */
+@keyframes intro-fall {
+  0%, 82% { transform: none; animation-timing-function: ease-out; }
+  86% { transform: translate(10%, -5%) rotate(16deg); animation-timing-function: linear; }
+  89% { transform: translate(12%, -6%) rotate(20deg); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  100% { transform: translate(40%, 110vh) rotate(150deg); }
+}
+.intro-char {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  /* Paper-colored halo: keeps ink line art readable over the dark gutter. */
+  filter: drop-shadow(0 0 1.5px rgb(var(--color-paper))) drop-shadow(0 0 1px rgb(var(--color-paper)));
+}
+/* Face swap when the wall gives way: gritted effort → happy eyes + big grin. */
+.intro-char .grit {
+  animation: intro-grit var(--intro-push) var(--intro-hold) both;
+}
+.intro-char .scream {
+  opacity: 0;
+  animation: intro-scream var(--intro-push) var(--intro-hold) both;
+}
+@keyframes intro-grit {
+  0%, 84% { opacity: 1; }
+  85%, 100% { opacity: 0; }
+}
+@keyframes intro-scream {
+  0%, 84% { opacity: 0; }
+  85%, 100% { opacity: 1; }
+}
+.intro-scream {
+  position: absolute;
+  /* Above his head, on the page side, clear of the wall's edge. */
+  left: 0;
+  top: -22%;
+  font-family: var(--font-display), ui-sans-serif, system-ui;
+  font-weight: 700;
+  font-size: calc(var(--intro-char-h) * 0.16);
+  line-height: 1;
+  white-space: nowrap;
+  color: rgb(var(--color-accent));
+  opacity: 0;
+  transform-origin: left bottom;
+  animation: intro-scream-text var(--intro-push) var(--intro-hold) both;
+}
+@keyframes intro-scream-text {
+  0%, 84% { opacity: 0; transform: scale(0.4) rotate(-8deg); }
+  88% { opacity: 1; transform: scale(1.1) rotate(-12deg); }
+  92%, 100% { opacity: 1; transform: scale(1) rotate(-10deg); }
+}
+
+/* Pose change at the stall: the upper body leans 12° further into the wall
+   around the hip (hands slide lower, still on the edge) for the harder push. */
+.intro-char .lean {
+  transform-box: view-box;
+  transform-origin: 52px 116px;
+  animation: intro-lean var(--intro-push) var(--intro-hold) both;
+}
+@keyframes intro-lean {
+  0%, 40% { transform: none; animation-timing-function: ease-in-out; }
+  48%, 100% { transform: rotate(12deg); }
+}
+
+/* Walk cycle: legs swing in antiphase around the hip, the body bobs. Keeps
+   going during the stall, which reads as scrambling against a stuck wall. */
+.intro-char .leg {
+  transform-box: view-box;
+  transform-origin: 52px 116px;
+  animation: intro-step 0.55s ease-in-out infinite alternate;
+}
+.intro-char .leg-front {
+  animation-delay: -0.55s;
+}
+.intro-char .body {
+  animation: intro-bob 0.275s ease-in-out infinite alternate;
+}
+.intro-char .effort {
+  animation: intro-effort 0.55s steps(2) infinite;
+}
+@keyframes intro-step {
+  from { transform: rotate(-34deg); }
+  to { transform: rotate(8deg); }
+}
+@keyframes intro-bob {
+  to { transform: translateY(2.5px); }
+}
+@keyframes intro-effort {
+  50% { opacity: 0; }
 }
