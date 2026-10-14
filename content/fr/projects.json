@@ -1,12 +1,38 @@
 [
   {
+    "slug": "ai-watch",
+    "title": "ai/watch",
+    "role": "owner",
+    "stack": [
+      "TypeScript",
+      "Claude API",
+      "Astro",
+      "Zod"
+    ],
+    "year": "2026",
+    "featured": true,
+    "category": "personal",
+    "blurb": "Une veille IA quotidienne rédigée, vérifiée et publiée par un pipeline d'agents, sans relecture humaine. Chaque phrase est rattachée à une citation retrouvée mot pour mot dans sa source ; c'est le code, pas le modèle, qui décide de ce qui est publié, et chaque refus est affiché avec sa raison.",
+    "links": {
+      "github": "https://github.com/BassemFd/ai-watch",
+      "live": "https://ai-watch-by-bf.pages.dev"
+    }
+  },
+  {
     "slug": "komeet-tila",
     "title": "Komeet (Tila)",
     "blurb": "Contribution au produit mobile d'une startup et à son API — développement de fonctionnalités sur une app React Native et son service backend.",
     "role": "contributor",
-    "stack": ["React Native", "TypeScript", "Node.js"],
+    "stack": [
+      "React Native",
+      "TypeScript",
+      "Node.js"
+    ],
     "year": "2026",
-    "links": { "github": null, "live": null },
+    "links": {
+      "github": null,
+      "live": null
+    },
     "featured": true,
     "category": "client"
   },
@@ -15,9 +41,19 @@
     "title": "funk-it-up",
     "blurb": "Un jeu de rythme en 3D — sautez en rythme sur n'importe quel morceau, le score dépendant de la précision de vos atterrissages. Construit avec React Three Fiber et la physique Rapier.",
     "role": "owner",
-    "stack": ["TypeScript", "React Three Fiber", "Three.js", "Rapier", "GraphQL", "Zustand"],
+    "stack": [
+      "TypeScript",
+      "React Three Fiber",
+      "Three.js",
+      "Rapier",
+      "GraphQL",
+      "Zustand"
+    ],
     "year": "2026",
-    "links": { "github": "https://github.com/BassemFd/funk-it-up", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/funk-it-up",
+      "live": null
+    },
     "featured": false,
     "category": "personal"
   },
@@ -26,9 +62,18 @@
     "title": "NeJa",
     "blurb": "Une bibliothèque de composants / design-system basée sur A Dictionary of Color Combinations de Sanzo Wada — un site présentant ses palettes historiques associées à des composants UI pilotés par variantes. Livré en un après-midi.",
     "role": "owner",
-    "stack": ["TypeScript", "React", "Tailwind CSS", "CVA", "Vite"],
+    "stack": [
+      "TypeScript",
+      "React",
+      "Tailwind CSS",
+      "CVA",
+      "Vite"
+    ],
     "year": "2026",
-    "links": { "github": "https://github.com/BassemFd/Neja", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/Neja",
+      "live": null
+    },
     "featured": false,
     "category": "personal"
   },
@@ -37,9 +82,15 @@
     "title": "Augmented Engineering — TS Backend",
     "blurb": "Un starter backend TypeScript explorant les workflows d'ingénierie augmentée et une architecture de service Node moderne.",
     "role": "owner",
-    "stack": ["TypeScript", "Node.js"],
+    "stack": [
+      "TypeScript",
+      "Node.js"
+    ],
     "year": "2026",
-    "links": { "github": "https://github.com/BassemFd/Augmented-Engineering-Back-Node-JS---BF", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/Augmented-Engineering-Back-Node-JS---BF",
+      "live": null
+    },
     "featured": false,
     "category": "personal"
   },
@@ -48,9 +99,16 @@
     "title": "DevRel.io Apps",
     "blurb": "Suite applicative interne de developer-relations construite pendant un programme d'ingénierie eXalt-IT (300+ commits). Reconstruite ici comme étude de cas, la source vivant dans un GitLab privé.",
     "role": "owner",
-    "stack": ["TypeScript", "React", "Node.js"],
+    "stack": [
+      "TypeScript",
+      "React",
+      "Node.js"
+    ],
     "year": "2024",
-    "links": { "github": null, "live": null },
+    "links": {
+      "github": null,
+      "live": null
+    },
     "featured": false,
     "category": "dojo"
   },
@@ -59,9 +117,15 @@
     "title": "Rendering Event (TDD Kata)",
     "blurb": "Un kata de test-driven-development modélisant un domaine de rendu d'événements — pratique du design propre et de la discipline red/green/refactor.",
     "role": "owner",
-    "stack": ["TypeScript", "Vitest"],
+    "stack": [
+      "TypeScript",
+      "Vitest"
+    ],
     "year": "2024",
-    "links": { "github": null, "live": null },
+    "links": {
+      "github": null,
+      "live": null
+    },
     "featured": false,
     "category": "dojo"
   },
@@ -70,9 +134,17 @@
     "title": "Stach",
     "blurb": "Plateforme de réservation chez le coiffeur — app mobile React Native avec un backend Express/Node et un front web. Prise de rendez-vous, recherche de salons, gestion des disponibilités.",
     "role": "owner",
-    "stack": ["React Native", "Express", "Node.js", "MongoDB"],
+    "stack": [
+      "React Native",
+      "Express",
+      "Node.js",
+      "MongoDB"
+    ],
     "year": "2022",
-    "links": { "github": "https://github.com/BassemFd/Stach-App", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/Stach-App",
+      "live": null
+    },
     "featured": true,
     "category": "personal"
   },
@@ -81,9 +153,16 @@
     "title": "Locapic",
     "blurb": "App de chat et de géolocalisation en temps réel construite avec React Native et Socket.IO — partagez votre position en direct et échangez avec les utilisateurs à proximité.",
     "role": "owner",
-    "stack": ["React Native", "Socket.IO", "Node.js"],
+    "stack": [
+      "React Native",
+      "Socket.IO",
+      "Node.js"
+    ],
     "year": "2022",
-    "links": { "github": "https://github.com/BassemFd/Locapic", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/Locapic",
+      "live": null
+    },
     "featured": true,
     "category": "personal"
   },
@@ -92,9 +171,15 @@
     "title": "My-moviz",
     "blurb": "Une app de navigation de films façon Netflix construite en React — recherche de titres, navigation par catégorie, constitution d'une liste à voir.",
     "role": "owner",
-    "stack": ["React", "JavaScript"],
+    "stack": [
+      "React",
+      "JavaScript"
+    ],
     "year": "2022",
-    "links": { "github": "https://github.com/BassemFd/My-moviz", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/My-moviz",
+      "live": null
+    },
     "featured": false,
     "category": "personal"
   }

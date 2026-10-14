@@ -1,12 +1,38 @@
 [
   {
+    "slug": "ai-watch",
+    "title": "ai/watch",
+    "role": "owner",
+    "stack": [
+      "TypeScript",
+      "Claude API",
+      "Astro",
+      "Zod"
+    ],
+    "year": "2026",
+    "featured": true,
+    "category": "personal",
+    "blurb": "A daily AI briefing written, fact-checked and published by a pipeline of agents with no human review. Every sentence is tied to a quote found word for word in its source; code — not the model — gates what gets published, and every refusal is shown with its reason.",
+    "links": {
+      "github": "https://github.com/BassemFd/ai-watch",
+      "live": "https://ai-watch-by-bf.pages.dev/en/"
+    }
+  },
+  {
     "slug": "komeet-tila",
     "title": "Komeet (Tila)",
     "blurb": "Contributed to a startup's mobile product and its API — feature development across a React Native app and its backend service.",
     "role": "contributor",
-    "stack": ["React Native", "TypeScript", "Node.js"],
+    "stack": [
+      "React Native",
+      "TypeScript",
+      "Node.js"
+    ],
     "year": "2026",
-    "links": { "github": null, "live": null },
+    "links": {
+      "github": null,
+      "live": null
+    },
     "featured": true,
     "category": "client"
   },
@@ -15,9 +41,19 @@
     "title": "funk-it-up",
     "blurb": "A 3D rhythm game — jump in time with whatever track you're playing, scoring on how tightly you land on the beat. Built on React Three Fiber with Rapier physics.",
     "role": "owner",
-    "stack": ["TypeScript", "React Three Fiber", "Three.js", "Rapier", "GraphQL", "Zustand"],
+    "stack": [
+      "TypeScript",
+      "React Three Fiber",
+      "Three.js",
+      "Rapier",
+      "GraphQL",
+      "Zustand"
+    ],
     "year": "2026",
-    "links": { "github": "https://github.com/BassemFd/funk-it-up", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/funk-it-up",
+      "live": null
+    },
     "featured": false,
     "category": "personal"
   },
@@ -26,9 +62,18 @@
     "title": "NeJa",
     "blurb": "A component / design-system library built on Sanzo Wada's A Dictionary of Color Combinations — a presentation site pairing his historic palettes with variant-driven UI components. Shipped in an afternoon.",
     "role": "owner",
-    "stack": ["TypeScript", "React", "Tailwind CSS", "CVA", "Vite"],
+    "stack": [
+      "TypeScript",
+      "React",
+      "Tailwind CSS",
+      "CVA",
+      "Vite"
+    ],
     "year": "2026",
-    "links": { "github": "https://github.com/BassemFd/Neja", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/Neja",
+      "live": null
+    },
     "featured": false,
     "category": "personal"
   },
@@ -37,9 +82,15 @@
     "title": "Augmented Engineering — TS Backend",
     "blurb": "A TypeScript backend starter exploring augmented-engineering workflows and modern Node service architecture.",
     "role": "owner",
-    "stack": ["TypeScript", "Node.js"],
+    "stack": [
+      "TypeScript",
+      "Node.js"
+    ],
     "year": "2026",
-    "links": { "github": "https://github.com/BassemFd/Augmented-Engineering-Back-Node-JS---BF", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/Augmented-Engineering-Back-Node-JS---BF",
+      "live": null
+    },
     "featured": false,
     "category": "personal"
   },
@@ -48,9 +99,16 @@
     "title": "DevRel.io Apps",
     "blurb": "Internal developer-relations application suite built during an eXalt-IT engineering program (300+ commits). Rebuilt here as a case study since the source lives in a private GitLab org.",
     "role": "owner",
-    "stack": ["TypeScript", "React", "Node.js"],
+    "stack": [
+      "TypeScript",
+      "React",
+      "Node.js"
+    ],
     "year": "2024",
-    "links": { "github": null, "live": null },
+    "links": {
+      "github": null,
+      "live": null
+    },
     "featured": false,
     "category": "dojo"
   },
@@ -59,9 +117,15 @@
     "title": "Rendering Event (TDD Kata)",
     "blurb": "A test-driven-development kata modelling an event-rendering domain — practicing clean design and red/green/refactor discipline.",
     "role": "owner",
-    "stack": ["TypeScript", "Vitest"],
+    "stack": [
+      "TypeScript",
+      "Vitest"
+    ],
     "year": "2024",
-    "links": { "github": null, "live": null },
+    "links": {
+      "github": null,
+      "live": null
+    },
     "featured": false,
     "category": "dojo"
   },
@@ -70,9 +134,17 @@
     "title": "Stach",
     "blurb": "Hairdresser reservation platform — React Native mobile app with an Express/Node backend and a web front end. Book appointments, browse salons, manage availability.",
     "role": "owner",
-    "stack": ["React Native", "Express", "Node.js", "MongoDB"],
+    "stack": [
+      "React Native",
+      "Express",
+      "Node.js",
+      "MongoDB"
+    ],
     "year": "2022",
-    "links": { "github": "https://github.com/BassemFd/Stach-App", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/Stach-App",
+      "live": null
+    },
     "featured": true,
     "category": "personal"
   },
@@ -81,9 +153,16 @@
     "title": "Locapic",
     "blurb": "Real-time chat and geolocation app built with React Native and Socket.IO — share your live location and message nearby users.",
     "role": "owner",
-    "stack": ["React Native", "Socket.IO", "Node.js"],
+    "stack": [
+      "React Native",
+      "Socket.IO",
+      "Node.js"
+    ],
     "year": "2022",
-    "links": { "github": "https://github.com/BassemFd/Locapic", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/Locapic",
+      "live": null
+    },
     "featured": true,
     "category": "personal"
   },
@@ -92,9 +171,15 @@
     "title": "My-moviz",
     "blurb": "A Netflix-style movie browsing app built in React — search titles, browse by category, and build a watchlist.",
     "role": "owner",
-    "stack": ["React", "JavaScript"],
+    "stack": [
+      "React",
+      "JavaScript"
+    ],
     "year": "2022",
-    "links": { "github": "https://github.com/BassemFd/My-moviz", "live": null },
+    "links": {
+      "github": "https://github.com/BassemFd/My-moviz",
+      "live": null
+    },
     "featured": false,
     "category": "personal"
   }
