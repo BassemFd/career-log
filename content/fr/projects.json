@@ -182,5 +182,46 @@
     },
     "featured": false,
     "category": "personal"
+  },
+  {
+    "role": "contributor",
+    "links": {
+      "github": null,
+      "live": null
+    },
+    "category": "client",
+    "slug": "planity",
+    "title": "Planity",
+    "stack": [
+      "React Native",
+      "TypeScript",
+      "Node.js",
+      "AWS Lambda",
+      "Stripe Terminal"
+    ],
+    "year": "2026",
+    "featured": true,
+    "blurb": "Mission de quatre ans sur la plateforme leader de la réservation beauté en France. Responsable de bout en bout du paiement sans contact Tap to Pay sur iOS & Android (200+ PR sur 3 dépôts), connexion sans mot de passe Magic Link, contribution à la refonte de planity.com et à un monorepo partagé mobile / tablette / web."
+  },
+  {
+    "role": "contributor",
+    "links": {
+      "github": null,
+      "live": null
+    },
+    "category": "client",
+    "slug": "mon-specialiste-auto",
+    "title": "Mon Spécialiste Auto",
+    "stack": [
+      "React",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "AWS Lambda",
+      "Cypress"
+    ],
+    "year": "2022",
+    "featured": false,
+    "blurb": "Startup d'inspection automobile, web et mobile. Nouvelles routes API Node/Express avec contrôle d'accès par rôle, floutage de plaques via une AWS Lambda, suivi de mission en direct sur Google Maps, et tests end-to-end Cypress / testRigor."
   }
 ]

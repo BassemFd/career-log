@@ -182,5 +182,46 @@
     },
     "featured": false,
     "category": "personal"
+  },
+  {
+    "role": "contributor",
+    "links": {
+      "github": null,
+      "live": null
+    },
+    "category": "client",
+    "slug": "planity",
+    "title": "Planity",
+    "stack": [
+      "React Native",
+      "TypeScript",
+      "Node.js",
+      "AWS Lambda",
+      "Stripe Terminal"
+    ],
+    "year": "2026",
+    "featured": true,
+    "blurb": "Four-year mission on France's leading beauty-booking platform. Owned Tap to Pay contactless payments end to end on iOS & Android (200+ PRs across 3 repos), built the passwordless Magic Link sign-in, and contributed to the planity.com rebuild and a shared mobile / tablet / web monorepo."
+  },
+  {
+    "role": "contributor",
+    "links": {
+      "github": null,
+      "live": null
+    },
+    "category": "client",
+    "slug": "mon-specialiste-auto",
+    "title": "Mon Spécialiste Auto",
+    "stack": [
+      "React",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "AWS Lambda",
+      "Cypress"
+    ],
+    "year": "2022",
+    "featured": false,
+    "blurb": "Auto-inspection startup, web and mobile. New Node/Express API routes with role-based access, license-plate blurring through an AWS Lambda, live Google Maps mission tracking, and Cypress / testRigor end-to-end coverage."
   }
 ]
