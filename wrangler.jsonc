@@ -6,6 +6,10 @@
     "nodejs_compat"
   ],
   "main": "vinext/server/fetch-handler",
+  // Custom domain (also visible in the dashboard). Declared here so deploys keep
+  // it; workers_dev keeps the old career-log.*.workers.dev URL alive for links already shared.
+  "routes": [{ "pattern": "bassemfayed.com", "custom_domain": true }],
+  "workers_dev": true,
   "assets": {
     "directory": "dist/client",
     "not_found_handling": "none",
