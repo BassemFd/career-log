@@ -53,7 +53,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: localeScript }} />
       </head>
-      <body className="font-sans antialiased pb-14 lg:pb-0">
+      <body className="font-sans antialiased pb-28 lg:pb-0">
         <LocaleProvider>
           <ThemeProvider>
             <div className="lg:flex lg:min-h-screen">

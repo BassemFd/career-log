@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type RefObject } from "react";
 import { useTheme, type Theme } from "./ThemeProvider";
 import { useLocale } from "./LocaleProvider";
 import { contentByLocale } from "@/lib/content";
@@ -102,6 +102,11 @@ export default function Gutter() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState(t.typeHelp);
   const [urgent, setUrgent] = useState(false);
+  // The whole terminal area is a click target, not just the bare input.
+  // The prompt renders twice (desktop sidebar + mobile bar), so each copy gets
+  // its own ref — a shared one would point at whichever mounted last.
+  const desktopInput = useRef<HTMLInputElement>(null);
+  const mobileInput = useRef<HTMLInputElement>(null);
 
   function run(raw: string) {
     const line = raw.trim().toLowerCase();
@@ -149,12 +154,17 @@ export default function Gutter() {
 
   const outputClass = urgent
     ? "animate-pulse font-mono text-xs font-bold text-manual"
-    : "font-mono text-xs text-gutter-muted";
+    : "font-mono text-xs leading-relaxed text-white/70";
 
-  const prompt = (
-    <div className="flex items-center gap-2 font-mono text-sm">
+  const prompt = (inputRef: RefObject<HTMLInputElement | null>) => (
+    <div
+      onClick={() => inputRef.current?.focus()}
+      className="flex min-w-0 flex-1 cursor-text items-center gap-2 font-mono text-sm"
+    >
       <span className="text-accent">$</span>
       <input
+        ref={inputRef}
+        aria-label="terminal"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => {
@@ -164,7 +174,7 @@ export default function Gutter() {
         }}
         placeholder="help"
         spellCheck={false}
-        className="w-full min-w-0 bg-transparent text-white outline-none placeholder:text-gutter-muted"
+        className="w-full min-w-0 bg-transparent text-white caret-accent outline-none placeholder:text-white/40"
       />
     </div>
   );
@@ -172,29 +182,47 @@ export default function Gutter() {
   return (
     <>
       {/* Desktop: sticky sidebar, the file's real line-number index */}
-      <aside className="hidden shrink-0 lg:sticky lg:top-0 lg:z-[70] lg:flex lg:h-screen lg:w-56 lg:flex-col lg:justify-between lg:border-r lg:border-gutter-line lg:bg-gutter lg:px-6 lg:py-8">
-        <nav className="flex flex-col gap-1">
-          {ROUTES.map((r) => (
-            <button
-              key={r.id}
-              onClick={() => goTo(r)}
-              className="group flex items-baseline gap-3 rounded px-2 py-1.5 text-left transition-colors hover:bg-white/5"
-            >
-              <span className="font-mono text-xs text-accent">{r.number}</span>
-              <span className="font-display text-sm text-white/70 group-hover:text-white">
-                {routeLabels[r.id]}
-              </span>
-            </button>
-          ))}
-        </nav>
+      <aside className="hidden shrink-0 lg:sticky lg:top-0 lg:z-[70] lg:flex lg:h-screen lg:w-72 lg:flex-col lg:justify-between lg:border-r lg:border-gutter-line lg:bg-gutter lg:px-6 lg:py-8">
+        <div>
+          <nav className="flex flex-col gap-1">
+            {ROUTES.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => goTo(r)}
+                className="group flex items-baseline gap-3 rounded px-2 py-1.5 text-left transition-colors hover:bg-white/5"
+              >
+                <span className="font-mono text-xs text-accent">{r.number}</span>
+                <span className="font-display text-sm text-white/70 group-hover:text-white">
+                  {routeLabels[r.id]}
+                </span>
+              </button>
+            ))}
+          </nav>
 
-        <div className="border-t border-gutter-line pt-4">
-          {prompt}
-          <p className={`mt-2 truncate ${outputClass}`}>{output}</p>
-          <div className="mt-4 border-t border-gutter-line pt-3">
-            <ThemeToggle t={t} />
-            <LangToggle t={t} />
+          {/* Terminal window — same chrome as the hero's git-log card, right under
+              the nav where the eye already is, so it reads as something to use. */}
+          <div
+            onClick={() => desktopInput.current?.focus()}
+            className="mt-8 cursor-text overflow-hidden rounded-lg border border-accent/60 bg-white/5 transition-colors hover:border-accent focus-within:border-accent"
+          >
+            <div className="flex items-center gap-1.5 border-b border-gutter-line px-3 py-2">
+              <span className="h-2 w-2 rounded-full bg-white/20" />
+              <span className="h-2 w-2 rounded-full bg-white/20" />
+              <span className="h-2 w-2 rounded-full bg-white/20" />
+              <span className="ml-2 font-mono text-xs text-gutter-muted">~/career-log</span>
+            </div>
+            <div className="px-3 py-3">
+              {prompt(desktopInput)}
+              <p className={`mt-2 max-h-48 overflow-y-auto break-words ${outputClass}`} aria-live="polite">
+                {output}
+              </p>
+            </div>
           </div>
+        </div>
+
+        <div className="border-t border-gutter-line pt-3">
+          <ThemeToggle t={t} />
+          <LangToggle t={t} />
         </div>
       </aside>
 
@@ -221,11 +249,19 @@ export default function Gutter() {
         </div>
       ) : (
         <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-gutter-line bg-gutter lg:hidden">
-          <div className="flex items-center gap-3 px-6 py-3">
-            {prompt}
-            <span className={`hidden shrink-0 truncate sm:block ${outputClass}`}>
+          {output && (
+            <p
+              onClick={() => mobileInput.current?.focus()}
+              className={`max-h-32 cursor-text overflow-y-auto break-words border-b border-gutter-line px-6 py-2 ${outputClass}`}
+              aria-live="polite"
+            >
               {output}
-            </span>
+            </p>
+          )}
+          <div className="flex items-center gap-3 px-6 py-3">
+            <div className="flex min-w-0 flex-1 rounded border border-accent/60 bg-white/5 px-2.5 py-1.5 focus-within:border-accent">
+              {prompt(mobileInput)}
+            </div>
             <div className="ml-auto shrink-0 text-right">
               <ThemeToggle t={t} />
               <LangToggle t={t} />

@@ -57,6 +57,8 @@ export default function ThemeProvider({
       /* private mode / storage disabled — theme still applies for the session */
     }
     setThemeState(t);
+    // Crazy mode always opens from the hero, wherever the visitor had scrolled.
+    if (t === "crazy") window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 
   const setTheme = useCallback(
