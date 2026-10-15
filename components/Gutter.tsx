@@ -18,7 +18,7 @@ const THEMES: { id: Theme; label: string }[] = [
 // out, and the gutter itself sits above every chaos layer so they stay
 // clickable and calm.
 // `large` = the mobile sheet's version: 44px tap targets instead of 24px.
-const toggleSize = (large: boolean) => (large ? "px-3 py-3 text-sm" : "px-1.5 py-1");
+const toggleSize = (large: boolean) => (large ? "px-2 py-3 text-sm" : "px-1.5 py-1");
 
 function ThemeToggle({ t, large = false }: { t: (typeof STRINGS)["en"]; large?: boolean }) {
   const { theme, setTheme } = useTheme();
@@ -239,6 +239,16 @@ export default function Gutter() {
         </div>
       </aside>
 
+      {/* Mobile / tablet: theme + lang in a thin strip at the top of the page,
+          in the flow (scrolls away) — hidden behind the "$" sheet nobody found
+          them. Crazy mode has its own fixed escape bar below instead. */}
+      {theme !== "crazy" && (
+        <div className="flex flex-wrap items-center justify-between gap-x-3 bg-gutter px-3 lg:hidden">
+          <ThemeToggle t={t} large />
+          <LangToggle t={t} large />
+        </div>
+      )}
+
       {/* Mobile / tablet crazy escape: two big theme buttons pinned to the TOP.
           A fixed-bottom bar is unreachable on iOS — Safari's bottom address bar
           sits over it until you scroll — so the way out lives at the top, clear
@@ -288,10 +298,6 @@ export default function Gutter() {
           <div className="px-6 py-3">
             <div className="flex min-h-11 rounded border border-gutter-accent/60 bg-white/5 px-3 focus-within:border-gutter-accent">
               {prompt(mobileInput)}
-            </div>
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-x-4">
-              <ThemeToggle t={t} large />
-              <LangToggle t={t} large />
             </div>
           </div>
         </div>
