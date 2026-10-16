@@ -19,7 +19,7 @@ npm run build    # production build (run before deploying)
 | File                      | What it holds                                             |
 | ------------------------- | -------------------------------------------------------- |
 | `content/profile.json`    | Name, tagline, summary, location, social links.          |
-| `content/projects.json`   | The "Work log" — every featured project.                 |
+| `content/projects.json`   | The "Work log" — every project, newest year first.       |
 | `content/experience.json` | The "Releases" — career/employment history.              |
 | `content/stats.json`      | Headline numbers (manual + live-fetched — see below).    |
 
@@ -39,7 +39,7 @@ Types for all of these live in `lib/types.ts`.
      "stack": ["TypeScript", "Next.js"],
      "year": "2026",
      "links": { "github": "https://github.com/BassemFd/...", "live": null },
-     "featured": true,                    // true = shows first, at the top
+     "featured": true,                    // flag only: the log is sorted by year, newest first
      "category": "personal"               // "personal" | "client" | "dojo"
    }
    ```
@@ -60,7 +60,7 @@ Commit, then run `npm run deploy` to publish. Same flow for
 `content/stats.json` deliberately separates two kinds of numbers:
 
 - **`manual`** — numbers you record by hand, e.g. the aggregate
-  `976+ commits in production systems`. These come from **private employer
+  `250+ PRs merged`. These come from **private employer
   codebases** that cannot be fetched via the public API, so they never go stale
   on their own — you edit them when they change. No private repo is named or linked.
 - **`live`** — pulled from the public GitHub API for `BassemFd`. Refresh them with:
