@@ -105,17 +105,21 @@ function ProjectCard({
     >
       <div className={p.visual ? "visual-row" : undefined}>
         <div className="min-w-0">
-          <div className="flex items-baseline gap-3">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span className={`font-mono text-xs ${CATEGORY_COLOR[p.category].text}`}>
               {shortHash(p.slug)}
             </span>
-            <h3 className="font-display text-lg font-semibold tracking-tight">
+            <h3
+              className={`font-display text-lg font-semibold tracking-tight ${
+                href ? "stretched-title" : ""
+              }`}
+            >
               {href ? (
                 <a
                   href={href}
                   target="_blank"
                   rel="noreferrer"
-                  className="after:absolute after:inset-0 focus-visible:outline-none"
+                  className="after:absolute after:inset-0 after:z-10 focus-visible:outline-none"
                 >
                   {p.title}
                 </a>
