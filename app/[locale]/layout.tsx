@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
-import "./globals.css";
-import { profile } from "@/lib/content";
+import "@/app/globals.css";
+import { contentByLocale } from "@/lib/content";
+import { LOCALES, SITE_URL, isLocale } from "@/lib/strings";
 import Gutter from "@/components/Gutter";
 import IntroCurtain from "@/components/IntroCurtain";
 import ScrollSkew from "@/components/ScrollSkew";
@@ -11,10 +13,6 @@ import LocaleProvider from "@/components/LocaleProvider";
 // Applies the saved (or system-preferred) theme before first paint, so there's
 // no flash of the wrong palette. Never resolves to crazy from the system pref.
 const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'&&t!=='crazy'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='light';}})();`;
-
-// Applies the saved language before first paint (content itself still needs
-// a client render to swap, but <html lang> is correct from the start).
-const localeScript = `(function(){try{var l=localStorage.getItem('locale');if(l!=='en'&&l!=='fr'){l='en';}document.documentElement.lang=l;}catch(e){document.documentElement.lang='en';}})();`;
 
 // Decides before first paint whether the intro curtain plays: once per browser
 // session, never for reduced motion or crazy mode (which has its own vortex).
@@ -42,28 +40,59 @@ const mono = IBM_Plex_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: `${profile.name} — ${profile.tagline}`,
-  description: profile.summary,
-  icons: { icon: "/favicon.svg" },
-};
+// Each locale is its own URL (/en, /fr), so both versions are server-rendered
+// and indexable. hreflang alternates tell search engines they're translations
+// of one page; x-default is the bare root, which redirects by preference.
+export const dynamicParams = false;
 
-export default function RootLayout({
+export function generateStaticParams() {
+  return LOCALES.map((locale) => ({ locale }));
+}
+
+type Params = Promise<{ locale: string }>;
+
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const { profile } = contentByLocale[locale];
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: `${profile.name} — ${profile.tagline}`,
+    description: profile.summary,
+    icons: { icon: "/favicon.svg" },
+    alternates: {
+      canonical: `/${locale}`,
+      languages: { en: "/en", fr: "/fr", "x-default": "/" },
+    },
+    openGraph: {
+      title: `${profile.name} — ${profile.tagline}`,
+      description: profile.summary,
+      url: `/${locale}`,
+      locale: locale === "fr" ? "fr_FR" : "en_US",
+      alternateLocale: locale === "fr" ? "en_US" : "fr_FR",
+      type: "profile",
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+  params,
+}: Readonly<{ children: React.ReactNode; params: Params }>) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
   return (
     <html
-      lang="en"
+      lang={locale}
       suppressHydrationWarning
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <script dangerouslySetInnerHTML={{ __html: localeScript }} />
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
       </head>
       <body className="font-sans antialiased pb-20 lg:pb-0">
-        <LocaleProvider>
+        <LocaleProvider locale={locale}>
           <ThemeProvider>
             <IntroCurtain />
             <div className="lg:flex lg:min-h-screen">

@@ -27,6 +27,10 @@ in `/content`.** You change the site by editing a file, committing, and running
 | `content/experience.json` | Career / employment history.                                |
 | `content/stats.json`      | Headline numbers — `manual` + `live` (see Stats rule).      |
 
+- **Locales**: each JSON has a French twin in `content/fr/`. The site is served
+  at `/en` and `/fr` (`app/[locale]/`), both server-rendered with their own
+  `<html lang>`, canonical and hreflang tags; `/` redirects by cookie, then
+  `Accept-Language` (`middleware.ts`). UI strings live in `lib/strings.ts`.
 - **Types** for all content live in `lib/types.ts`. Match them exactly; extend the
   interface there rather than adding untyped fields.
 - **Derivation is already done** in `lib/content.ts` (projects sort strictly
