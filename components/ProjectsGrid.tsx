@@ -5,14 +5,19 @@ import type { Project, ProjectCategory } from "@/lib/types";
 import type { STRINGS } from "@/lib/strings";
 import { shortHash } from "@/lib/hash";
 import { SectionLabel } from "./StatsSection";
+import { SiteVisual } from "./SiteVisual";
+import type { VisualTone } from "./SiteVisual";
 
 // Each category gets its own hue — carried through the filter pill, the spine
 // node, and the short-hash color on the card, so color encodes what kind of
 // work it is rather than just decorating it.
-const CATEGORY_COLOR: Record<ProjectCategory, { text: string; border: string; bg: string }> = {
-  personal: { text: "text-accent", border: "border-accent", bg: "bg-accent-soft" },
-  client: { text: "text-teal", border: "border-teal", bg: "bg-teal-soft" },
-  dojo: { text: "text-violet", border: "border-violet", bg: "bg-violet-soft" },
+const CATEGORY_COLOR: Record<
+  ProjectCategory,
+  { text: string; border: string; bg: string; tone: VisualTone }
+> = {
+  personal: { text: "text-accent", border: "border-accent", bg: "bg-accent-soft", tone: "accent" },
+  client: { text: "text-teal", border: "border-teal", bg: "bg-teal-soft", tone: "teal" },
+  dojo: { text: "text-violet", border: "border-violet", bg: "bg-violet-soft", tone: "violet" },
 };
 
 // Projects as commit nodes on a branch line: each card hangs off the spine with
@@ -81,6 +86,8 @@ export function ProjectsGrid({
   );
 }
 
+// The whole card stays clickable (a stretched link on the title), while the
+// side thumbnail is its own link sitting above it — never nested anchors.
 function ProjectCard({
   project: p,
   t,
@@ -89,44 +96,69 @@ function ProjectCard({
   t: (typeof STRINGS)["en"];
 }) {
   const href = p.links.live ?? p.links.github;
-  const Wrapper = href ? "a" : "div";
-  const wrapperProps = href
-    ? { href, target: "_blank", rel: "noreferrer" }
-    : {};
 
   return (
-    <Wrapper
-      {...wrapperProps}
-      className={`block rounded-lg border border-rule bg-card p-5 transition-colors ${
-        href ? "hover:border-accent" : ""
+    <div
+      className={`relative rounded-lg border border-rule bg-card p-5 transition-colors ${
+        href ? "hover:border-accent focus-within:border-accent" : ""
       }`}
     >
-      <div className="flex items-baseline gap-3">
-        <span className={`font-mono text-xs ${CATEGORY_COLOR[p.category].text}`}>
-          {shortHash(p.slug)}
-        </span>
-        <h3 className="font-display text-lg font-semibold tracking-tight">
-          {p.title}
-        </h3>
-        {p.role === "contributor" && (
-          <span className="rounded bg-accent-soft px-1.5 py-0.5 font-mono text-xs uppercase tracking-wider text-accent">
-            {t.contributor}
-          </span>
+      <div className={p.visual ? "visual-row" : undefined}>
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className={`font-mono text-xs ${CATEGORY_COLOR[p.category].text}`}>
+              {shortHash(p.slug)}
+            </span>
+            <h3
+              className={`font-display text-lg font-semibold tracking-tight ${
+                href ? "stretched-title" : ""
+              }`}
+            >
+              {href ? (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="after:absolute after:inset-0 after:z-10 focus-visible:outline-none"
+                >
+                  {p.title}
+                </a>
+              ) : (
+                p.title
+              )}
+            </h3>
+            {p.role === "contributor" && (
+              <span className="rounded bg-accent-soft px-1.5 py-0.5 font-mono text-xs uppercase tracking-wider text-accent">
+                {t.contributor}
+              </span>
+            )}
+            <span className="ml-auto font-mono text-xs text-muted">{p.year}</span>
+          </div>
+        </div>
+
+        {p.visual && (
+          <SiteVisual
+            visual={p.visual}
+            t={t}
+            tone={CATEGORY_COLOR[p.category].tone}
+            className="sm:w-44"
+          />
         )}
-        <span className="ml-auto font-mono text-xs text-muted">{p.year}</span>
+
+        <div className="min-w-0">
+          <p className="mt-2 text-[14px] leading-relaxed text-ink/75">{p.blurb}</p>
+
+          {p.stack.length > 0 && (
+            <ul className="mt-3 flex flex-wrap gap-1.5 font-mono text-xs text-muted">
+              {p.stack.map((s) => (
+                <li key={s} className="rounded border border-rule px-1.5 py-0.5">
+                  {s}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
-
-      <p className="mt-2 text-[14px] leading-relaxed text-ink/75">{p.blurb}</p>
-
-      {p.stack.length > 0 && (
-        <ul className="mt-3 flex flex-wrap gap-1.5 font-mono text-xs text-muted">
-          {p.stack.map((s) => (
-            <li key={s} className="rounded border border-rule px-1.5 py-0.5">
-              {s}
-            </li>
-          ))}
-        </ul>
-      )}
-    </Wrapper>
+    </div>
   );
 }

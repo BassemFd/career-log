@@ -252,6 +252,12 @@ body {
 [data-theme="crazy"] main p {
   animation: rotoscope-jitter 0.32s steps(2, end) infinite;
 }
+/* An animated transform makes its element the containing block of absolutely
+   positioned descendants, which would shrink a project card's stretched link
+   (the title's ::after) down to the title. */
+[data-theme="crazy"] main h3.stretched-title {
+  animation: none;
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -515,4 +521,698 @@ html[data-intro="play"] .intro-curtain {
   51.3% { opacity: 1; transform: scale(1.06) rotate(-2deg); }
   53.3%, 70.4% { opacity: 1; transform: scale(1) rotate(-3deg); }
   73%, 100% { opacity: 0; transform: scale(0.9) rotate(-3deg); }
+}
+
+/* ── Site visuals ───────────────────────────────────────────────────────────
+   The clickable browser-window thumbnails beside experience, education and
+   project entries (SiteVisual.tsx, scenes in VisualArt.tsx). A comic panel:
+   ink border, hard offset shadow, a slight tilt that straightens on hover.
+   Calm until asked: the panel slams in once when it scrolls into view and then
+   rests; the page scroll, the load bar and the drawn scenes only play
+   while it is hovered or keyboard-focused. Where there is no hover (touch) the
+   screenshot takes one short scroll as it arrives instead. data-armed / data-in
+   are set by the component: armed = JS is running and motion is allowed, in =
+   it has scrolled into view (slam-in). Unarmed (no JS, reduced motion) it
+   renders as a plain static panel. data-tone picks the shadow and arrow hue. */
+.site-visual {
+  --tilt: 0deg;
+  --sv-tone: rgb(var(--color-accent));
+}
+.site-visual[data-tone="teal"] {
+  --sv-tone: rgb(var(--color-teal));
+}
+.site-visual[data-tone="violet"] {
+  --sv-tone: rgb(var(--color-violet));
+}
+.site-visual-frame {
+  position: relative;
+  display: block;
+  transform: rotate(var(--tilt));
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.site-visual:hover .site-visual-frame,
+.site-visual:focus-visible .site-visual-frame {
+  transform: translate(-3px, -5px) rotate(0deg) scale(1.04);
+}
+/* Held back until it scrolls in, then it slams down into place. */
+.site-visual[data-armed="true"]:not([data-in="true"]) .site-visual-frame {
+  opacity: 0;
+}
+.site-visual[data-in="true"] .site-visual-frame {
+  animation: sv-slam 0.85s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+/* Written with the individual translate / rotate / scale properties, which stack
+   on top of the frame's own transform (its tilt, or the hover lift) instead of
+   replacing it: a pointer already resting on the panel never makes it jump when
+   the slam ends. The rotation is an offset from the tilt. */
+@keyframes sv-slam {
+  0% {
+    opacity: 0;
+    translate: 0 28px;
+    rotate: calc(var(--tilt) * -7);
+    scale: 0.78;
+  }
+  55% {
+    opacity: 1;
+    translate: 0 -5px;
+    rotate: calc(var(--tilt) * 0.5);
+    scale: 1.05;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+    scale: 1;
+  }
+}
+
+.site-visual-window {
+  display: block;
+  overflow: hidden;
+  border: 2px solid rgb(var(--color-ink));
+  border-radius: 0.5rem;
+  background: rgb(var(--color-card));
+  box-shadow: 4px 4px 0 var(--sv-tone);
+  transition: box-shadow 0.3s ease;
+}
+.site-visual:hover .site-visual-window,
+.site-visual:focus-visible .site-visual-window {
+  box-shadow: 8px 8px 0 var(--sv-tone);
+}
+
+/* Browser chrome: three dots, an address pill and a load bar that sits full at
+   rest and keeps filling while the panel is hovered or focused. */
+.site-visual-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 1.25rem;
+  padding: 0 0.45rem;
+  border-bottom: 2px solid rgb(var(--color-ink));
+  background: rgb(var(--color-accent-soft));
+}
+.site-visual-bar i {
+  width: 0.3rem;
+  height: 0.3rem;
+  border-radius: 9999px;
+  background: rgb(var(--color-ink));
+}
+.site-visual-bar b {
+  flex: 1;
+  height: 0.5rem;
+  margin-left: 0.25rem;
+  border: 1px solid rgb(var(--color-rule));
+  border-radius: 9999px;
+  background: rgb(var(--color-card));
+}
+.site-visual-bar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: rgb(var(--color-accent));
+  transform-origin: left;
+}
+.site-visual:hover .site-visual-bar::after,
+.site-visual:focus-visible .site-visual-bar::after {
+  animation: sv-load 4.8s ease-in-out infinite;
+}
+@keyframes sv-load {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  55%,
+  70% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  80%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+.site-visual-screen {
+  position: relative;
+  display: block;
+  aspect-ratio: 160 / 96;
+  overflow: hidden;
+  background: rgb(var(--color-paper));
+}
+/* Halftone dots fading in from the lower-right corner — the comic print look. */
+.site-visual-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: radial-gradient(rgb(var(--color-ink) / 0.2) 1px, transparent 1.6px);
+  background-size: 5px 5px;
+  -webkit-mask-image: radial-gradient(circle at 100% 100%, #000 0, transparent 62%);
+  mask-image: radial-gradient(circle at 100% 100%, #000 0, transparent 62%);
+}
+/* A diagonal sheen sweeps across on hover. */
+.site-visual-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    rgb(var(--color-accent) / 0.28) 50%,
+    transparent 62%
+  );
+  transform: translateX(-130%);
+  transition: transform 0.75s ease;
+}
+.site-visual:hover .site-visual-screen::after,
+.site-visual:focus-visible .site-visual-screen::after {
+  transform: translateX(130%);
+}
+.site-visual .va {
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.site-visual:hover .va,
+.site-visual:focus-visible .va {
+  transform: scale(1.07);
+}
+
+/* The comic "GO!" burst, popped over the corner on hover or focus. */
+.site-visual-burst {
+  position: absolute;
+  top: -1.1rem;
+  right: -1rem;
+  z-index: 3;
+  width: 3.4rem;
+  height: 3.4rem;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.2) rotate(-40deg);
+  transition: transform 0.35s cubic-bezier(0.34, 1.8, 0.64, 1), opacity 0.2s ease;
+}
+.site-visual:hover .site-visual-burst,
+.site-visual:focus-visible .site-visual-burst {
+  opacity: 1;
+  transform: scale(1) rotate(12deg);
+}
+/* Stacked under its heading on a phone, the panel has no room above it for the
+   burst to pop out of, so it sits on the corner instead of over the text. */
+@media (max-width: 639px) {
+  .site-visual-burst {
+    top: -0.4rem;
+    right: -0.4rem;
+  }
+}
+
+/* Scene motion. Each class loops one kind of movement; the element supplies
+   its own timing through --d (delay) and --dur (loop length), plus --dx/--dy
+   (travel) and --origin where needed. Shared loop length within a scene keeps
+   its sequence replaying in order. SVG transforms use fill-box so scaling and
+   spinning pivot on the element itself. */
+.va-pop,
+.va-float,
+.va-spin,
+.va-pulse,
+.va-ripple,
+.va-travel,
+.va-packet,
+.va-scan,
+.va-flicker,
+.va-stamp,
+.va-rise,
+.va-grow,
+.va-blink,
+.va-eyes,
+.va-wiggle,
+.va-knob,
+.va-marquee {
+  transform-box: fill-box;
+  transform-origin: var(--origin, 50% 50%);
+  animation-duration: var(--dur, 7s);
+  animation-delay: var(--d, 0s);
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+.va-dash,
+.va-road {
+  animation: 1.2s linear infinite;
+}
+.va-pop {
+  animation-name: va-pop;
+  animation-timing-function: ease-out;
+}
+.va-float {
+  animation-name: va-float;
+  animation-timing-function: ease-in-out;
+}
+.va-spin {
+  animation-name: va-spin;
+  animation-timing-function: linear;
+}
+.va-pulse {
+  animation-name: va-pulse;
+  animation-duration: var(--dur, 2.6s);
+  animation-timing-function: ease-in-out;
+}
+.va-ripple {
+  opacity: 0;
+  animation-name: va-ripple;
+  animation-timing-function: ease-out;
+}
+.va-travel {
+  animation-name: va-travel;
+  animation-timing-function: ease-in-out;
+}
+.va-packet {
+  opacity: 0;
+  animation-name: va-packet;
+  animation-timing-function: ease-in-out;
+}
+.va-scan {
+  opacity: 0;
+  animation-name: va-scan;
+  animation-timing-function: linear;
+}
+.va-flicker {
+  animation-name: va-flicker;
+  animation-timing-function: steps(2, end);
+}
+.va-stamp {
+  animation-name: va-stamp;
+  animation-timing-function: ease-out;
+}
+.va-rise {
+  animation-name: va-rise;
+  animation-timing-function: ease-out;
+}
+.va-grow {
+  animation-name: va-grow;
+  animation-timing-function: ease-out;
+}
+.va-blink {
+  animation-name: va-blink;
+  animation-timing-function: steps(1, end);
+}
+.va-eyes {
+  animation-name: va-eyes;
+}
+.va-wiggle {
+  animation-name: va-wiggle;
+  animation-timing-function: ease-in-out;
+}
+.va-knob {
+  animation-name: va-knob;
+  animation-timing-function: ease-in-out;
+}
+.va-marquee {
+  animation-name: va-marquee;
+  animation-timing-function: linear;
+  animation-duration: var(--dur, 9s);
+}
+.va-marquee-rev {
+  animation-direction: reverse;
+}
+.va-dash {
+  animation-name: va-dash;
+}
+.va-road {
+  animation-name: va-road;
+  animation-duration: 0.6s;
+}
+
+@keyframes va-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  6% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  10%,
+  86% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  94%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+@keyframes va-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes va-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes va-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.14);
+  }
+}
+@keyframes va-ripple {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  3% {
+    opacity: 0.85;
+  }
+  18%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+/* Cursor: glides to its target, presses, lingers, fades. */
+@keyframes va-travel {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  44% {
+    transform: translate(var(--dx), var(--dy)) scale(1);
+  }
+  50% {
+    transform: translate(var(--dx), var(--dy)) scale(0.8);
+  }
+  56%,
+  88% {
+    transform: translate(var(--dx), var(--dy)) scale(1);
+    opacity: 1;
+  }
+  96%,
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(1);
+    opacity: 0;
+  }
+}
+@keyframes va-packet {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  12%,
+  78% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+}
+@keyframes va-scan {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(var(--dx));
+    opacity: 1;
+  }
+  54%,
+  100% {
+    transform: translateX(var(--dx));
+    opacity: 0;
+  }
+}
+@keyframes va-flicker {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+@keyframes va-stamp {
+  0%,
+  4% {
+    transform: rotate(-12deg) scale(2.4);
+    opacity: 0;
+  }
+  10% {
+    transform: rotate(-12deg) scale(0.9);
+    opacity: 1;
+  }
+  14%,
+  86% {
+    transform: rotate(-12deg) scale(1);
+    opacity: 1;
+  }
+  94%,
+  100% {
+    transform: rotate(-12deg) scale(1);
+    opacity: 0;
+  }
+}
+@keyframes va-rise {
+  0% {
+    transform: scaleY(0);
+  }
+  12% {
+    transform: scaleY(1.08);
+  }
+  18%,
+  80% {
+    transform: scaleY(1);
+  }
+  92%,
+  100% {
+    transform: scaleY(0);
+  }
+}
+@keyframes va-grow {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  16%,
+  88% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  96%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+@keyframes va-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes va-eyes {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes va-wiggle {
+  0%,
+  100% {
+    transform: rotate(-26deg);
+  }
+  50% {
+    transform: rotate(-8deg);
+  }
+}
+@keyframes va-knob {
+  0%,
+  30%,
+  92%,
+  100% {
+    transform: translateX(0);
+  }
+  42%,
+  80% {
+    transform: translateX(var(--dx));
+  }
+}
+@keyframes va-marquee {
+  to {
+    transform: translateX(var(--dx));
+  }
+}
+@keyframes va-dash {
+  to {
+    stroke-dashoffset: -12px;
+  }
+}
+@keyframes va-road {
+  to {
+    stroke-dashoffset: 36px;
+  }
+}
+
+/* At rest a drawn scene is its finished picture; hovering or focusing the panel
+   plays its loops, which start over from the first beat. */
+.site-visual:not(:hover):not(:focus-visible) .va * {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-visual-frame,
+  .site-visual-bar::after,
+  .site-visual-screen::after,
+  .site-visual-burst,
+  .site-visual-arrow,
+  .site-visual .va,
+  .site-visual .va * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Real screenshots: a 1:2 capture of the page's first screens. At rest the
+   window shows the top of the page; hovering or focusing it scrolls down
+   slowly, like someone browsing the site, and letting go brings it back up.
+   The distance (70% of the image height) is the image height minus the window
+   height for a 1:2 image shown in a 160:96 window. Where there is no hover
+   (touch) it takes one short scroll as it arrives. */
+.site-visual-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.site-visual:focus-visible .site-visual-shot {
+  transform: translateY(-70%);
+  transition-duration: 6s;
+  transition-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1);
+}
+@media (hover: hover) {
+  .site-visual:hover .site-visual-shot {
+    transform: translateY(-70%);
+    transition-duration: 6s;
+    transition-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1);
+  }
+}
+@media (hover: none) {
+  .site-visual[data-in="true"] .site-visual-shot {
+    animation: sv-pan-once 4.5s ease-in-out 1s;
+  }
+}
+@keyframes sv-pan-once {
+  0%,
+  8% {
+    transform: translateY(0);
+  }
+  50%,
+  58% {
+    transform: translateY(-70%);
+  }
+  92%,
+  100% {
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-visual-shot {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* The domain under the panel: calm ink at rest, full ink and underlined in the
+   panel's hue while it is hovered or focused. The arrow is glued to the last
+   word so it can never wrap onto a line of its own. */
+.site-visual-caption {
+  color: rgb(var(--color-ink) / 0.7);
+  transition: color 0.2s ease;
+}
+.site-visual-domain {
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease;
+}
+.site-visual:hover .site-visual-caption,
+.site-visual:focus-visible .site-visual-caption {
+  color: rgb(var(--color-ink));
+}
+.site-visual:hover .site-visual-domain,
+.site-visual:focus-visible .site-visual-domain {
+  text-decoration-color: var(--sv-tone);
+}
+.site-visual-arrow {
+  display: inline-block;
+  margin-left: 0.25rem;
+  color: var(--sv-tone);
+  transition: transform 0.3s ease;
+}
+.site-visual:hover .site-visual-arrow,
+.site-visual:focus-visible .site-visual-arrow {
+  transform: translate(0.125rem, -0.125rem);
+}
+
+/* An entry that carries a panel: heading, panel, body in that order. On a phone
+   the panel sits right under the heading so it stays with its title; from sm it
+   moves to a column of its own beside the heading and the body. The body row is
+   the flexible one, so a panel taller than the text never opens a gap between
+   the heading and the body. */
+.visual-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+.visual-row > .site-visual {
+  margin-top: 1rem;
+}
+.visual-row > .site-visual + * {
+  margin-top: 1rem;
+}
+@media (min-width: 640px) {
+  .visual-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto 1fr;
+    column-gap: 1.5rem;
+  }
+  .visual-row > * {
+    grid-column: 1;
+  }
+  .visual-row > .site-visual {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin-top: 0.25rem;
+  }
+  .visual-row > .site-visual + * {
+    margin-top: 0;
+  }
 }

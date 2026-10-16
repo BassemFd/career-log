@@ -13,6 +13,31 @@ export interface Profile {
   };
 }
 
+// The drawn scene shown inside a SiteVisual thumbnail when no real image is set.
+export type VisualArt =
+  | "booking"
+  | "consulting"
+  | "bootcamp"
+  | "inspection"
+  | "briefing"
+  | "palette"
+  | "movies";
+
+// A clickable thumbnail shown beside an entry. It only ever points at a public
+// web page (never a private repo or client system) and opens in a new tab.
+export interface Visual {
+  // Public page the thumbnail opens (https only).
+  url: string;
+  // Host shown under the thumbnail, as typed in the address bar.
+  domain: string;
+  // Which animated scene to draw. Kept in sync across content/ and content/fr/.
+  art: VisualArt;
+  // Optional real screenshot under /public (e.g. "/visuals/planity.webp"): a 1:2
+  // capture (640x1280) of the page's first screens, which the window scrolls
+  // through slowly. Without it, the drawn `art` scene plays instead.
+  image?: string;
+}
+
 export type ProjectRole = "owner" | "contributor";
 export type ProjectCategory = "personal" | "dojo" | "client";
 
@@ -29,6 +54,7 @@ export interface Project {
   };
   featured: boolean;
   category: ProjectCategory;
+  visual?: Visual;
 }
 
 export interface Experience {
@@ -43,6 +69,7 @@ export interface Experience {
   // Curated emphasis — renders a "Flagship" badge and a filled node. Order is
   // still driven by dates; this only changes visual weight.
   flagship: boolean;
+  visual?: Visual;
 }
 
 export interface Education {
@@ -50,6 +77,7 @@ export interface Education {
   degree: string;
   period: string;
   note: string;
+  visual?: Visual;
 }
 
 export interface Certification {
