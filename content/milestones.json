@@ -1,0 +1,44 @@
+[
+  {
+    "date": "2026-06",
+    "type": "certification",
+    "title": "Certified Ingénieur Augmenté",
+    "detail": "eXalt IT certification on AI-augmented engineering, valid until Dec 2027."
+  },
+  {
+    "date": "2026-06",
+    "type": "figure",
+    "title": "Tap to Pay shipped: 200+ PRs across 3 repos",
+    "detail": "18 months owning contactless payments end to end on iOS & Android for Planity."
+  },
+  {
+    "date": "2026-06",
+    "type": "mission",
+    "title": "Planity mission wraps up after four years",
+    "detail": "Tap to Pay, the passwordless Magic Link sign-in, the planity.com rebuild and a shared mobile / tablet / web monorepo."
+  },
+  {
+    "date": "2022-06",
+    "type": "mission",
+    "title": "Mission starts at Planity",
+    "detail": "Full-stack developer on France's leading beauty-booking platform, via eXalt-IT."
+  },
+  {
+    "date": "2022-06",
+    "type": "role",
+    "title": "Joined eXalt-IT as a consultant",
+    "detail": "Full-stack developer, later technical referent: mentoring, technical interviews and the Pixelator hiring test."
+  },
+  {
+    "date": "2021-06",
+    "type": "role",
+    "title": "Hired at Mon Spécialiste Auto",
+    "detail": "First full-stack role after the internship, on the pro dashboard and the mobile app."
+  },
+  {
+    "date": "2021",
+    "type": "education",
+    "title": "La Capsule bootcamp, Titre Niveau 6",
+    "detail": "Fullstack JavaScript web & mobile developer, followed by a 6-month internship."
+  }
+]

@@ -81,9 +81,10 @@ type Route = { cmd: string; alias: string[]; id: string; number: string };
 
 const ROUTES: Route[] = [
   { cmd: "log", alias: ["releases", "experience"], id: "experience", number: "00" },
-  { cmd: "shortlog", alias: ["stats"], id: "stats", number: "01" },
-  { cmd: "ls", alias: ["work", "projects"], id: "work", number: "02" },
-  { cmd: "formation", alias: ["education", "certs"], id: "formation", number: "03" },
+  { cmd: "tag", alias: ["tags", "milestones", "jalons"], id: "milestones", number: "01" },
+  { cmd: "shortlog", alias: ["stats"], id: "stats", number: "02" },
+  { cmd: "ls", alias: ["work", "projects"], id: "work", number: "03" },
+  { cmd: "formation", alias: ["education", "certs"], id: "formation", number: "04" },
 ];
 
 // The gutter is the page's line-number column: a persistent index of the
@@ -98,6 +99,7 @@ export default function Gutter() {
 
   const routeLabels: Record<string, string> = {
     experience: t.sectionReleases,
+    milestones: t.sectionMilestones,
     stats: t.sectionShortlog,
     work: t.sectionWorklog,
     formation: t.sectionFormation,
