@@ -76,6 +76,13 @@ describe("site visuals", () => {
     }
   });
 
+  it("shows each screenshot once per locale (a site's drawn scene covers its second entry)", () => {
+    for (const l of ["en", "fr"] as const) {
+      const images = withVisual(l).flatMap(({ visual }) => (visual.image ? [visual.image] : []));
+      expect(new Set(images).size, l).toBe(images.length);
+    }
+  });
+
   it("has at least one visual so the feature is exercised", () => {
     expect(withVisual("en").length).toBeGreaterThan(0);
   });
