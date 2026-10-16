@@ -29,8 +29,8 @@ export function ExperienceTimeline({
                     e.flagship ? "bg-accent" : "bg-card"
                   }`}
                 />
-                <div className="sm:flex sm:items-start sm:gap-6">
-                  <div className="min-w-0 flex-1">
+                <div className={e.visual ? "visual-row" : undefined}>
+                  <div className="min-w-0">
                     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                       <h3
                         className={`font-display font-semibold tracking-tight ${
@@ -54,6 +54,9 @@ export function ExperienceTimeline({
                       </span>
                     </div>
                     <p className="mt-0.5 font-mono text-xs text-accent">{e.role}</p>
+                  </div>
+                  {e.visual && <SiteVisual visual={e.visual} t={t} className="sm:w-44" />}
+                  <div className="min-w-0">
                     <p className="mt-2 text-[14px] leading-relaxed text-ink/75">
                       {e.summary}
                     </p>
@@ -70,9 +73,6 @@ export function ExperienceTimeline({
                       </ul>
                     )}
                   </div>
-                  {e.visual && (
-                    <SiteVisual visual={e.visual} t={t} className="mt-5 sm:mt-1 sm:w-44" />
-                  )}
                 </div>
               </li>
             ))}

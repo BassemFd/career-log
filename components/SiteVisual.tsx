@@ -13,27 +13,37 @@ const BURST =
 
 const TILTS = [-2.2, 1.8, -1.4, 2.4];
 
+// How many characters of the mono caption fit on one line under a panel (11rem).
+// The caption keeps as much of the domain together as fits that, plus its arrow.
+const CAPTION_FIT = 22;
+
+// Hue of the panel's shadow and arrow: the entry's accent by default, or the
+// category colour on a project card.
+export type VisualTone = "accent" | "teal" | "violet";
+
 // A clickable browser-window thumbnail for a public site: a comic panel (ink
 // border, hard offset shadow, slight tilt) around a real screenshot of the page
-// (`image`, a 1:2 capture that slowly scrolls up and down inside the window) or,
-// without one, a drawn looping scene. It slams in the first time it scrolls into
-// view, bobs while on screen, and pops a "GO!" burst on hover.
+// (`image`, a 1:2 capture) or, without one, a drawn scene. It slams in the first
+// time it scrolls into view and then rests; hovering or focusing it wakes it up
+// (the page scrolls, the scene plays, a "GO!" burst pops). Without a hover (touch)
+// the screenshot scrolls once on arrival instead.
 // Everything is CSS (see "Site visuals" in globals.css); the effect only tells
-// the stylesheet when the panel is armed, revealed and on screen. Without
+// the stylesheet when the panel is armed and has been revealed. Without
 // JavaScript, or with reduced motion, the panel simply renders static.
 export function SiteVisual({
   visual,
   t,
+  tone = "accent",
   className = "",
 }: {
   visual: Visual;
   t: (typeof STRINGS)["en"];
+  tone?: VisualTone;
   className?: string;
 }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const [armed, setArmed] = useState(false);
   const [revealed, setRevealed] = useState(false);
-  const [onScreen, setOnScreen] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -43,8 +53,9 @@ export function SiteVisual({
     setArmed(true);
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setOnScreen(entry.isIntersecting);
-        if (entry.isIntersecting) setRevealed(true);
+        if (!entry.isIntersecting) return;
+        setRevealed(true);
+        observer.disconnect();
       },
       { threshold: 0.3 },
     );
@@ -52,12 +63,19 @@ export function SiteVisual({
     return () => observer.disconnect();
   }, []);
 
-  // Stable per-site tilt and loop phase, so neighbours don't move in lockstep.
+  // Stable per-site tilt, so neighbours don't all lean the same way.
   const seed = parseInt(shortHash(visual.domain).slice(0, 4), 16);
-  const style = {
-    "--tilt": `${TILTS[seed % TILTS.length]}deg`,
-    "--phase": `-${(seed % 50) / 10}s`,
-  } as CSSProperties;
+  const style = { "--tilt": `${TILTS[seed % TILTS.length]}deg` } as CSSProperties;
+
+  // Lines may wrap after a dot, never mid-word, and the arrow never ends up alone:
+  // the tail of the domain (its name and extension when they fit) stays whole.
+  const parts = visual.domain.split(".");
+  let glued = 1;
+  while (glued < parts.length && parts.slice(-(glued + 1)).join(".").length <= CAPTION_FIT) {
+    glued++;
+  }
+  const head = parts.slice(0, parts.length - glued);
+  const tail = parts.slice(parts.length - glued).join(".");
 
   return (
     <a
@@ -68,7 +86,7 @@ export function SiteVisual({
       aria-label={t.visitSite(visual.domain)}
       data-armed={armed}
       data-in={revealed}
-      data-live={onScreen}
+      data-tone={tone}
       style={style}
       className={`site-visual group relative z-10 block w-full max-w-56 shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:max-w-none ${className}`}
     >
@@ -120,25 +138,19 @@ export function SiteVisual({
           </text>
         </svg>
       </span>
-      <span className="mt-3 flex items-start gap-1.5 font-mono text-xs text-muted transition-colors group-hover:text-accent group-focus-visible:text-accent">
-        <span className="min-w-0 break-words">
-          {/* a line break may fall after any dot, never mid-word */}
-          {visual.domain.split(".").map((part, i, parts) => (
+      <span className="site-visual-caption mt-3 block min-w-0 break-words font-mono text-xs">
+        <span className="site-visual-domain">
+          {head.map((part, i) => (
             <Fragment key={i}>
-              {part}
-              {i < parts.length - 1 && (
-                <>
-                  .<wbr />
-                </>
-              )}
+              {part}.<wbr />
             </Fragment>
           ))}
-        </span>
-        <span
-          aria-hidden="true"
-          className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-        >
-          ↗
+          <span className="whitespace-nowrap">
+            {tail}
+            <span className="site-visual-arrow" aria-hidden="true">
+              ↗
+            </span>
+          </span>
         </span>
       </span>
     </a>

@@ -19,8 +19,11 @@ export function EducationSection({
 
         <ul className="mt-8 space-y-5">
           {education.map((e) => (
-            <li key={e.school} className="crazy-item sm:flex sm:items-start sm:gap-6">
-              <div className="min-w-0 flex-1">
+            <li
+              key={e.school}
+              className={`crazy-item ${e.visual ? "visual-row" : ""}`}
+            >
+              <div className="min-w-0">
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                   <h3 className="font-display text-lg font-semibold tracking-tight">
                     {e.school}
@@ -30,14 +33,14 @@ export function EducationSection({
                   </span>
                 </div>
                 <p className="mt-0.5 font-mono text-xs text-accent">{e.degree}</p>
-                {e.note && (
+              </div>
+              {e.visual && <SiteVisual visual={e.visual} t={t} className="sm:w-44" />}
+              {e.note && (
+                <div className="min-w-0">
                   <p className="mt-1 text-[14px] leading-relaxed text-ink/75">
                     {e.note}
                   </p>
-                )}
-              </div>
-              {e.visual && (
-                <SiteVisual visual={e.visual} t={t} className="mt-5 sm:mt-1 sm:w-44" />
+                </div>
               )}
             </li>
           ))}

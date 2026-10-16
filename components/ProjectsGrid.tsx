@@ -6,14 +6,18 @@ import type { STRINGS } from "@/lib/strings";
 import { shortHash } from "@/lib/hash";
 import { SectionLabel } from "./StatsSection";
 import { SiteVisual } from "./SiteVisual";
+import type { VisualTone } from "./SiteVisual";
 
 // Each category gets its own hue — carried through the filter pill, the spine
 // node, and the short-hash color on the card, so color encodes what kind of
 // work it is rather than just decorating it.
-const CATEGORY_COLOR: Record<ProjectCategory, { text: string; border: string; bg: string }> = {
-  personal: { text: "text-accent", border: "border-accent", bg: "bg-accent-soft" },
-  client: { text: "text-teal", border: "border-teal", bg: "bg-teal-soft" },
-  dojo: { text: "text-violet", border: "border-violet", bg: "bg-violet-soft" },
+const CATEGORY_COLOR: Record<
+  ProjectCategory,
+  { text: string; border: string; bg: string; tone: VisualTone }
+> = {
+  personal: { text: "text-accent", border: "border-accent", bg: "bg-accent-soft", tone: "accent" },
+  client: { text: "text-teal", border: "border-teal", bg: "bg-teal-soft", tone: "teal" },
+  dojo: { text: "text-violet", border: "border-violet", bg: "bg-violet-soft", tone: "violet" },
 };
 
 // Projects as commit nodes on a branch line: each card hangs off the spine with
@@ -99,8 +103,8 @@ function ProjectCard({
         href ? "hover:border-accent focus-within:border-accent" : ""
       }`}
     >
-      <div className="sm:flex sm:items-start sm:gap-5">
-        <div className="min-w-0 flex-1">
+      <div className={p.visual ? "visual-row" : undefined}>
+        <div className="min-w-0">
           <div className="flex items-baseline gap-3">
             <span className={`font-mono text-xs ${CATEGORY_COLOR[p.category].text}`}>
               {shortHash(p.slug)}
@@ -126,7 +130,18 @@ function ProjectCard({
             )}
             <span className="ml-auto font-mono text-xs text-muted">{p.year}</span>
           </div>
+        </div>
 
+        {p.visual && (
+          <SiteVisual
+            visual={p.visual}
+            t={t}
+            tone={CATEGORY_COLOR[p.category].tone}
+            className="sm:w-44"
+          />
+        )}
+
+        <div className="min-w-0">
           <p className="mt-2 text-[14px] leading-relaxed text-ink/75">{p.blurb}</p>
 
           {p.stack.length > 0 && (
@@ -139,10 +154,6 @@ function ProjectCard({
             </ul>
           )}
         </div>
-
-        {p.visual && (
-          <SiteVisual visual={p.visual} t={t} className="mt-5 sm:mt-1 sm:w-40" />
-        )}
       </div>
     </div>
   );
