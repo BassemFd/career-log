@@ -15,11 +15,11 @@ import { LocaleProvider } from "@/components/LocaleProvider";
 // no flash of the wrong palette. Never resolves to crazy from the system pref.
 const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'&&t!=='crazy'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='light';}})();`;
 
-// Decides before first paint whether the intro curtain plays: once per browser
-// session, never for reduced motion or crazy mode (which has its own vortex).
-// Runs after themeScript so data-theme is already set. Without JS nothing plays.
-// `?intro` in the URL replays it regardless (handy to show it off).
-const introScript = `(function(){try{var d=document.documentElement;if(d.dataset.theme==='crazy')return;if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;if(sessionStorage.getItem('introSeen')&&!new URLSearchParams(location.search).has('intro'))return;sessionStorage.setItem('introSeen','1');d.dataset.intro='play';}catch(e){}})();`;
+// Decides before first paint whether the intro curtain plays: on every page
+// load (refresh included), never for reduced motion or crazy mode (which has
+// its own vortex). Runs after themeScript so data-theme is already set.
+// Without JS nothing plays.
+const introScript = `(function(){try{var d=document.documentElement;if(d.dataset.theme==='crazy')return;if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;d.dataset.intro='play';}catch(e){}})();`;
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -100,6 +100,12 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
+        {/* intro character layers, fetched early so he never pops in late */}
+        <link rel="preload" as="image" href="/intro/torso.webp" />
+        <link rel="preload" as="image" href="/intro/thigh.webp" />
+        <link rel="preload" as="image" href="/intro/shin.webp" />
+        <link rel="preload" as="image" href="/intro/fall-1.webp" />
+        <link rel="preload" as="image" href="/intro/fall-2.webp" />
       </head>
       <body className="font-sans antialiased pb-20 lg:pb-0">
         <LocaleProvider locale={locale}>
