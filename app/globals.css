@@ -287,14 +287,15 @@ body {
 
 /* ── Intro curtain ──────────────────────────────────────────────────────────
    A character pushes an ink-colored wall off the screen, revealing the page:
-   1. first push to a third of the screen, 2. stuck: the wall resists, he
-   crouches into a harder push, 3. second push, the wall gives way and shoots
-   off, 4. he loses his support and falls over, then the overlay fades.
+   he pushes, stops out of breath and pushes again (three times), then strains
+   against it for a long beat while a comic close-up of his face pops up, gives
+   a last push, the wall gives way and shoots off, and he falls away laughing,
+   then the overlay fades. Timings are in % of --intro-push (7.6s).
    It only exists while <html data-intro="play">, which the no-flash script in
-   layout.tsx sets once per session (never for reduced motion or crazy mode).
+   layout.tsx sets on every page load (never for reduced motion or crazy mode).
    Wall and character are separate elements on ONE timeline (same keyframe
    percentages and timing functions), so his hands stay on the wall's edge
-   until 82%, where the wall keeps going and he doesn't. The overlay fades
+   until 86.8%, where the wall keeps going and he doesn't. The overlay fades
    and hides itself at the end even if JavaScript never loads. */
 .intro-curtain {
   display: none;
@@ -303,11 +304,11 @@ html[data-intro="play"] {
   overflow: hidden;
 }
 html[data-intro="play"] .intro-curtain {
-  --intro-char-h: clamp(150px, 26vh, 240px);
-  --intro-char-w: calc(var(--intro-char-h) * 0.6);
+  --intro-char-h: clamp(260px, 52vh, 520px);
+  --intro-char-w: calc(var(--intro-char-h) * 280 / 525);
   /* Timing knobs. Keep FALLBACK_MS in IntroCurtain.tsx above their sum + 0.4s. */
   --intro-hold: 0.5s;
-  --intro-push: 4.4s;
+  --intro-push: 7.6s;
   display: block;
   animation: intro-out 0.4s ease-out calc(var(--intro-hold) + var(--intro-push)) forwards;
 }
@@ -341,26 +342,36 @@ html[data-intro="play"] .intro-curtain {
 }
 
 /* Same stops, same easing per segment, for wall (left edge) and character
-   (right edge = wall's left edge) until 82%. */
+   (right edge = wall's left edge) until 86.8%. */
 @keyframes intro-wall {
-  0% { transform: translateX(0); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
-  34% { transform: translateX(33vw); animation-timing-function: ease-in-out; }
-  38% { transform: translateX(33.8vw); animation-timing-function: ease-in-out; }
-  42% { transform: translateX(32.8vw); animation-timing-function: ease-in-out; }
-  50% { transform: translateX(33vw); animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.6); }
-  82% { transform: translateX(78vw); animation-timing-function: cubic-bezier(0.6, 0, 1, 1); }
-  92%, 100% { transform: translateX(102vw); }
+  0% { transform: translateX(0vw); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
+  11.8% { transform: translateX(14vw); animation-timing-function: ease-out; }
+  13.8% { transform: translateX(13.4vw); animation-timing-function: ease-in-out; }
+  18.4% { transform: translateX(13.6vw); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
+  28.9% { transform: translateX(28vw); animation-timing-function: ease-out; }
+  30.9% { transform: translateX(27.2vw); animation-timing-function: ease-in-out; }
+  35.5% { transform: translateX(27.4vw); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
+  47.4% { transform: translateX(42vw); animation-timing-function: ease-out; }
+  49.3% { transform: translateX(41.4vw); animation-timing-function: linear; }
+  73.7% { transform: translateX(44vw); animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.6); }
+  86.8% { transform: translateX(78vw); animation-timing-function: cubic-bezier(0.6, 0, 1, 1); }
+  94.7%, 100% { transform: translateX(102vw); }
 }
 @keyframes intro-mover {
   0% { transform: translateX(calc(0vw - var(--intro-char-w))); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
-  34% { transform: translateX(calc(33vw - var(--intro-char-w))); animation-timing-function: ease-in-out; }
-  38% { transform: translateX(calc(33.8vw - var(--intro-char-w))); animation-timing-function: ease-in-out; }
-  42% { transform: translateX(calc(32.8vw - var(--intro-char-w))); animation-timing-function: ease-in-out; }
-  50% { transform: translateX(calc(33vw - var(--intro-char-w))); animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.6); }
-  82%, 100% { transform: translateX(calc(78vw - var(--intro-char-w))); }
+  11.8% { transform: translateX(calc(14vw - var(--intro-char-w))); animation-timing-function: ease-out; }
+  13.8% { transform: translateX(calc(13.4vw - var(--intro-char-w))); animation-timing-function: ease-in-out; }
+  18.4% { transform: translateX(calc(13.6vw - var(--intro-char-w))); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
+  28.9% { transform: translateX(calc(28vw - var(--intro-char-w))); animation-timing-function: ease-out; }
+  30.9% { transform: translateX(calc(27.2vw - var(--intro-char-w))); animation-timing-function: ease-in-out; }
+  35.5% { transform: translateX(calc(27.4vw - var(--intro-char-w))); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
+  47.4% { transform: translateX(calc(42vw - var(--intro-char-w))); animation-timing-function: ease-out; }
+  49.3% { transform: translateX(calc(41.4vw - var(--intro-char-w))); animation-timing-function: linear; }
+  73.7% { transform: translateX(calc(44vw - var(--intro-char-w))); animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.6); }
+  86.8%, 100% { transform: translateX(calc(78vw - var(--intro-char-w))); }
 }
 
-/* The fall wraps the character AND his scream, so both drop together. */
+/* The fall wraps both poses, so the swap happens mid-air. */
 .intro-faller {
   position: relative;
   width: 100%;
@@ -368,94 +379,140 @@ html[data-intro="play"] .intro-curtain {
   transform-origin: 48% 97%;
   animation: intro-fall var(--intro-push) var(--intro-hold) both;
 }
-/* Wall gone (82%): he lurches forward, hangs in the air for a beat like a
-   cartoon character over a cliff, then tumbles off the bottom of the screen
-   (happily: "WHEEE!"), spinning, with gravity's ease-in. */
+/* Wall gone (86.8%): he lurches forward, hangs in the air for a beat like a
+   cartoon character over a cliff, then tumbles off the bottom of the screen,
+   spinning, with gravity's ease-in. */
 @keyframes intro-fall {
-  0%, 82% { transform: none; animation-timing-function: ease-out; }
-  86% { transform: translate(10%, -5%) rotate(16deg); animation-timing-function: linear; }
-  89% { transform: translate(12%, -6%) rotate(20deg); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
-  100% { transform: translate(40%, 110vh) rotate(150deg); }
+  0%, 86.8% { transform: none; animation-timing-function: ease-out; }
+  90.1% { transform: translate(10%, -8%) rotate(10deg); animation-timing-function: linear; }
+  92.1% { transform: translate(12%, -9%) rotate(12deg); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  100% { transform: translate(40%, 110vh) rotate(25deg); }
 }
 .intro-char {
+  animation: intro-strain var(--intro-push) var(--intro-hold) both;
   width: 100%;
   height: 100%;
   overflow: visible;
   /* Paper-colored halo: keeps ink line art readable over the dark gutter. */
   filter: drop-shadow(0 0 1.5px rgb(var(--color-paper))) drop-shadow(0 0 1px rgb(var(--color-paper)));
 }
-/* Face swap when the wall gives way: gritted effort → happy eyes + big grin. */
-.intro-char .grit {
-  animation: intro-grit var(--intro-push) var(--intro-hold) both;
+/* When the wall gives way the pushing pose swaps for the happy fall (laughing,
+   cap flying off) and that one tumbles off the bottom of the screen. */
+.intro-char {
+  animation-name: intro-strain, intro-hide;
 }
-.intro-char .scream {
-  opacity: 0;
-  animation: intro-scream var(--intro-push) var(--intro-hold) both;
-}
-@keyframes intro-grit {
-  0%, 84% { opacity: 1; }
-  85%, 100% { opacity: 0; }
-}
-@keyframes intro-scream {
-  0%, 84% { opacity: 0; }
-  85%, 100% { opacity: 1; }
-}
-.intro-scream {
+.intro-fallpose {
   position: absolute;
-  /* Above his head, on the page side, clear of the wall's edge. */
-  left: 0;
-  top: -22%;
-  font-family: var(--font-display), ui-sans-serif, system-ui;
-  font-weight: 700;
-  font-size: calc(var(--intro-char-h) * 0.16);
-  line-height: 1;
-  white-space: nowrap;
-  color: rgb(var(--color-accent));
+  max-width: none;
+  height: auto;
   opacity: 0;
-  transform-origin: left bottom;
-  animation: intro-scream-text var(--intro-push) var(--intro-hold) both;
+  animation: var(--intro-push) var(--intro-hold) step-end both;
 }
-@keyframes intro-scream-text {
-  0%, 84% { opacity: 0; transform: scale(0.4) rotate(-8deg); }
-  88% { opacity: 1; transform: scale(1.1) rotate(-12deg); }
-  92%, 100% { opacity: 1; transform: scale(1) rotate(-10deg); }
+/* Lunging forward, laughing, then flat out in the air with his cap flying. */
+.intro-fallpose-1 {
+  left: -40%;
+  top: 2%;
+  width: 172%;
+  animation-name: intro-show-1;
+}
+.intro-fallpose-2 {
+  left: -30%;
+  top: 14%;
+  width: 175%;
+  animation-name: intro-show-2;
+}
+@keyframes intro-show-1 {
+  0% { opacity: 0; }
+  86.8% { opacity: 1; }
+  91% { opacity: 0; }
+}
+@keyframes intro-show-2 {
+  0% { opacity: 0; }
+  91% { opacity: 1; }
+}
+@keyframes intro-hide {
+  0%, 86.8% { opacity: 1; }
+  86.9%, 100% { opacity: 0; }
 }
 
-/* Pose change at the stall: the upper body leans 12° further into the wall
-   around the hip (hands slide lower, still on the edge) for the harder push. */
-.intro-char .lean {
-  transform-box: view-box;
-  transform-origin: 52px 116px;
-  animation: intro-lean var(--intro-push) var(--intro-hold) both;
+/* The far leg sits in the shade, behind the near one. */
+.intro-char .leg-far {
+  filter: brightness(0.62);
 }
-@keyframes intro-lean {
-  0%, 40% { transform: none; animation-timing-function: ease-in-out; }
-  48%, 100% { transform: rotate(12deg); }
+/* Sweat runs off his head; breath puffs drift away from his mouth. */
+.intro-char .sweat,
+.intro-char .puff {
+  transform-box: fill-box;
+  opacity: 0;
+}
+.intro-char .sweat {
+  animation: intro-sweat 0.9s ease-in infinite;
+}
+.intro-char .sweat-2 {
+  animation-delay: 0.45s;
+}
+.intro-char .puff {
+  animation: intro-puff 0.6s ease-out infinite;
+}
+.intro-char .puff-2 {
+  animation-delay: 0.15s;
+}
+@keyframes intro-sweat {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(90px); }
+}
+@keyframes intro-puff {
+  0% { opacity: 0; transform: translateX(-12px); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(30px); }
 }
 
-/* Walk cycle: legs swing in antiphase around the hip, the body bobs. Keeps
-   going during the stall, which reads as scrambling against a stuck wall. */
-.intro-char .leg {
-  transform-box: view-box;
-  transform-origin: 52px 116px;
-  animation: intro-step 0.55s ease-in-out infinite alternate;
+/* Straining at the long stop: the whole figure trembles against the wall. */
+@keyframes intro-strain {
+  0%, 48.7% { transform: none; }
+  49.3% { transform: translateX(-4px); }
+  50.4% { transform: translateX(4px); }
+  51.4% { transform: translateX(-4px); }
+  52.5% { transform: translateX(4px); }
+  53.6% { transform: translateX(-4px); }
+  54.6% { transform: translateX(4px); }
+  55.7% { transform: translateX(-4px); }
+  56.7% { transform: translateX(4px); }
+  57.8% { transform: translateX(-4px); }
+  58.8% { transform: translateX(4px); }
+  59.9% { transform: translateX(-4px); }
+  60.9% { transform: translateX(4px); }
+  62% { transform: translateX(-4px); }
+  63% { transform: translateX(4px); }
+  64.1% { transform: translateX(-4px); }
+  65.1% { transform: translateX(4px); }
+  66.2% { transform: translateX(-4px); }
+  67.2% { transform: translateX(4px); }
+  68.3% { transform: translateX(-4px); }
+  69.3% { transform: translateX(4px); }
+  70.4% { transform: translateX(-4px); }
+  71.4% { transform: translateX(4px); }
+  73.7%, 100% { transform: none; }
 }
-.intro-char .leg-front {
-  animation-delay: -0.55s;
+
+/* Comic close-up on his face ("HNNNGH...") during the long, hardest stop,
+   popped over the wall like a panel. */
+.intro-closeup {
+  position: absolute;
+  top: 12vh;
+  left: 58vw;
+  height: min(46vh, 60vw);
+  width: auto;
+  border: 4px solid rgb(var(--color-paper));
+  box-shadow: 8px 8px 0 rgb(var(--color-accent));
+  opacity: 0;
+  transform-origin: center;
+  animation: intro-closeup var(--intro-push) var(--intro-hold) both;
 }
-.intro-char .body {
-  animation: intro-bob 0.275s ease-in-out infinite alternate;
-}
-.intro-char .effort {
-  animation: intro-effort 0.55s steps(2) infinite;
-}
-@keyframes intro-step {
-  from { transform: rotate(-34deg); }
-  to { transform: rotate(8deg); }
-}
-@keyframes intro-bob {
-  to { transform: translateY(2.5px); }
-}
-@keyframes intro-effort {
-  50% { opacity: 0; }
+@keyframes intro-closeup {
+  0%, 48.7% { opacity: 0; transform: scale(0.6) rotate(-8deg); }
+  51.3% { opacity: 1; transform: scale(1.06) rotate(-2deg); }
+  53.3%, 70.4% { opacity: 1; transform: scale(1) rotate(-3deg); }
+  73%, 100% { opacity: 0; transform: scale(0.9) rotate(-3deg); }
 }

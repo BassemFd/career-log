@@ -100,6 +100,12 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
+        {/* intro character layers, fetched early so he never pops in late */}
+        <link rel="preload" as="image" href="/intro/torso.webp" />
+        <link rel="preload" as="image" href="/intro/thigh.webp" />
+        <link rel="preload" as="image" href="/intro/shin.webp" />
+        <link rel="preload" as="image" href="/intro/fall-1.webp" />
+        <link rel="preload" as="image" href="/intro/fall-2.webp" />
       </head>
       <body className="font-sans antialiased pb-20 lg:pb-0">
         <LocaleProvider locale={locale}>
