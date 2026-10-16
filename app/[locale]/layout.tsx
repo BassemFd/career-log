@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { contentByLocale } from "@/lib/content";
-import { LOCALES, SITE_URL, isLocale } from "@/lib/strings";
+import { LOCALES, isLocale } from "@/lib/strings";
+import { SITE_URL } from "@/lib/site";
 import Gutter from "@/components/Gutter";
 import IntroCurtain from "@/components/IntroCurtain";
 import ScrollSkew from "@/components/ScrollSkew";
@@ -43,6 +44,8 @@ const mono = IBM_Plex_Mono({
 // Each locale is its own URL (/en, /fr), so both versions are server-rendered
 // and indexable. hreflang alternates tell search engines they're translations
 // of one page; x-default is the bare root, which redirects by preference.
+// The preview image comes from app/opengraph-image.tsx and app/twitter-image.tsx;
+// metadataBase makes its URL absolute.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -55,9 +58,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const { profile } = contentByLocale[locale];
+  const title = `${profile.name} — ${profile.tagline}`;
   return {
     metadataBase: new URL(SITE_URL),
-    title: `${profile.name} — ${profile.tagline}`,
+    title,
     description: profile.summary,
     icons: { icon: "/favicon.svg" },
     alternates: {
@@ -65,12 +69,18 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       languages: { en: "/en", fr: "/fr", "x-default": "/" },
     },
     openGraph: {
-      title: `${profile.name} — ${profile.tagline}`,
-      description: profile.summary,
-      url: `/${locale}`,
-      locale: locale === "fr" ? "fr_FR" : "en_US",
-      alternateLocale: locale === "fr" ? "en_US" : "fr_FR",
       type: "profile",
+      url: `/${locale}`,
+      siteName: profile.name,
+      title,
+      description: profile.summary,
+      locale: locale === "fr" ? "fr_FR" : "en_US",
+      alternateLocale: [locale === "fr" ? "en_US" : "fr_FR"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: profile.summary,
     },
   };
 }
