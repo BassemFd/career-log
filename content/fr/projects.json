@@ -226,8 +226,7 @@
     "visual": {
       "url": "https://www.planity.com",
       "domain": "planity.com",
-      "art": "booking",
-      "image": "/visuals/planity.webp"
+      "art": "booking"
     }
   },
   {
@@ -253,8 +252,7 @@
     "visual": {
       "url": "https://www.monspecialisteauto.com",
       "domain": "monspecialisteauto.com",
-      "art": "inspection",
-      "image": "/visuals/msa.webp"
+      "art": "inspection"
     }
   }
 ]
