@@ -8,7 +8,12 @@
     "summary": "Consulting firm (ESN) — client missions plus internal engineering. As technical referent: mentoring junior engineers, running technical qualifications and interviews, and authoring a React Native hiring test (Pixelator). Built an internal AI-agent application and championed engineering standards — clean code, SOLID, accessibility — across hexagonal Node.js/TypeScript projects.",
     "stack": ["TypeScript", "React", "React Native", "Node.js"],
     "confidential": false,
-    "flagship": false
+    "flagship": false,
+    "visual": {
+      "url": "https://www.exalt-it.com",
+      "domain": "exalt-it.com",
+      "art": "consulting"
+    }
   },
   {
     "company": "Planity",
@@ -19,7 +24,12 @@
     "summary": "Four-year mission (via eXalt-IT) on France's leading beauty-booking platform. Owned the Tap to Pay contactless-payment feature end-to-end (iOS & Android — 18 months, 200+ PRs across 3 repos), built the passwordless Magic Link auth flow, and contributed to the planity.com rebuild and a monorepo serving mobile, tablet and web with multi-country i18n.",
     "stack": ["React Native", "Node.js", "AWS Lambda", "Stripe Terminal"],
     "confidential": true,
-    "flagship": true
+    "flagship": true,
+    "visual": {
+      "url": "https://www.planity.com",
+      "domain": "planity.com",
+      "art": "booking"
+    }
   },
   {
     "company": "Mon Spécialiste Auto",
@@ -30,6 +40,11 @@
     "summary": "Auto-inspection startup. Built web and mobile features across the pro dashboard and mobile app — new Node/Express API routes, role-based access with JOI validation, license-plate blurring via an AWS Lambda (Rekor ai), interactive Google Maps mission tracking, and Cypress/testRigor E2E coverage.",
     "stack": ["React", "Node.js", "Express", "MongoDB", "Cypress", "AWS Lambda"],
     "confidential": true,
-    "flagship": false
+    "flagship": false,
+    "visual": {
+      "url": "https://www.monspecialisteauto.com",
+      "domain": "monspecialisteauto.com",
+      "art": "inspection"
+    }
   }
 ]

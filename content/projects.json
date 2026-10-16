@@ -16,6 +16,11 @@
     "links": {
       "github": "https://github.com/BassemFd/ai-watch",
       "live": "https://ai-watch.bassemfayed.com/en/"
+    },
+    "visual": {
+      "url": "https://ai-watch.bassemfayed.com/en/",
+      "domain": "ai-watch.bassemfayed.com",
+      "art": "briefing"
     }
   },
   {
@@ -75,7 +80,12 @@
       "live": "https://neja.bassemfayed.com"
     },
     "featured": false,
-    "category": "personal"
+    "category": "personal",
+    "visual": {
+      "url": "https://neja.bassemfayed.com",
+      "domain": "neja.bassemfayed.com",
+      "art": "palette"
+    }
   },
   {
     "slug": "augmented-engineering",
@@ -184,7 +194,12 @@
       "live": "https://moviz.bassemfayed.com"
     },
     "featured": false,
-    "category": "personal"
+    "category": "personal",
+    "visual": {
+      "url": "https://moviz.bassemfayed.com",
+      "domain": "moviz.bassemfayed.com",
+      "art": "movies"
+    }
   },
   {
     "role": "contributor",
@@ -204,7 +219,12 @@
     ],
     "year": "2026",
     "featured": true,
-    "blurb": "Four-year mission on France's leading beauty-booking platform. Owned Tap to Pay contactless payments end to end on iOS & Android (200+ PRs across 3 repos), built the passwordless Magic Link sign-in, and contributed to the planity.com rebuild and a shared mobile / tablet / web monorepo."
+    "blurb": "Four-year mission on France's leading beauty-booking platform. Owned Tap to Pay contactless payments end to end on iOS & Android (200+ PRs across 3 repos), built the passwordless Magic Link sign-in, and contributed to the planity.com rebuild and a shared mobile / tablet / web monorepo.",
+    "visual": {
+      "url": "https://www.planity.com",
+      "domain": "planity.com",
+      "art": "booking"
+    }
   },
   {
     "role": "contributor",
@@ -225,6 +245,11 @@
     ],
     "year": "2022",
     "featured": false,
-    "blurb": "Auto-inspection startup, web and mobile. New Node/Express API routes with role-based access, license-plate blurring through an AWS Lambda, live Google Maps mission tracking, and Cypress / testRigor end-to-end coverage."
+    "blurb": "Auto-inspection startup, web and mobile. New Node/Express API routes with role-based access, license-plate blurring through an AWS Lambda, live Google Maps mission tracking, and Cypress / testRigor end-to-end coverage.",
+    "visual": {
+      "url": "https://www.monspecialisteauto.com",
+      "domain": "monspecialisteauto.com",
+      "art": "inspection"
+    }
   }
 ]
