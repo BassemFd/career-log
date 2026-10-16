@@ -91,7 +91,7 @@ export function SiteVisual({
       className={`site-visual group relative z-10 block w-full max-w-56 shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:max-w-none ${className}`}
     >
       <span className="site-visual-frame">
-        <span className="site-visual-bob">
+        <span className="site-visual-window">
           <span className="site-visual-bar" aria-hidden="true">
             <i />
             <i />

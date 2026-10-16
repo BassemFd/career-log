@@ -252,6 +252,12 @@ body {
 [data-theme="crazy"] main p {
   animation: rotoscope-jitter 0.32s steps(2, end) infinite;
 }
+/* An animated transform makes its element the containing block of absolutely
+   positioned descendants, which would shrink a project card's stretched link
+   (the title's ::after) down to the title. */
+[data-theme="crazy"] main h3.stretched-title {
+  animation: none;
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -522,7 +528,7 @@ html[data-intro="play"] .intro-curtain {
    project entries (SiteVisual.tsx, scenes in VisualArt.tsx). A comic panel:
    ink border, hard offset shadow, a slight tilt that straightens on hover.
    Calm until asked: the panel slams in once when it scrolls into view and then
-   rests; the page scroll, the bob, the load bar and the drawn scenes only play
+   rests; the page scroll, the load bar and the drawn scenes only play
    while it is hovered or keyboard-focused. Where there is no hover (touch) the
    screenshot takes one short scroll as it arrives instead. data-armed / data-in
    are set by the component: armed = JS is running and motion is allowed, in =
@@ -555,22 +561,32 @@ html[data-intro="play"] .intro-curtain {
 .site-visual[data-in="true"] .site-visual-frame {
   animation: sv-slam 0.85s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
+/* Written with the individual translate / rotate / scale properties, which stack
+   on top of the frame's own transform (its tilt, or the hover lift) instead of
+   replacing it: a pointer already resting on the panel never makes it jump when
+   the slam ends. The rotation is an offset from the tilt. */
 @keyframes sv-slam {
   0% {
     opacity: 0;
-    transform: translateY(28px) rotate(calc(var(--tilt) * -6)) scale(0.78);
+    translate: 0 28px;
+    rotate: calc(var(--tilt) * -7);
+    scale: 0.78;
   }
   55% {
     opacity: 1;
-    transform: translateY(-5px) rotate(calc(var(--tilt) * 1.5)) scale(1.05);
+    translate: 0 -5px;
+    rotate: calc(var(--tilt) * 0.5);
+    scale: 1.05;
   }
   100% {
     opacity: 1;
-    transform: translateY(0) rotate(var(--tilt)) scale(1);
+    translate: 0 0;
+    rotate: 0deg;
+    scale: 1;
   }
 }
 
-.site-visual-bob {
+.site-visual-window {
   display: block;
   overflow: hidden;
   border: 2px solid rgb(var(--color-ink));
@@ -579,19 +595,9 @@ html[data-intro="play"] .intro-curtain {
   box-shadow: 4px 4px 0 var(--sv-tone);
   transition: box-shadow 0.3s ease;
 }
-.site-visual:hover .site-visual-bob,
-.site-visual:focus-visible .site-visual-bob {
+.site-visual:hover .site-visual-window,
+.site-visual:focus-visible .site-visual-window {
   box-shadow: 8px 8px 0 var(--sv-tone);
-  animation: sv-bob 5.5s ease-in-out infinite;
-}
-@keyframes sv-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-3px);
-  }
 }
 
 /* Browser chrome: three dots, an address pill and a load bar that sits full at
@@ -715,6 +721,14 @@ html[data-intro="play"] .intro-curtain {
 .site-visual:focus-visible .site-visual-burst {
   opacity: 1;
   transform: scale(1) rotate(12deg);
+}
+/* Stacked under its heading on a phone, the panel has no room above it for the
+   burst to pop out of, so it sits on the corner instead of over the text. */
+@media (max-width: 639px) {
+  .site-visual-burst {
+    top: -0.4rem;
+    right: -0.4rem;
+  }
 }
 
 /* Scene motion. Each class loops one kind of movement; the element supplies
@@ -1075,7 +1089,6 @@ html[data-intro="play"] .intro-curtain {
 
 @media (prefers-reduced-motion: reduce) {
   .site-visual-frame,
-  .site-visual-bob,
   .site-visual-bar::after,
   .site-visual-screen::after,
   .site-visual-burst,
