@@ -4,12 +4,14 @@ import experienceData from "@/content/experience.json";
 import statsData from "@/content/stats.json";
 import educationData from "@/content/education.json";
 import certificationsData from "@/content/certifications.json";
+import milestonesData from "@/content/milestones.json";
 import profileFrData from "@/content/fr/profile.json";
 import projectsFrData from "@/content/fr/projects.json";
 import experienceFrData from "@/content/fr/experience.json";
 import statsFrData from "@/content/fr/stats.json";
 import educationFrData from "@/content/fr/education.json";
 import certificationsFrData from "@/content/fr/certifications.json";
+import milestonesFrData from "@/content/fr/milestones.json";
 import type {
   Profile,
   Project,
@@ -17,6 +19,7 @@ import type {
   Stats,
   Education,
   Certification,
+  Milestone,
 } from "./types";
 
 // Reverse-chronological, newest year first — the site reads as a `git log`, so
@@ -39,12 +42,19 @@ function sortExperience(list: Experience[]): Experience[] {
   });
 }
 
+// Milestones newest first. ISO-ish dates ("YYYY-MM" / "YYYY") sort correctly as
+// strings; the sort is stable, so same-month entries keep their file order.
+function sortMilestones(list: Milestone[]): Milestone[] {
+  return list.slice().sort((a, b) => b.date.localeCompare(a.date));
+}
+
 export const profile = profileData as Profile;
 export const stats = statsData as Stats;
 export const education = educationData as Education[];
 export const certifications = certificationsData as Certification[];
 export const projects = sortProjects(projectsData as Project[]);
 export const experience = sortExperience(experienceData as Experience[]);
+export const milestones = sortMilestones(milestonesData as Milestone[]);
 
 export type LocaleContent = {
   profile: Profile;
@@ -53,10 +63,11 @@ export type LocaleContent = {
   stats: Stats;
   education: Education[];
   certifications: Certification[];
+  milestones: Milestone[];
 };
 
 export const contentByLocale: { en: LocaleContent; fr: LocaleContent } = {
-  en: { profile, projects, experience, stats, education, certifications },
+  en: { profile, projects, experience, stats, education, certifications, milestones },
   fr: {
     profile: profileFrData as Profile,
     projects: sortProjects(projectsFrData as Project[]),
@@ -64,5 +75,6 @@ export const contentByLocale: { en: LocaleContent; fr: LocaleContent } = {
     stats: statsFrData as Stats,
     education: educationFrData as Education[],
     certifications: certificationsFrData as Certification[],
+    milestones: sortMilestones(milestonesFrData as Milestone[]),
   },
 };

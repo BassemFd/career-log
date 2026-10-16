@@ -5,13 +5,14 @@ import StatsSection from "@/components/StatsSection";
 import ProjectsGrid from "@/components/ProjectsGrid";
 import ExperienceTimeline from "@/components/ExperienceTimeline";
 import EducationSection from "@/components/EducationSection";
+import MilestonesTimeline from "@/components/MilestonesTimeline";
 import { contentByLocale } from "@/lib/content";
 import { STRINGS } from "@/lib/strings";
 import { useLocale } from "@/components/LocaleProvider";
 
 export default function Home() {
   const { locale } = useLocale();
-  const { profile, projects, experience, stats, education, certifications } =
+  const { profile, projects, experience, stats, education, certifications, milestones } =
     contentByLocale[locale];
   const t = STRINGS[locale];
 
@@ -19,6 +20,7 @@ export default function Home() {
     <main>
       <Hero profile={profile} recent={projects.slice(0, 4)} t={t} />
       <ExperienceTimeline experience={experience} t={t} />
+      <MilestonesTimeline milestones={milestones} t={t} />
       <StatsSection stats={stats} t={t} />
       <ProjectsGrid projects={projects} t={t} />
       <EducationSection education={education} certifications={certifications} t={t} />

@@ -1,3 +1,5 @@
+import type { MilestoneType } from "./types";
+
 export type Locale = "en" | "fr";
 
 // UI chrome only — actual content (bios, project blurbs, experience text)
@@ -10,6 +12,8 @@ export const STRINGS: Record<Locale, {
   sectionShortlog: string;
   sectionWorklog: string;
   sectionFormation: string;
+  sectionMilestones: string;
+  milestoneTypes: Record<MilestoneType, string>;
   filterAll: string;
   filterPersonal: string;
   filterClient: string;
@@ -63,6 +67,15 @@ export const STRINGS: Record<Locale, {
     sectionShortlog: "Shortlog",
     sectionWorklog: "Work log",
     sectionFormation: "Formation",
+    sectionMilestones: "Tags",
+    milestoneTypes: {
+      role: "role",
+      mission: "mission",
+      promotion: "promotion",
+      certification: "cert",
+      figure: "figure",
+      education: "training",
+    },
     filterAll: "All",
     filterPersonal: "Personal",
     filterClient: "Client",
@@ -105,7 +118,7 @@ export const STRINGS: Record<Locale, {
     crazyLight: "Light",
     crazyDark: "Dark",
     typeHelp: "type `help`",
-    help: "commands: log, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
+    help: "commands: log, tag, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "PRESS LIGHT OR DARK THEME",
     topFeedback: "↑ top",
     openingFeedback: (target) => `opening ${target}…`,
@@ -117,6 +130,15 @@ export const STRINGS: Record<Locale, {
     sectionShortlog: "Bilan",
     sectionWorklog: "Journal de travail",
     sectionFormation: "Formation",
+    sectionMilestones: "Jalons",
+    milestoneTypes: {
+      role: "poste",
+      mission: "mission",
+      promotion: "promotion",
+      certification: "certif",
+      figure: "chiffre",
+      education: "formation",
+    },
     filterAll: "Tous",
     filterPersonal: "Personnel",
     filterClient: "Client",
@@ -159,7 +181,7 @@ export const STRINGS: Record<Locale, {
     crazyLight: "Clair",
     crazyDark: "Sombre",
     typeHelp: "tapez `help`",
-    help: "commandes : log, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
+    help: "commandes : log, tag, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "APPUYEZ SUR LE THÈME CLAIR OU SOMBRE",
     topFeedback: "↑ haut",
     openingFeedback: (target) => `ouverture de ${target}…`,
