@@ -60,6 +60,23 @@ export interface Certification {
   credentialId: string;
 }
 
+export type MilestoneType =
+  | "role"
+  | "mission"
+  | "promotion"
+  | "certification"
+  | "figure"
+  | "education";
+
+export interface Milestone {
+  // "YYYY-MM", or "YYYY" when the month isn't known. Never translated in
+  // content/fr — the display label is formatted per locale at render time.
+  date: string;
+  type: MilestoneType;
+  title: string;
+  detail: string;
+}
+
 export interface ManualStat {
   label: string;
   value: string;
