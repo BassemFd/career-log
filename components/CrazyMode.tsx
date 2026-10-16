@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import CrazyScene from "./CrazyScene";
+import { CrazyScene } from "./CrazyScene";
 
 const HUES = [330, 25, 48, 275, 185]; // hot pink, orange, mustard, purple, teal
 const MAX_BLOBS = 9;
@@ -59,7 +59,7 @@ function makeBlobEl(size: number, hue: number) {
 // of blob creatures that multiply — every wall hit has a chance to split one
 // into two smaller, faster-diverging blobs, up to a cap. Mounted only while
 // theme === "crazy" (ThemeProvider unmounts it on exit, tearing this down).
-export default function CrazyMode() {
+export function CrazyMode() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [reduced, setReduced] = useState(false);
 

@@ -1,11 +1,11 @@
 import type { Experience } from "@/lib/types";
 import type { STRINGS } from "@/lib/strings";
 import { SectionLabel } from "./StatsSection";
-import GlitchText from "./GlitchText";
+import { GlitchText } from "./GlitchText";
 
 // Experience on the same spine metaphor: each role is a tagged release on the
 // branch. Confidential roles render narrative only — no repo names, no links.
-export default function ExperienceTimeline({
+export function ExperienceTimeline({
   experience,
   t,
 }: {

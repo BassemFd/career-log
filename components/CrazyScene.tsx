@@ -9,7 +9,7 @@ const HUES = [330, 25, 48, 275, 185]; // hot pink, orange, mustard, purple, teal
 // (confetti reimagined with real depth/parallax instead of flat CSS divs)
 // plus two morphing wireframe shapes — original abstract forms, no IP —
 // standing in for "unexpected things happening" in the background.
-export default function CrazyScene() {
+export function CrazyScene() {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

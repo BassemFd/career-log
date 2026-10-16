@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 // Faint drifting node graph behind the hero — a nod to the git-log metaphor,
 // kept subtle enough to never compete with the actual log below it.
-export default function CommitGraphBackdrop() {
+export function CommitGraphBackdrop() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

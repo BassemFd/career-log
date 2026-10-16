@@ -18,7 +18,7 @@ function finish() {
 // finally gives way he tumbles happily off the bottom of the screen ("WHEEE!"). Whether it plays is decided before first paint by the intro script in
 // layout.tsx; this component only renders the markup and ends it. Decorative, so hidden from assistive tech except
 // the skip button.
-export default function IntroCurtain() {
+export function IntroCurtain() {
   const { locale } = useLocale();
   const t = STRINGS[locale];
 

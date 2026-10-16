@@ -91,7 +91,7 @@ const ROUTES: Route[] = [
 // sections in order, plus the command prompt that actually drives navigation.
 // On narrow screens it collapses to a floating "$" button that opens the same
 // prompt in a bottom sheet (a permanent bar cost 15% of every phone screen).
-export default function Gutter() {
+export function Gutter() {
   const { theme, setTheme } = useTheme();
   const { locale } = useLocale();
   const t = STRINGS[locale];

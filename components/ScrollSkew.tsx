@@ -7,7 +7,7 @@ import { useTheme } from "./ThemeProvider";
 // vanilla version of the Locomotive/Lenis skew effect, driven by native
 // scroll events rather than a scroll-hijacking library, so keyboard/wheel/
 // touch scrolling stays untouched. Crazy mode only — light/dark stay flat.
-export default function ScrollSkew({ children }: { children: React.ReactNode }) {
+export function ScrollSkew({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
 

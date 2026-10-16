@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext } from "react";
+import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/strings";
 
 type LocaleContext = { locale: Locale; setLocale: (l: Locale) => void };
@@ -13,27 +14,27 @@ export function useLocale() {
   return ctx;
 }
 
-// Same shape as ThemeProvider: persist to localStorage, sync from the
-// no-flash inline script's <html lang> stamp on mount. A brief flash of
-// English content on first paint for returning FR visitors is the accepted
-// tradeoff — unlike theme colors, translating actual text needs JS either way.
-export default function LocaleProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+// The locale comes from the URL (/en or /fr), so the server already renders the
+// right language and <html lang>. Switching navigates to the other URL, keeping
+// the scroll position and hash, and remembers the choice in a cookie so the bare
+// root (/) sends returning visitors back to it (see middleware.ts).
+export function LocaleProvider({
+  locale,
+  children,
+}: {
+  locale: Locale;
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
 
-  useEffect(() => {
-    const applied = document.documentElement.lang;
-    if (applied === "en" || applied === "fr") setLocaleState(applied);
-  }, []);
-
-  const setLocale = useCallback((l: Locale) => {
-    document.documentElement.lang = l;
-    try {
-      localStorage.setItem("locale", l);
-    } catch {
-      /* private mode / storage disabled — locale still applies for the session */
-    }
-    setLocaleState(l);
-  }, []);
+  const setLocale = useCallback(
+    (l: Locale) => {
+      if (l === locale) return;
+      document.cookie = `locale=${l}; path=/; max-age=31536000; samesite=lax`;
+      router.push(`/${l}${window.location.search}${window.location.hash}`, { scroll: false });
+    },
+    [locale, router],
+  );
 
   return <Ctx.Provider value={{ locale, setLocale }}>{children}</Ctx.Provider>;
 }

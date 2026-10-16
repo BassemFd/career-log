@@ -1,11 +1,11 @@
 "use client";
 
-import Hero from "@/components/Hero";
-import StatsSection from "@/components/StatsSection";
-import ProjectsGrid from "@/components/ProjectsGrid";
-import ExperienceTimeline from "@/components/ExperienceTimeline";
-import EducationSection from "@/components/EducationSection";
-import MilestonesTimeline from "@/components/MilestonesTimeline";
+import { Hero } from "@/components/Hero";
+import { StatsSection } from "@/components/StatsSection";
+import { ProjectsGrid } from "@/components/ProjectsGrid";
+import { ExperienceTimeline } from "@/components/ExperienceTimeline";
+import { EducationSection } from "@/components/EducationSection";
+import { MilestonesTimeline } from "@/components/MilestonesTimeline";
 import { contentByLocale } from "@/lib/content";
 import { STRINGS } from "@/lib/strings";
 import { useLocale } from "@/components/LocaleProvider";

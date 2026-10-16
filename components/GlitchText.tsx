@@ -9,7 +9,7 @@ const SCRAMBLE_MS = 500;
 // Wraps a piece of text so it periodically decrypts itself from noise while
 // crazy mode is active — used on the career content (name, tagline, company
 // names) so the "signal" of who you are keeps destabilizing.
-export default function GlitchText({ text }: { text: string }) {
+export function GlitchText({ text }: { text: string }) {
   const { theme } = useTheme();
   const [display, setDisplay] = useState(text);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);

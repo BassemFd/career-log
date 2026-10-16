@@ -2,6 +2,12 @@ import type { MilestoneType } from "./types";
 
 export type Locale = "en" | "fr";
 
+export const LOCALES: readonly Locale[] = ["en", "fr"];
+
+export function isLocale(value: string): value is Locale {
+  return (LOCALES as readonly string[]).includes(value);
+}
+
 // UI chrome only — actual content (bios, project blurbs, experience text)
 // lives in content/fr/*.json via lib/content.ts's contentByLocale. Git/
 // terminal command tokens (log, shortlog, ls, whoami, open, top, clear,
