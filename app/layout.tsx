@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
+import { SITE_URL } from "@/lib/site";
 import Gutter from "@/components/Gutter";
 import IntroCurtain from "@/components/IntroCurtain";
 import ScrollSkew from "@/components/ScrollSkew";
@@ -42,10 +43,30 @@ const mono = IBM_Plex_Mono({
   display: "swap",
 });
 
+const title = `${profile.name} — ${profile.tagline}`;
+
+// The preview image itself comes from app/opengraph-image.tsx and
+// app/twitter-image.tsx; metadataBase makes its URL absolute.
 export const metadata: Metadata = {
-  title: `${profile.name} — ${profile.tagline}`,
+  metadataBase: new URL(SITE_URL),
+  title,
   description: profile.summary,
   icons: { icon: "/favicon.svg" },
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "profile",
+    url: "/",
+    siteName: profile.name,
+    title,
+    description: profile.summary,
+    locale: "en_US",
+    alternateLocale: ["fr_FR"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description: profile.summary,
+  },
 };
 
 export default function RootLayout({
