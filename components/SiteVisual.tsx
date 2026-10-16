@@ -14,9 +14,10 @@ const BURST =
 const TILTS = [-2.2, 1.8, -1.4, 2.4];
 
 // A clickable browser-window thumbnail for a public site: a comic panel (ink
-// border, hard offset shadow, slight tilt) around a drawn, looping scene — or a
-// real screenshot, when the entry provides `image`. It slams in the first time it
-// scrolls into view, bobs while on screen, and pops a "GO!" burst on hover.
+// border, hard offset shadow, slight tilt) around a real screenshot of the page
+// (`image`, a 1:2 capture that slowly scrolls up and down inside the window) or,
+// without one, a drawn looping scene. It slams in the first time it scrolls into
+// view, bobs while on screen, and pops a "GO!" burst on hover.
 // Everything is CSS (see "Site visuals" in globals.css); the effect only tells
 // the stylesheet when the panel is armed, revealed and on screen. Without
 // JavaScript, or with reduced motion, the panel simply renders static.
@@ -86,10 +87,10 @@ export function SiteVisual({
                 src={visual.image}
                 alt=""
                 width={640}
-                height={384}
+                height={1280}
                 loading="lazy"
                 decoding="async"
-                className="block h-full w-full object-cover object-top"
+                className="site-visual-shot"
               />
             ) : (
               <VisualArt art={visual.art} />

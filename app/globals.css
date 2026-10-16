@@ -1073,3 +1073,37 @@ html[data-intro="play"] .intro-curtain {
     transition: none !important;
   }
 }
+
+/* Real screenshots: a 1:2 capture of the page's first screens that the window
+   scrolls through, down and back, like someone browsing the site. The distance
+   (70% of the image height) is the image height minus the window height for a
+   1:2 image shown in a 160:96 window. */
+.site-visual-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  will-change: transform;
+  animation: sv-pan 18s ease-in-out var(--phase) infinite;
+}
+@keyframes sv-pan {
+  0%,
+  26% {
+    transform: translateY(0);
+  }
+  52%,
+  60% {
+    transform: translateY(-70%);
+  }
+  94%,
+  100% {
+    transform: translateY(0);
+  }
+}
+.site-visual[data-armed="true"]:not([data-live="true"]) .site-visual-shot {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-visual-shot {
+    animation: none !important;
+  }
+}

@@ -20,7 +20,8 @@
     "visual": {
       "url": "https://ai-watch.bassemfayed.com",
       "domain": "ai-watch.bassemfayed.com",
-      "art": "briefing"
+      "art": "briefing",
+      "image": "/visuals/ai-watch.webp"
     }
   },
   {
@@ -84,7 +85,8 @@
     "visual": {
       "url": "https://neja.bassemfayed.com",
       "domain": "neja.bassemfayed.com",
-      "art": "palette"
+      "art": "palette",
+      "image": "/visuals/neja.webp"
     }
   },
   {
@@ -198,7 +200,8 @@
     "visual": {
       "url": "https://moviz.bassemfayed.com",
       "domain": "moviz.bassemfayed.com",
-      "art": "movies"
+      "art": "movies",
+      "image": "/visuals/moviz.webp"
     }
   },
   {
@@ -223,7 +226,8 @@
     "visual": {
       "url": "https://www.planity.com",
       "domain": "planity.com",
-      "art": "booking"
+      "art": "booking",
+      "image": "/visuals/planity.webp"
     }
   },
   {
@@ -249,7 +253,8 @@
     "visual": {
       "url": "https://www.monspecialisteauto.com",
       "domain": "monspecialisteauto.com",
-      "art": "inspection"
+      "art": "inspection",
+      "image": "/visuals/msa.webp"
     }
   }
 ]
