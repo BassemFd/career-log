@@ -5,6 +5,7 @@ import type { Project, ProjectCategory } from "@/lib/types";
 import type { STRINGS } from "@/lib/strings";
 import { shortHash } from "@/lib/hash";
 import { SectionLabel } from "./StatsSection";
+import { SiteVisual } from "./SiteVisual";
 
 // Each category gets its own hue — carried through the filter pill, the spine
 // node, and the short-hash color on the card, so color encodes what kind of
@@ -81,6 +82,8 @@ export function ProjectsGrid({
   );
 }
 
+// The whole card stays clickable (a stretched link on the title), while the
+// side thumbnail is its own link sitting above it — never nested anchors.
 function ProjectCard({
   project: p,
   t,
@@ -89,44 +92,58 @@ function ProjectCard({
   t: (typeof STRINGS)["en"];
 }) {
   const href = p.links.live ?? p.links.github;
-  const Wrapper = href ? "a" : "div";
-  const wrapperProps = href
-    ? { href, target: "_blank", rel: "noreferrer" }
-    : {};
 
   return (
-    <Wrapper
-      {...wrapperProps}
-      className={`block rounded-lg border border-rule bg-card p-5 transition-colors ${
-        href ? "hover:border-accent" : ""
+    <div
+      className={`relative rounded-lg border border-rule bg-card p-5 transition-colors ${
+        href ? "hover:border-accent focus-within:border-accent" : ""
       }`}
     >
-      <div className="flex items-baseline gap-3">
-        <span className={`font-mono text-xs ${CATEGORY_COLOR[p.category].text}`}>
-          {shortHash(p.slug)}
-        </span>
-        <h3 className="font-display text-lg font-semibold tracking-tight">
-          {p.title}
-        </h3>
-        {p.role === "contributor" && (
-          <span className="rounded bg-accent-soft px-1.5 py-0.5 font-mono text-xs uppercase tracking-wider text-accent">
-            {t.contributor}
-          </span>
+      <div className="sm:flex sm:items-start sm:gap-5">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline gap-3">
+            <span className={`font-mono text-xs ${CATEGORY_COLOR[p.category].text}`}>
+              {shortHash(p.slug)}
+            </span>
+            <h3 className="font-display text-lg font-semibold tracking-tight">
+              {href ? (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="after:absolute after:inset-0 focus-visible:outline-none"
+                >
+                  {p.title}
+                </a>
+              ) : (
+                p.title
+              )}
+            </h3>
+            {p.role === "contributor" && (
+              <span className="rounded bg-accent-soft px-1.5 py-0.5 font-mono text-xs uppercase tracking-wider text-accent">
+                {t.contributor}
+              </span>
+            )}
+            <span className="ml-auto font-mono text-xs text-muted">{p.year}</span>
+          </div>
+
+          <p className="mt-2 text-[14px] leading-relaxed text-ink/75">{p.blurb}</p>
+
+          {p.stack.length > 0 && (
+            <ul className="mt-3 flex flex-wrap gap-1.5 font-mono text-xs text-muted">
+              {p.stack.map((s) => (
+                <li key={s} className="rounded border border-rule px-1.5 py-0.5">
+                  {s}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {p.visual && (
+          <SiteVisual visual={p.visual} t={t} className="mt-5 sm:mt-1 sm:w-40" />
         )}
-        <span className="ml-auto font-mono text-xs text-muted">{p.year}</span>
       </div>
-
-      <p className="mt-2 text-[14px] leading-relaxed text-ink/75">{p.blurb}</p>
-
-      {p.stack.length > 0 && (
-        <ul className="mt-3 flex flex-wrap gap-1.5 font-mono text-xs text-muted">
-          {p.stack.map((s) => (
-            <li key={s} className="rounded border border-rule px-1.5 py-0.5">
-              {s}
-            </li>
-          ))}
-        </ul>
-      )}
-    </Wrapper>
+    </div>
   );
 }
