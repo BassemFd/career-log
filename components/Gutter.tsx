@@ -9,7 +9,7 @@ import { STRINGS, type Locale } from "@/lib/strings";
 const THEMES: { id: Theme; label: string }[] = [
   { id: "light", label: "lgt" },
   { id: "dark", label: "drk" },
-  { id: "crazy", label: "???" },
+  { id: "crazy", label: "WTF" },
 ];
 
 // Terminal-styled theme switch — mono, muted until active. "???" is the hidden
