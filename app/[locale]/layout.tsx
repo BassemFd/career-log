@@ -5,11 +5,11 @@ import "@/app/globals.css";
 import { contentByLocale } from "@/lib/content";
 import { LOCALES, isLocale } from "@/lib/strings";
 import { SITE_URL } from "@/lib/site";
-import Gutter from "@/components/Gutter";
-import IntroCurtain from "@/components/IntroCurtain";
-import ScrollSkew from "@/components/ScrollSkew";
-import ThemeProvider from "@/components/ThemeProvider";
-import LocaleProvider from "@/components/LocaleProvider";
+import { Gutter } from "@/components/Gutter";
+import { IntroCurtain } from "@/components/IntroCurtain";
+import { ScrollSkew } from "@/components/ScrollSkew";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { LocaleProvider } from "@/components/LocaleProvider";
 
 // Applies the saved (or system-preferred) theme before first paint, so there's
 // no flash of the wrong palette. Never resolves to crazy from the system pref.

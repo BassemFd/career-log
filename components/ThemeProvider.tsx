@@ -11,8 +11,8 @@ import dynamic from "next/dynamic";
 
 // three.js only ships to visitors who actually pick crazy mode, not every
 // recruiter who loads the default light/dark site.
-const VortexTransition = dynamic(() => import("./VortexTransition"), { ssr: false });
-const CrazyMode = dynamic(() => import("./CrazyMode"), { ssr: false });
+const VortexTransition = dynamic(() => import("./VortexTransition").then((m) => m.VortexTransition), { ssr: false });
+const CrazyMode = dynamic(() => import("./CrazyMode").then((m) => m.CrazyMode), { ssr: false });
 
 export type Theme = "light" | "dark" | "crazy";
 
@@ -32,7 +32,7 @@ function prefersReducedMotion() {
 
 // Owns the active theme, persists it, and coordinates the crazy-mode entrance:
 // selecting "crazy" from another theme plays the vortex first, then commits.
-export default function ThemeProvider({
+export function ThemeProvider({
   children,
 }: {
   children: React.ReactNode;

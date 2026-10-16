@@ -1,12 +1,12 @@
 import type { Profile, Project } from "@/lib/types";
 import type { STRINGS } from "@/lib/strings";
 import { shortHash } from "@/lib/hash";
-import CommitGraphBackdrop from "./CommitGraphBackdrop";
-import GlitchText from "./GlitchText";
+import { CommitGraphBackdrop } from "./CommitGraphBackdrop";
+import { GlitchText } from "./GlitchText";
 
 // The hero opens like the top of a `git log --oneline`: the most recent work,
 // framed as HEAD. It doubles as proof-of-activity and a teaser for the log below.
-export default function Hero({
+export function Hero({
   profile,
   recent,
   t,

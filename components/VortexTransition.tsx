@@ -13,7 +13,7 @@ const PSYCHEDELIC_HUES = [330, 25, 48, 275, 185]; // hot pink, orange, mustard, 
 // size, which is what keeps this centered on high-DPR phones — a canvas that
 // only sets the .width/.height attributes (not the CSS size) renders at its
 // raw device-pixel size instead of the viewport and drifts off-screen.
-export default function VortexTransition({
+export function VortexTransition({
   onComplete,
 }: {
   onComplete: () => void;

@@ -2,7 +2,7 @@ import type { Education, Certification } from "@/lib/types";
 import type { STRINGS } from "@/lib/strings";
 import { SectionLabel } from "./StatsSection";
 
-export default function EducationSection({
+export function EducationSection({
   education,
   certifications,
   t,

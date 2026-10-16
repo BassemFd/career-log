@@ -18,7 +18,7 @@ export function useLocale() {
 // right language and <html lang>. Switching navigates to the other URL, keeping
 // the scroll position and hash, and remembers the choice in a cookie so the bare
 // root (/) sends returning visitors back to it (see middleware.ts).
-export default function LocaleProvider({
+export function LocaleProvider({
   locale,
   children,
 }: {

@@ -17,7 +17,7 @@ const CATEGORY_COLOR: Record<ProjectCategory, { text: string; border: string; bg
 
 // Projects as commit nodes on a branch line: each card hangs off the spine with
 // its short hash, so the section reads as a log of shipped work.
-export default function ProjectsGrid({
+export function ProjectsGrid({
   projects,
   t,
 }: {

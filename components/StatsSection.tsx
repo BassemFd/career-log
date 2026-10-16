@@ -4,7 +4,7 @@ import type { STRINGS } from "@/lib/strings";
 // Stats rendered as a shortlog-style datasheet: label on the left, value on the
 // right, hairline rows. Live GitHub numbers carry a small "fetched" timestamp so
 // their freshness is honest; manual numbers are marked as aggregates.
-export default function StatsSection({
+export function StatsSection({
   stats,
   t,
 }: {

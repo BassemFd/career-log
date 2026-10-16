@@ -91,6 +91,9 @@ Rules:
   `@/lib/types`), not deep relative paths.
 - **Components** are server components by default (App Router). Keep them
   presentational; content flows in from `lib/content.ts`.
+- **Exports**: components use named exports (`export function Hero`). Only
+  Next.js route files in `app/` (`layout`, `page`, `sitemap`...) keep the
+  default export the framework requires.
 
 ## Commit conventions
 

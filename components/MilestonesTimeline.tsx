@@ -24,7 +24,7 @@ function formatDate(date: string, numberLocale: string): string {
 
 // Dated career milestones read as `git tag -n`: one annotated tag per line,
 // newest first. Ordering comes from lib/content.ts.
-export default function MilestonesTimeline({
+export function MilestonesTimeline({
   milestones,
   t,
 }: {
