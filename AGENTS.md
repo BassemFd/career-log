@@ -34,11 +34,12 @@ in `/content`.** You change the site by editing a file, committing, and running
 - **Visuals**: an experience, education or project entry can carry an optional
   `visual` (`url`, `domain`, `art`), rendered as a clickable, animated
   browser-window thumbnail beside it (`components/SiteVisual.tsx`, scenes in
-  `components/VisualArt.tsx`). Keep it identical in both locales. `art` picks the
-  drawn scene; to show a real screenshot instead, drop it in `public/visuals/`
-  and set `image` (e.g. `"/visuals/planity.webp"`). It must link a **public**
-  page only — a company's marketing site or the owner's own live site — never a
-  private repo or client system.
+  `components/VisualArt.tsx`). Keep it identical in both locales. `image` is a
+  screenshot of the page in `public/visuals/` (a 1:2 webp, 640×1280, the page's
+  first screens; the window scrolls through it slowly); without it, the drawn
+  scene picked by `art` plays instead. It must link a **public** page only — a
+  company's marketing site or the owner's own live site — never a private repo or
+  client system, and screenshots must show nothing but that public page.
 - **Types** for all content live in `lib/types.ts`. Match them exactly; extend the
   interface there rather than adding untyped fields.
 - **Derivation is already done** in `lib/content.ts` (projects sort strictly

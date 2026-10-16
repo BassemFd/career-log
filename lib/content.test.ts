@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, it, expect } from "vitest";
 import { projects, experience, contentByLocale } from "./content";
 
@@ -56,10 +58,22 @@ describe("site visuals", () => {
     }
   });
 
-  it("keeps EN and FR visuals in sync (same entries, scene and domain)", () => {
+  it("keeps EN and FR visuals in sync (same entries, scene, domain and image)", () => {
     const shape = (l: "en" | "fr") =>
-      withVisual(l).map(({ key, visual }) => `${key}:${visual.art}:${visual.domain}`);
+      withVisual(l).map(
+        ({ key, visual }) => `${key}:${visual.art}:${visual.domain}:${visual.image ?? ""}`,
+      );
     expect(shape("fr")).toEqual(shape("en"));
+  });
+
+  it("points images at files that exist under public/visuals", () => {
+    for (const l of ["en", "fr"] as const) {
+      for (const { key, visual } of withVisual(l)) {
+        if (!visual.image) continue;
+        expect(visual.image, key).toMatch(/^\/visuals\/[\w-]+\.(webp|png|jpe?g)$/);
+        expect(existsSync(join(process.cwd(), "public", visual.image)), key).toBe(true);
+      }
+    }
   });
 
   it("has at least one visual so the feature is exercised", () => {
