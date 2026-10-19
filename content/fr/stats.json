@@ -1,12 +1,5 @@
 {
-  "manual": [
-    {
-      "label": "Années à livrer du logiciel",
-      "value": "5+",
-      "note": "Depuis 2021",
-      "source": "manual"
-    }
-  ],
+  "manual": [],
   "activity": {
     "note": "Activité de contribution GitHub — dépôts privés inclus",
     "breakdown": [

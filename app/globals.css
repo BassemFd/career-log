@@ -1216,3 +1216,23 @@ html[data-intro="play"] .intro-curtain {
     margin-top: 0;
   }
 }
+
+/* The dot of a live stat blinks like a recording light. */
+.live-dot {
+  display: inline-block;
+  animation: live-blink 1.6s ease-in-out infinite;
+}
+@keyframes live-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-dot {
+    animation: none;
+  }
+}

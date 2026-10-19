@@ -77,7 +77,6 @@ Commit, then run `npm run deploy` to publish. Same flow for
   | -------------------- | ---------------------------------------------------------- |
   | Public repositories  | `GET /users/BassemFd` → `public_repos`                     |
   | Followers            | `GET /users/BassemFd` → `followers`                        |
-  | Stars earned         | sum of `stargazers_count` over non-fork repos              |
   | Pull requests merged | `GET /search/issues?q=is:pr is:merged author:BassemFd` (public + private, local runs only) |
 
   > Note: GitHub's public API does **not** expose a lifetime total-commit count

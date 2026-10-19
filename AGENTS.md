@@ -70,8 +70,10 @@ in `/content`.** You change the site by editing a file, committing, and running
 
 `content/stats.json` has two deliberately separate blocks:
 
-- **`manual`** — hand-recorded numbers that can't be fetched (e.g. years
-  shipping). Edit these by hand, in both `content/` and `content/fr/`.
+- **`manual`** — hand-recorded numbers that can't be fetched (empty for now).
+  Edit these by hand, in both `content/` and `content/fr/`.
+- **Years shipping** is not stored: `yearsShipping()` in `lib/content.ts` counts
+  it at render time from the earliest `role` milestone, and it shows as live.
 - **`live`** — pulled from the GitHub API. **Only ever rewritten by**
   `npm run refresh-stats`, which updates `live` + `liveFetchedAt` in both locales.
   `contributions` is the contribution-calendar total since 2021 (private

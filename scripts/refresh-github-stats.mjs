@@ -92,7 +92,6 @@ async function main() {
 
   const live = {
     publicRepos: user.public_repos,
-    totalStars: own.reduce((sum, r) => sum + (r.stargazers_count || 0), 0),
     mergedPRs: await mergedPRs(previous.live.mergedPRs),
     contributions: await contributionsSince(CONTRIBUTIONS_SINCE),
   };

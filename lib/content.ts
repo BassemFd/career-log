@@ -48,6 +48,22 @@ function sortMilestones(list: Milestone[]): Milestone[] {
   return list.slice().sort((a, b) => b.date.localeCompare(a.date));
 }
 
+// Years shipping software, counted from the first hired role (the earliest "role"
+// milestone) up to `now`, so the figure stays current without a manual edit.
+export function yearsShipping(
+  list: Milestone[],
+  now: Date,
+): { years: number; since: string } {
+  const first = list
+    .filter((m) => m.type === "role")
+    .map((m) => m.date)
+    .sort()[0];
+  const [year, month = "01"] = first.split("-");
+  const months =
+    (now.getUTCFullYear() - Number(year)) * 12 + now.getUTCMonth() + 1 - Number(month);
+  return { years: Math.floor(months / 12), since: year };
+}
+
 export const profile = profileData as Profile;
 export const stats = statsData as Stats;
 export const education = educationData as Education[];

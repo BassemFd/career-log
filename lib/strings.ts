@@ -40,8 +40,8 @@ export const STRINGS: Record<Locale, {
   statPublicRepos: string;
   statMergedPRs: string;
   statMergedPRsNote: string;
-  statStarsEarned: string;
-  statStarsNote: string;
+  statYearsShipping: string;
+  statYearsShippingNote: (year: string) => string;
   liveFiguresNote: (date: string) => string;
   manualLabel: string;
   liveLabel: string;
@@ -103,10 +103,10 @@ export const STRINGS: Record<Locale, {
     statPublicRepos: "Public repositories",
     statMergedPRs: "PRs merged",
     statMergedPRsNote: "authored, public + private",
-    statStarsEarned: "Stars earned",
-    statStarsNote: "on own projects",
+    statYearsShipping: "Years shipping software",
+    statYearsShippingNote: (year) => `since ${year}`,
     liveFiguresNote: (date) =>
-      `Live figures fetched from the GitHub API on ${date}. Aggregate production figures are recorded manually from private employer codebases.`,
+      `GitHub figures fetched from the API on ${date}; years counted to today.`,
     manualLabel: "manual",
     liveLabel: "live",
     footerBuiltWith: "Built with Next.js · content lives in",
@@ -167,10 +167,10 @@ export const STRINGS: Record<Locale, {
     statPublicRepos: "Dépôts publics",
     statMergedPRs: "PR fusionnées",
     statMergedPRsNote: "auteur, public + privé",
-    statStarsEarned: "Étoiles obtenues",
-    statStarsNote: "sur projets personnels",
+    statYearsShipping: "Années à livrer du logiciel",
+    statYearsShippingNote: (year) => `depuis ${year}`,
     liveFiguresNote: (date) =>
-      `Chiffres en direct récupérés depuis l'API GitHub le ${date}. Les chiffres de production agrégés sont enregistrés manuellement à partir de bases de code d'employeurs privées.`,
+      `Chiffres GitHub récupérés depuis l'API le ${date} ; années comptées jusqu'à aujourd'hui.`,
     manualLabel: "manuel",
     liveLabel: "live",
     footerBuiltWith: "Construit avec Next.js · le contenu vit dans",

@@ -6,14 +6,21 @@ import type { STRINGS } from "@/lib/strings";
 // their freshness is honest; manual numbers are marked as aggregates.
 export function StatsSection({
   stats,
+  shipping,
   t,
 }: {
   stats: Stats;
+  shipping: { years: number; since: string };
   t: (typeof STRINGS)["en"];
 }) {
   const fetched = new Date(stats.liveFetchedAt).toLocaleDateString("en-CA");
 
   const live: { label: string; value: string; note: string }[] = [
+    {
+      label: t.statYearsShipping,
+      value: `${shipping.years}+`,
+      note: t.statYearsShippingNote(shipping.since),
+    },
     {
       label: t.statMergedPRs,
       value: stats.live.mergedPRs.toLocaleString(t.numberLocale),
@@ -28,11 +35,6 @@ export function StatsSection({
       label: t.statPublicRepos,
       value: String(stats.live.publicRepos),
       note: "github.com/BassemFd",
-    },
-    {
-      label: t.statStarsEarned,
-      value: String(stats.live.totalStars),
-      note: t.statStarsNote,
     },
   ];
 
@@ -135,14 +137,20 @@ function StatRow({
   t: (typeof STRINGS)["en"];
 }) {
   return (
-    // An odd last row spans both columns, so the grid never shows an empty cell.
-    <div className="crazy-item flex items-baseline justify-between gap-4 bg-card px-5 py-5 sm:odd:last:col-span-2">
+    <div className="crazy-item flex items-baseline justify-between gap-4 bg-card px-5 py-5">
       <div>
         <div className="text-sm font-medium text-ink">{label}</div>
         <div className="mt-0.5 flex items-center gap-2 font-mono text-xs text-muted">
-          <span className={source === "live" ? "text-live" : "text-manual"}>
-            {source === "live" ? `● ${t.liveLabel}` : `○ ${t.manualLabel}`}
-          </span>
+          {source === "live" ? (
+            <span className="shrink-0 whitespace-nowrap text-live">
+              <span className="live-dot" aria-hidden="true">
+                ●
+              </span>{" "}
+              {t.liveLabel}
+            </span>
+          ) : (
+            <span className="text-manual">○ {t.manualLabel}</span>
+          )}
           <span>{note}</span>
         </div>
       </div>
