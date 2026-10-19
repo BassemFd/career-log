@@ -32,7 +32,8 @@ export interface Visual {
   domain: string;
   // Which animated scene to draw. Kept in sync across content/ and content/fr/.
   art: VisualArt;
-  // Optional real screenshot under /public (e.g. "/visuals/planity.webp"): a 1:2
+  // Optional real screenshot under /public (e.g. "/visuals/ai-watch.webp"), only
+  // for the owner's own sites (a client, employer or school site uses `art`): a 1:2
   // capture (640x1280) of the page's first screens, which the window scrolls
   // through slowly. Without it, the drawn `art` scene plays instead.
   image?: string;

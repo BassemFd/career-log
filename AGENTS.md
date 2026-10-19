@@ -38,10 +38,11 @@ in `/content`.** You change the site by editing a file, committing, and running
   screenshot of the page in `public/visuals/` (a 1:2 webp, 640×1280, filled with
   the page's real first screens — never its blank end or footer; narrow the
   capture viewport if the page is short); without it, the drawn scene picked by
-  `art` is shown instead. The panel slams in once, then rests: on hover or focus
-  the screenshot scrolls and the drawn scene plays (on touch, the screenshot scrolls
-  once on arrival). Show a given screenshot once per page — a second entry about
-  the same site (a project next to its role) uses the drawn scene. It must link a
+  `art` is shown instead. Real screenshots are for the owner's own sites only
+  (`*.bassemfayed.com`): a client, employer or school site always uses its drawn
+  scene, and a test enforces it. The panel slams in once, then rests: on hover or
+  focus the screenshot scrolls and the drawn scene plays (on touch, the screenshot
+  scrolls once on arrival). Show a given screenshot once per page. It must link a
   **public** page only — a company's marketing site or the owner's own live site —
   never a private repo or client system, and screenshots must show nothing but
   that public page.
