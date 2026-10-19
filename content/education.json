@@ -3,7 +3,12 @@
     "school": "La Capsule",
     "degree": "Fullstack JavaScript Web & Mobile Developer — Titre Niveau 6",
     "period": "2021",
-    "note": "10-week coding bootcamp — HTML/CSS/JS, React/Redux, Node/Express, MongoDB, Git — followed by a 6-month internship, then hired."
+    "note": "10-week coding bootcamp — HTML/CSS/JS, React/Redux, Node/Express, MongoDB, Git — followed by a 6-month internship, then hired.",
+    "visual": {
+      "url": "https://www.lacapsule.academy",
+      "domain": "lacapsule.academy",
+      "art": "bootcamp"
+    }
   },
   {
     "school": "Université Saint Joseph",

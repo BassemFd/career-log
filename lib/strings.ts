@@ -27,6 +27,7 @@ export const STRINGS: Record<Locale, {
   flagship: string;
   underNda: string;
   contributor: string;
+  visitSite: (domain: string) => string;
   present: string;
   certifications: string;
   credentialId: string;
@@ -89,6 +90,7 @@ export const STRINGS: Record<Locale, {
     flagship: "Flagship",
     underNda: "Under NDA",
     contributor: "Contributor",
+    visitSite: (domain) => `Open ${domain} in a new tab`,
     present: "present",
     certifications: "Certifications",
     credentialId: "id",
@@ -152,6 +154,7 @@ export const STRINGS: Record<Locale, {
     flagship: "Phare",
     underNda: "Confidentiel",
     contributor: "Contributeur",
+    visitSite: (domain) => `Ouvrir ${domain} dans un nouvel onglet`,
     present: "présent",
     certifications: "Certifications",
     credentialId: "id",

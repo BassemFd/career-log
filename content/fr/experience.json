@@ -8,7 +8,12 @@
     "summary": "Société de conseil (ESN) — missions client et ingénierie interne. En tant que référent technique : mentoring d'ingénieurs juniors, entretiens techniques, et conception d'un test de recrutement React Native (Pixelator). Développement d'une application interne à base d'agents IA et promotion des standards d'ingénierie — code propre, SOLID, accessibilité — sur des projets Node.js/TypeScript en architecture hexagonale.",
     "stack": ["TypeScript", "React", "React Native", "Node.js"],
     "confidential": false,
-    "flagship": false
+    "flagship": false,
+    "visual": {
+      "url": "https://www.exalt-company.com/fr-fr/index.html",
+      "domain": "exalt-company.com",
+      "art": "consulting"
+    }
   },
   {
     "company": "Planity",
@@ -19,7 +24,12 @@
     "summary": "Mission de quatre ans (via eXalt-IT) sur la plateforme leader de réservation beauté en France. Responsable de bout en bout de la fonctionnalité de paiement sans contact Tap to Pay (iOS & Android — 18 mois, 200+ PR sur 3 dépôts), développement du flux d'authentification sans mot de passe Magic Link, et contribution à la refonte de planity.com ainsi qu'à un monorepo servant mobile, tablette et web avec i18n multi-pays.",
     "stack": ["React Native", "Node.js", "AWS Lambda", "Stripe Terminal"],
     "confidential": true,
-    "flagship": true
+    "flagship": true,
+    "visual": {
+      "url": "https://www.planity.com",
+      "domain": "planity.com",
+      "art": "booking"
+    }
   },
   {
     "company": "Mon Spécialiste Auto",
@@ -30,6 +40,11 @@
     "summary": "Startup d'inspection automobile. Développement de fonctionnalités web et mobile sur le dashboard pro et l'app mobile — nouvelles routes API Node/Express, contrôle d'accès par rôle avec validation JOI, floutage de plaques d'immatriculation via AWS Lambda (Rekor ai), suivi de mission interactif sur Google Maps, et couverture de tests E2E Cypress/testRigor.",
     "stack": ["React", "Node.js", "Express", "MongoDB", "Cypress", "AWS Lambda"],
     "confidential": true,
-    "flagship": false
+    "flagship": false,
+    "visual": {
+      "url": "https://www.monspecialisteauto.com",
+      "domain": "monspecialisteauto.com",
+      "art": "inspection"
+    }
   }
 ]
