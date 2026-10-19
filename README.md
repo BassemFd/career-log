@@ -1,100 +1,97 @@
-# career-log
+<div align="center">
 
-Personal developer portfolio for **Bassem Fayed** — a Next.js site that presents
-projects, GitHub stats, and career history as a continuous *commit log*.
+# `$ git log` — Bassem Fayed
 
-No database, no admin panel, no login. **All content is JSON in `/content`.** You
-update the site by editing a file, then deploying to Cloudflare Workers.
+**Un portfolio qui se lit comme un historique de commits.**
+Full-Stack Web & Mobile Developer · Paris
 
-## Run locally
+[**→ bassemfayed.com**](https://bassemfayed.com) · [FR](https://bassemfayed.com/fr) · [EN](https://bassemfayed.com/en) · [CV (PDF)](public/cv-bassem-fayed.pdf)
+
+![Next.js](https://img.shields.io/badge/Next.js-App_Router-000?logo=nextdotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=fff)
+![Tailwind](https://img.shields.io/badge/Tailwind-3-38bdf8?logo=tailwindcss&logoColor=fff)
+![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-f38020?logo=cloudflare&logoColor=fff)
+
+<img src="docs/og-card.png" alt="Aperçu de bassemfayed.com : « git log --oneline », Bassem Fayed, Full-Stack Web & Mobile Developer" width="720">
+
+</div>
+
+> 🇬🇧 **In short:** the source of my portfolio, [bassemfayed.com](https://bassemfayed.com). Projects, career and GitHub stats are presented as a commit log. Content is plain JSON in `/content` (no database, no admin, no login), served in English and French from Cloudflare Workers. [English summary below](#english-summary).
+
+## Pourquoi ce site
+
+Un CV tient sur une page ; un parcours, non. Ici, chaque projet est un « commit » avec son hash, ses jalons de carrière sont des « tags », et les chiffres clés sont tirés de GitHub. Le but : qu'un recruteur comprenne en quelques secondes ce que je construis, avec quelle stack, et depuis quand.
+
+<div align="center">
+<img src="docs/work-log.webp" alt="Section « Work log » : les projets listés comme des commits, avec leur hash, leurs technologies et une vignette cliquable" width="720">
+</div>
+
+## Points forts
+
+- **Lecture façon `git log`** : projets triés du plus récent au plus ancien, hash court style git (cosmétique, déterministe), jalons de carrière en « tags », terminal intégré (`help`).
+- **Bilingue FR / EN** : deux URLs (`/fr`, `/en`) rendues côté serveur, avec leurs propres `<html lang>`, canonical et hreflang ; `/` redirige selon un cookie puis `Accept-Language`.
+- **Trois thèmes** : clair, sombre, et un mode « crazy » en three.js, chargé à la demande seulement pour qui le choisit.
+- **Vignettes cliquables** : chaque expérience, formation ou projet peut porter une fenêtre de navigateur qui mène à la page publique concernée (capture réelle pour mes propres sites, scène dessinée pour les sites de clients).
+- **Chiffres vivants** : contributions, dépôts publics et PR fusionnées viennent de l'API GitHub ; les années d'expérience se calculent à la volée.
+- **Carte de partage dédiée** (Open Graph / Twitter) générée par le code, et un CV PDF d'une page à télécharger.
+- **Zéro back-end** : le contenu est du JSON typé, la mise à jour est un commit.
+
+## Stack
+
+| Couche | Choix |
+| --- | --- |
+| Framework | Next.js 15 (App Router), React 19, composants serveur par défaut |
+| Langage | TypeScript `strict`, types de contenu dans `lib/types.ts` |
+| Style | Tailwind CSS 3 avec design tokens uniquement |
+| 3D | three.js (mode « crazy ») |
+| Déploiement | Cloudflare Workers via [vinext](https://github.com/cloudflare/vinext) et Wrangler |
+| Tests | Vitest (cohérence FR/EN, tri, visuels, règles de confidentialité) |
+| Automatisation | GitHub Actions : rafraîchissement hebdomadaire des stats |
+
+## Le contenu, c'est du JSON
+
+| Fichier | Contenu |
+| --- | --- |
+| `content/profile.json` | Nom, accroche, résumé, liens |
+| `content/projects.json` | Le « Work log » |
+| `content/experience.json` | Parcours professionnel |
+| `content/stats.json` | Chiffres clés : `manual` (à la main) et `live` (API GitHub) |
+
+Chaque fichier a son jumeau français dans `content/fr/`. Ajouter un projet, c'est copier une entrée de `projects.json`, la modifier dans les deux langues, puis committer.
+
+## Lancer en local
 
 ```bash
 npm install
 npm run dev      # http://localhost:3001
-npm run build    # production build (run before deploying)
+npm test         # Vitest
+npm run build    # doit passer avant tout commit
 ```
 
-## The content model
-
-| File                      | What it holds                                             |
-| ------------------------- | -------------------------------------------------------- |
-| `content/profile.json`    | Name, tagline, summary, location, social links.          |
-| `content/projects.json`   | The "Work log" — every featured project.                 |
-| `content/experience.json` | The "Releases" — career/employment history.              |
-| `content/stats.json`      | Headline numbers (manual + live-fetched — see below).    |
-
-Types for all of these live in `lib/types.ts`.
-
-## How to add a new project
-
-1. Open `content/projects.json` and copy an existing object.
-2. Edit the fields:
-
-   ```json
-   {
-     "slug": "my-new-thing",              // unique id, kebab-case
-     "title": "My New Thing",
-     "blurb": "One or two sentences on what it does.",
-     "role": "owner",                     // "owner" | "contributor"
-     "stack": ["TypeScript", "Next.js"],
-     "year": "2026",
-     "links": { "github": "https://github.com/BassemFd/...", "live": null },
-     "featured": true,                    // true = shows first, at the top
-     "category": "personal"               // "personal" | "client" | "dojo"
-   }
-   ```
-
-3. Commit and push:
-
-   ```bash
-   git add content/projects.json
-   git commit -m "feat(content): add my-new-thing"
-   git push
-   ```
-
-Commit, then run `npm run deploy` to publish. Same flow for
-`experience.json` (career) and `profile.json` (bio/links).
-
-## Stats: manual vs live
-
-`content/stats.json` deliberately separates two kinds of numbers:
-
-- **`manual`** — numbers you record by hand, e.g. the aggregate
-  `976+ commits in production systems`. These come from **private employer
-  codebases** that cannot be fetched via the public API, so they never go stale
-  on their own — you edit them when they change. No private repo is named or linked.
-- **`live`** — pulled from the public GitHub API for `BassemFd`. Refresh them with:
-
-  ```bash
-  npm run refresh-stats
-  ```
-
-  This rewrites only the `live` block and the `liveFetchedAt` timestamp, then you
-  commit the change. The UI shows the fetch date so freshness is honest.
-
-  Live numbers and their source:
-  | Stat                 | GitHub API call                                            |
-  | -------------------- | ---------------------------------------------------------- |
-  | Public repositories  | `GET /users/BassemFd` → `public_repos`                     |
-  | Followers            | `GET /users/BassemFd` → `followers`                        |
-  | Stars earned         | sum of `stargazers_count` over non-fork repos              |
-  | Pull requests merged | `GET /search/issues?q=is:pr is:merged author:BassemFd`     |
-
-  > Note: GitHub's public API does **not** expose a lifetime total-commit count
-  > across repos, so the site does not claim one as a "live" figure. The large
-  > commit number is the manually-recorded production aggregate.
-
-## Deploy
+## Déployer
 
 ```bash
-npm run deploy
+npm run deploy   # build vinext + publication sur Cloudflare Workers
 ```
 
-Builds with vinext and publishes to Cloudflare Workers via Wrangler. Requires
-`npx wrangler login` once per machine. Add a custom domain in the Cloudflare
-dashboard later if you want.
+Nécessite `npx wrangler login` une fois par machine. Chaque lundi à 06:00 UTC, le workflow `refresh` met à jour les chiffres GitHub, lance les tests et le build, committe puis déploie. Le push seul ne déploie pas.
 
-## Stack
+## Confidentialité
 
-Next.js (App Router) · TypeScript · Tailwind CSS · deployed on Cloudflare
-Workers via [vinext](https://github.com/cloudflare/vinext).
+Le site ne nomme ni ne lie aucun dépôt privé d'employeur ou de client. Les chiffres issus de contributions privées sont des totaux, sans nom de dépôt. Seules mes propres pages (`*.bassemfayed.com`) utilisent de vraies captures ; un test le garantit.
+
+Les conventions de contribution (pour humains et agents IA) sont dans [`AGENTS.md`](AGENTS.md).
+
+## English summary
+
+**career-log** is the source of [bassemfayed.com](https://bassemfayed.com), my portfolio, designed to read like a `git log`: projects are commits, career milestones are tags, headline numbers come from GitHub.
+
+- Next.js (App Router) · TypeScript strict · Tailwind · deployed on Cloudflare Workers via vinext
+- Content is typed JSON in `/content`, with a French twin in `/content/fr`; both `/en` and `/fr` are server-rendered
+- Light, dark and a lazy-loaded three.js "crazy" theme; clickable browser-window thumbnails; generated Open Graph card
+- Weekly GitHub Action refreshes live stats, runs tests and build, then deploys
+- No private employer or client repo is ever named or linked
+
+```bash
+npm install && npm run dev   # http://localhost:3001
+```
