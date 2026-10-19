@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it, expect } from "vitest";
-import { projects, experience, contentByLocale } from "./content";
+import { projects, experience, contentByLocale, yearsShipping } from "./content";
 
 describe("content ordering", () => {
   it("sorts projects newest year first", () => {
@@ -33,6 +33,26 @@ describe("milestones", () => {
     for (const m of contentByLocale.en.milestones) {
       expect(m.date).toMatch(/^\d{4}(-(0[1-9]|1[0-2]))?$/);
     }
+  });
+});
+
+describe("years shipping", () => {
+  const roles = [
+    { date: "2022-06", type: "role", title: "", detail: "" },
+    { date: "2021-06", type: "role", title: "", detail: "" },
+    { date: "2020", type: "education", title: "", detail: "" },
+  ] as const;
+
+  it("counts full years from the earliest role, ignoring other milestones", () => {
+    expect(yearsShipping([...roles], new Date("2026-05-31T12:00:00Z"))).toEqual({
+      years: 4,
+      since: "2021",
+    });
+    expect(yearsShipping([...roles], new Date("2026-06-01T12:00:00Z")).years).toBe(5);
+  });
+
+  it("finds a role milestone to count from in the real content", () => {
+    expect(contentByLocale.en.milestones.some((m) => m.type === "role")).toBe(true);
   });
 });
 

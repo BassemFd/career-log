@@ -1,18 +1,6 @@
 {
-  "manual": [
-    {
-      "label": "PR fusionnées",
-      "value": "250+",
-      "note": "Tous employeurs + perso, depuis 2021",
-      "source": "manual"
-    },
-    {
-      "label": "Années à livrer du logiciel",
-      "value": "5+",
-      "note": "Depuis 2021",
-      "source": "manual"
-    }
-  ],
+  "manual": [],
+  "mergedPRsBaseline": 250,
   "activity": {
     "note": "Activité de contribution GitHub — dépôts privés inclus",
     "breakdown": [
@@ -34,11 +22,10 @@
       }
     ]
   },
-  "liveFetchedAt": "2026-10-14T13:22:07.031Z",
+  "liveFetchedAt": "2026-10-19T08:57:52.142Z",
   "live": {
-    "publicRepos": 12,
-    "totalStars": 5,
-    "mergedPRs": 3,
-    "contributions": 3389
+    "repos": 12,
+    "mergedPRs": 34,
+    "contributions": 3429
   }
 }

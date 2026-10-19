@@ -6,7 +6,7 @@ import { ProjectsGrid } from "@/components/ProjectsGrid";
 import { ExperienceTimeline } from "@/components/ExperienceTimeline";
 import { EducationSection } from "@/components/EducationSection";
 import { MilestonesTimeline } from "@/components/MilestonesTimeline";
-import { contentByLocale } from "@/lib/content";
+import { contentByLocale, yearsShipping } from "@/lib/content";
 import { STRINGS } from "@/lib/strings";
 import { useLocale } from "@/components/LocaleProvider";
 
@@ -21,7 +21,11 @@ export default function Home() {
       <Hero profile={profile} recent={projects.slice(0, 4)} t={t} />
       <ExperienceTimeline experience={experience} t={t} />
       <MilestonesTimeline milestones={milestones} t={t} />
-      <StatsSection stats={stats} t={t} />
+      <StatsSection
+        stats={stats}
+        shipping={yearsShipping(milestones, new Date())}
+        t={t}
+      />
       <ProjectsGrid projects={projects} t={t} />
       <EducationSection education={education} certifications={certifications} t={t} />
 

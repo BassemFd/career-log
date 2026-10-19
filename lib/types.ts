@@ -114,8 +114,9 @@ export interface ManualStat {
 }
 
 export interface LiveStats {
-  publicRepos: number;
-  totalStars: number;
+  // Repos owned and authored merged PRs, public + private (none named). Only a
+  // local run with the owner's token sees private repos; CI keeps the last totals.
+  repos: number;
   mergedPRs: number;
   // Calendar total since CONTRIBUTIONS_SINCE, private included (the profile shows
   // private contributions, so restrictedContributionsCount is visible to any token).
@@ -134,6 +135,9 @@ export interface ActivityMix {
 
 export interface Stats {
   manual: ManualStat[];
+  // Hand-recorded merged PRs in repos GitHub no longer shows the owner (past
+  // employers). The PR card adds the live count to it.
+  mergedPRsBaseline: number;
   activity: ActivityMix;
   liveFetchedAt: string;
   live: LiveStats;

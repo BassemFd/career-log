@@ -37,11 +37,13 @@ export const STRINGS: Record<Locale, {
   numberLocale: string;
   statContributions: string;
   statContributionsNote: string;
-  statPublicRepos: string;
-  statPublicPRs: string;
-  statPublicPRsNote: string;
-  statStarsEarned: string;
-  statStarsNote: string;
+  statRepos: string;
+  statReposNote: string;
+  statMergedPRs: string;
+  statMergedPRsLive: (count: number) => string;
+  statMergedPRsBaseline: (count: number) => string;
+  statYearsShipping: string;
+  statYearsShippingNote: (year: string) => string;
   liveFiguresNote: (date: string) => string;
   manualLabel: string;
   liveLabel: string;
@@ -100,13 +102,15 @@ export const STRINGS: Record<Locale, {
     numberLocale: "en-US",
     statContributions: "Contributions",
     statContributionsNote: "since 2021, public + private",
-    statPublicRepos: "Public repositories",
-    statPublicPRs: "Public PRs merged",
-    statPublicPRsNote: "authored, public repos only",
-    statStarsEarned: "Stars earned",
-    statStarsNote: "on own projects",
+    statRepos: "Repositories",
+    statReposNote: "public + private",
+    statMergedPRs: "PRs merged",
+    statMergedPRsLive: (count) => `${count} on GitHub`,
+    statMergedPRsBaseline: (count) => `${count}+ at work`,
+    statYearsShipping: "Years shipping software",
+    statYearsShippingNote: (year) => `since ${year}`,
     liveFiguresNote: (date) =>
-      `Live figures fetched from the GitHub API on ${date}. Aggregate production figures are recorded manually from private employer codebases.`,
+      `GitHub figures fetched from the API on ${date}; years counted to today.`,
     manualLabel: "manual",
     liveLabel: "live",
     footerBuiltWith: "Built with Next.js · content lives in",
@@ -164,13 +168,15 @@ export const STRINGS: Record<Locale, {
     numberLocale: "fr-FR",
     statContributions: "Contributions",
     statContributionsNote: "depuis 2021, public + privé",
-    statPublicRepos: "Dépôts publics",
-    statPublicPRs: "PR publiques fusionnées",
-    statPublicPRsNote: "auteur, dépôts publics uniquement",
-    statStarsEarned: "Étoiles obtenues",
-    statStarsNote: "sur projets personnels",
+    statRepos: "Dépôts",
+    statReposNote: "public + privé",
+    statMergedPRs: "PR fusionnées",
+    statMergedPRsLive: (count) => `${count} sur GitHub`,
+    statMergedPRsBaseline: (count) => `${count}+ en pro`,
+    statYearsShipping: "Années à livrer du logiciel",
+    statYearsShippingNote: (year) => `depuis ${year}`,
     liveFiguresNote: (date) =>
-      `Chiffres en direct récupérés depuis l'API GitHub le ${date}. Les chiffres de production agrégés sont enregistrés manuellement à partir de bases de code d'employeurs privées.`,
+      `Chiffres GitHub récupérés depuis l'API le ${date} ; années comptées jusqu'à aujourd'hui.`,
     manualLabel: "manuel",
     liveLabel: "live",
     footerBuiltWith: "Construit avec Next.js · le contenu vit dans",

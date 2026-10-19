@@ -13,6 +13,10 @@
  *
  * Needs a token for the GraphQL contributions total (any token works — no scope
  * needed). Uses GITHUB_TOKEN, falling back to `gh auth token` locally.
+ *
+ * The repo and merged-PR totals count private repos too (none is ever named), so
+ * only a token that can see them can count them: yours, when run locally. The
+ * workflow's GITHUB_TOKEN only sees this repo, so in CI the last totals are kept.
  */
 
 import { readFile, writeFile } from "node:fs/promises";
@@ -66,25 +70,48 @@ async function contributionsSince(year) {
   return total;
 }
 
+// In CI the token can't see private repos, so the totals that include them keep
+// the value last counted locally instead of shrinking to public-only ones.
+const LOCAL = !process.env.GITHUB_ACTIONS;
+
+// Repos owned, public and private. Only the owner's own token sees the private
+// count, so a run with anyone else's token (or one without it) keeps the last total.
+async function ownedRepos(previous) {
+  if (!LOCAL) return previous;
+  const me = await gh("user");
+  if (me.login !== USER || me.owned_private_repos === undefined) return previous;
+  return me.public_repos + me.owned_private_repos;
+}
+
+// Authored merged PRs, public and private. A merged PR stays merged, so the total
+// never goes down: a partial search, or losing access to a repo, keeps the count
+// already recorded.
+async function mergedPRs(previous) {
+  if (!LOCAL) return previous;
+  const prs = await gh(
+    `search/issues?q=${encodeURIComponent(`is:pr is:merged author:${USER}`)}`,
+  );
+  if (prs.incomplete_results) return previous;
+  return Math.max(previous, prs.total_count);
+}
+
 const readJson = async (p) => JSON.parse(await readFile(join(root, p), "utf8"));
 const writeJson = (p, v) =>
   writeFile(join(root, p), JSON.stringify(v, null, 2) + "\n", "utf8");
 
 async function main() {
-  const user = await gh(`users/${USER}`);
   const repos = await gh(`users/${USER}/repos?per_page=100`);
-  const prs = await gh(
-    `search/issues?q=${encodeURIComponent(`is:pr is:merged is:public author:${USER}`)}`,
-  );
   const own = repos.filter((r) => !r.fork && !r.archived);
+  const previous = await readJson(STATS[0]);
 
   const live = {
-    publicRepos: user.public_repos,
-    totalStars: own.reduce((sum, r) => sum + (r.stargazers_count || 0), 0),
-    mergedPRs: prs.total_count,
+    repos: await ownedRepos(previous.live.repos),
+    mergedPRs: await mergedPRs(previous.live.mergedPRs),
     contributions: await contributionsSince(CONTRIBUTIONS_SINCE),
   };
-  const liveFetchedAt = new Date().toISOString();
+  // The page shows this date for every live figure, and CI carries the private
+  // totals over, so only a local run (which refreshes them all) moves it.
+  const liveFetchedAt = LOCAL ? new Date().toISOString() : previous.liveFetchedAt;
   for (const p of STATS) {
     const stats = await readJson(p);
     await writeJson(p, { ...stats, liveFetchedAt, live });

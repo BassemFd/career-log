@@ -70,8 +70,10 @@ in `/content`.** You change the site by editing a file, committing, and running
 
 `content/stats.json` has two deliberately separate blocks:
 
-- **`manual`** — hand-recorded numbers that can't be fetched (e.g. all-time merged
-  PRs, years shipping). Edit these by hand, in both `content/` and `content/fr/`.
+- **`manual`** — hand-recorded numbers that can't be fetched (empty for now).
+  Edit these by hand, in both `content/` and `content/fr/`.
+- **Years shipping** is not stored: `yearsShipping()` in `lib/content.ts` counts
+  it at render time from the earliest `role` milestone, and it shows as live.
 - **`live`** — pulled from the GitHub API. **Only ever rewritten by**
   `npm run refresh-stats`, which updates `live` + `liveFetchedAt` in both locales.
   `contributions` is the contribution-calendar total since 2021 (private
@@ -88,8 +90,14 @@ It is still **not** part of `npm run build`.
 
 Rules:
 - Never hand-edit the `live` block — run the script.
-- Merged-PR search is restricted to `is:public`: a personal token would
-  otherwise count private-repo PRs.
+- `repos` (owned) and `mergedPRs` (authored) count public **and** private repos,
+  as bare numbers (no repo named). Only the owner's token sees the private repos,
+  so they (and `liveFetchedAt`) are updated by a local run (`gh auth token`); in
+  CI the script keeps the last values. `mergedPRs` never goes down. Never store a
+  token with employer-repo access in this repo's secrets.
+- The PR card shows `mergedPRsBaseline + live.mergedPRs`. The baseline is manual
+  (both locales): merged PRs in repos GitHub no longer shows the owner, i.e. past
+  employers. Don't count a PR in both.
 - The `activity` block (contribution-type breakdown: PRs / reviews / commits /
   issues) is **manual and cannot be fetched live.** GitHub lumps all private
   contributions into an untyped `restrictedContributionsCount` and never exposes

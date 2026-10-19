@@ -6,33 +6,46 @@ import type { STRINGS } from "@/lib/strings";
 // their freshness is honest; manual numbers are marked as aggregates.
 export function StatsSection({
   stats,
+  shipping,
   t,
 }: {
   stats: Stats;
+  shipping: { years: number; since: string };
   t: (typeof STRINGS)["en"];
 }) {
   const fetched = new Date(stats.liveFetchedAt).toLocaleDateString("en-CA");
 
-  const live: { label: string; value: string; note: string }[] = [
+  const live = (note: string): Meta[] => [{ source: "live", note }];
+  const rows: { label: string; value: string; meta: Meta[] }[] = [
+    ...stats.manual.map((s) => ({
+      label: s.label,
+      value: s.value,
+      meta: [{ source: "manual" as const, note: s.note }],
+    })),
+    {
+      label: t.statYearsShipping,
+      value: `${shipping.years}+`,
+      meta: live(t.statYearsShippingNote(shipping.since)),
+    },
+    // Live PRs plus the manual count from repos GitHub no longer shows (past
+    // employers), as one total with each part on its own line.
+    {
+      label: t.statMergedPRs,
+      value: `${(stats.mergedPRsBaseline + stats.live.mergedPRs).toLocaleString(t.numberLocale)}+`,
+      meta: [
+        { source: "live", note: t.statMergedPRsLive(stats.live.mergedPRs) },
+        { source: "manual", note: t.statMergedPRsBaseline(stats.mergedPRsBaseline) },
+      ],
+    },
     {
       label: t.statContributions,
       value: stats.live.contributions.toLocaleString(t.numberLocale),
-      note: t.statContributionsNote,
+      meta: live(t.statContributionsNote),
     },
     {
-      label: t.statPublicRepos,
-      value: String(stats.live.publicRepos),
-      note: "github.com/BassemFd",
-    },
-    {
-      label: t.statPublicPRs,
-      value: String(stats.live.mergedPRs),
-      note: t.statPublicPRsNote,
-    },
-    {
-      label: t.statStarsEarned,
-      value: String(stats.live.totalStars),
-      note: t.statStarsNote,
+      label: t.statRepos,
+      value: String(stats.live.repos),
+      meta: live(t.statReposNote),
     },
   ];
 
@@ -42,25 +55,8 @@ export function StatsSection({
         <SectionLabel title={t.sectionShortlog} />
 
         <div className="mt-8 grid gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-2">
-          {stats.manual.map((s) => (
-            <StatRow
-              key={s.label}
-              label={s.label}
-              value={s.value}
-              note={s.note}
-              source="manual"
-              t={t}
-            />
-          ))}
-          {live.map((s) => (
-            <StatRow
-              key={s.label}
-              label={s.label}
-              value={s.value}
-              note={s.note}
-              source="live"
-              t={t}
-            />
+          {rows.map((s) => (
+            <StatRow key={s.label} label={s.label} value={s.value} meta={s.meta} t={t} />
           ))}
         </div>
 
@@ -121,29 +117,44 @@ function ActivityMixBlock({
   );
 }
 
+// One line under a stat's label: where the number comes from, and a note.
+type Meta = { source: "manual" | "live"; note: string };
+
 function StatRow({
   label,
   value,
-  note,
-  source,
+  meta,
   t,
 }: {
   label: string;
   value: string;
-  note: string;
-  source: "manual" | "live";
+  meta: Meta[];
   t: (typeof STRINGS)["en"];
 }) {
   return (
     <div className="crazy-item flex items-baseline justify-between gap-4 bg-card px-5 py-5">
       <div>
         <div className="text-sm font-medium text-ink">{label}</div>
-        <div className="mt-0.5 flex items-center gap-2 font-mono text-xs text-muted">
-          <span className={source === "live" ? "text-live" : "text-manual"}>
-            {source === "live" ? `● ${t.liveLabel}` : `○ ${t.manualLabel}`}
-          </span>
-          <span>{note}</span>
-        </div>
+        {meta.map(({ source, note }) => (
+          <div
+            key={source}
+            className="mt-0.5 flex items-center gap-2 font-mono text-xs text-muted"
+          >
+            {source === "live" ? (
+              <span className="shrink-0 whitespace-nowrap text-live">
+                <span className="live-dot" aria-hidden="true">
+                  ●
+                </span>{" "}
+                {t.liveLabel}
+              </span>
+            ) : (
+              <span className="shrink-0 whitespace-nowrap text-manual">
+                ○ {t.manualLabel}
+              </span>
+            )}
+            <span>{note}</span>
+          </div>
+        ))}
       </div>
       <div className="font-display text-3xl font-semibold tabular-nums tracking-tight">
         {value}
