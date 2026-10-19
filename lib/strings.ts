@@ -38,8 +38,8 @@ export const STRINGS: Record<Locale, {
   statContributions: string;
   statContributionsNote: string;
   statPublicRepos: string;
-  statPublicPRs: string;
-  statPublicPRsNote: string;
+  statMergedPRs: string;
+  statMergedPRsNote: string;
   statStarsEarned: string;
   statStarsNote: string;
   liveFiguresNote: (date: string) => string;
@@ -101,8 +101,8 @@ export const STRINGS: Record<Locale, {
     statContributions: "Contributions",
     statContributionsNote: "since 2021, public + private",
     statPublicRepos: "Public repositories",
-    statPublicPRs: "Public PRs merged",
-    statPublicPRsNote: "authored, public repos only",
+    statMergedPRs: "PRs merged",
+    statMergedPRsNote: "authored, public + private",
     statStarsEarned: "Stars earned",
     statStarsNote: "on own projects",
     liveFiguresNote: (date) =>
@@ -165,8 +165,8 @@ export const STRINGS: Record<Locale, {
     statContributions: "Contributions",
     statContributionsNote: "depuis 2021, public + privé",
     statPublicRepos: "Dépôts publics",
-    statPublicPRs: "PR publiques fusionnées",
-    statPublicPRsNote: "auteur, dépôts publics uniquement",
+    statMergedPRs: "PR fusionnées",
+    statMergedPRsNote: "auteur, public + privé",
     statStarsEarned: "Étoiles obtenues",
     statStarsNote: "sur projets personnels",
     liveFiguresNote: (date) =>

@@ -15,6 +15,11 @@ export function StatsSection({
 
   const live: { label: string; value: string; note: string }[] = [
     {
+      label: t.statMergedPRs,
+      value: stats.live.mergedPRs.toLocaleString(t.numberLocale),
+      note: t.statMergedPRsNote,
+    },
+    {
       label: t.statContributions,
       value: stats.live.contributions.toLocaleString(t.numberLocale),
       note: t.statContributionsNote,
@@ -23,11 +28,6 @@ export function StatsSection({
       label: t.statPublicRepos,
       value: String(stats.live.publicRepos),
       note: "github.com/BassemFd",
-    },
-    {
-      label: t.statPublicPRs,
-      value: String(stats.live.mergedPRs),
-      note: t.statPublicPRsNote,
     },
     {
       label: t.statStarsEarned,
@@ -135,7 +135,8 @@ function StatRow({
   t: (typeof STRINGS)["en"];
 }) {
   return (
-    <div className="crazy-item flex items-baseline justify-between gap-4 bg-card px-5 py-5">
+    // An odd last row spans both columns, so the grid never shows an empty cell.
+    <div className="crazy-item flex items-baseline justify-between gap-4 bg-card px-5 py-5 sm:odd:last:col-span-2">
       <div>
         <div className="text-sm font-medium text-ink">{label}</div>
         <div className="mt-0.5 flex items-center gap-2 font-mono text-xs text-muted">

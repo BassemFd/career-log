@@ -116,6 +116,8 @@ export interface ManualStat {
 export interface LiveStats {
   publicRepos: number;
   totalStars: number;
+  // Authored merged PRs, public + private repos (none named). Only a local run
+  // sees private repos, so CI keeps the last local total.
   mergedPRs: number;
   // Calendar total since CONTRIBUTIONS_SINCE, private included (the profile shows
   // private contributions, so restrictedContributionsCount is visible to any token).

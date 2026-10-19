@@ -13,6 +13,10 @@
  *
  * Needs a token for the GraphQL contributions total (any token works — no scope
  * needed). Uses GITHUB_TOKEN, falling back to `gh auth token` locally.
+ *
+ * The merged-PR total counts private repos too (none is ever named), so only a
+ * token that can see them can count it: yours, when run locally. The workflow's
+ * GITHUB_TOKEN only sees this repo, so in CI the last local total is kept.
  */
 
 import { readFile, writeFile } from "node:fs/promises";
@@ -66,6 +70,16 @@ async function contributionsSince(year) {
   return total;
 }
 
+// Authored merged PRs, public and private. In CI the token can't see private
+// repos, so the total last counted locally is kept instead of shrinking it.
+async function mergedPRs(previous) {
+  if (process.env.GITHUB_ACTIONS) return previous;
+  const prs = await gh(
+    `search/issues?q=${encodeURIComponent(`is:pr is:merged author:${USER}`)}`,
+  );
+  return prs.total_count;
+}
+
 const readJson = async (p) => JSON.parse(await readFile(join(root, p), "utf8"));
 const writeJson = (p, v) =>
   writeFile(join(root, p), JSON.stringify(v, null, 2) + "\n", "utf8");
@@ -73,15 +87,13 @@ const writeJson = (p, v) =>
 async function main() {
   const user = await gh(`users/${USER}`);
   const repos = await gh(`users/${USER}/repos?per_page=100`);
-  const prs = await gh(
-    `search/issues?q=${encodeURIComponent(`is:pr is:merged is:public author:${USER}`)}`,
-  );
   const own = repos.filter((r) => !r.fork && !r.archived);
+  const previous = await readJson(STATS[0]);
 
   const live = {
     publicRepos: user.public_repos,
     totalStars: own.reduce((sum, r) => sum + (r.stargazers_count || 0), 0),
-    mergedPRs: prs.total_count,
+    mergedPRs: await mergedPRs(previous.live.mergedPRs),
     contributions: await contributionsSince(CONTRIBUTIONS_SINCE),
   };
   const liveFetchedAt = new Date().toISOString();

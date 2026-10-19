@@ -70,8 +70,8 @@ in `/content`.** You change the site by editing a file, committing, and running
 
 `content/stats.json` has two deliberately separate blocks:
 
-- **`manual`** — hand-recorded numbers that can't be fetched (e.g. all-time merged
-  PRs, years shipping). Edit these by hand, in both `content/` and `content/fr/`.
+- **`manual`** — hand-recorded numbers that can't be fetched (e.g. years
+  shipping). Edit these by hand, in both `content/` and `content/fr/`.
 - **`live`** — pulled from the GitHub API. **Only ever rewritten by**
   `npm run refresh-stats`, which updates `live` + `liveFetchedAt` in both locales.
   `contributions` is the contribution-calendar total since 2021 (private
@@ -88,8 +88,11 @@ It is still **not** part of `npm run build`.
 
 Rules:
 - Never hand-edit the `live` block — run the script.
-- Merged-PR search is restricted to `is:public`: a personal token would
-  otherwise count private-repo PRs.
+- `mergedPRs` counts authored merged PRs in public **and** private repos, as a
+  bare number (no repo named). Only a token that sees the private repos can count
+  them, so it is updated by a local run (`gh auth token`); in CI the script keeps
+  the last total. Never store a token with employer-repo access in this repo's
+  secrets.
 - The `activity` block (contribution-type breakdown: PRs / reviews / commits /
   issues) is **manual and cannot be fetched live.** GitHub lumps all private
   contributions into an untyped `restrictedContributionsCount` and never exposes

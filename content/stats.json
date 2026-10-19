@@ -1,12 +1,6 @@
 {
   "manual": [
     {
-      "label": "PRs merged",
-      "value": "250+",
-      "note": "All employers + personal, since 2021",
-      "source": "manual"
-    },
-    {
       "label": "Years shipping software",
       "value": "5+",
       "note": "Since 2021",
