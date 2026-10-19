@@ -1,5 +1,6 @@
 {
   "manual": [],
+  "mergedPRsBaseline": 250,
   "activity": {
     "note": "Activité de contribution GitHub — dépôts privés inclus",
     "breakdown": [
@@ -23,7 +24,7 @@
   },
   "liveFetchedAt": "2026-10-14T13:22:07.031Z",
   "live": {
-    "publicRepos": 12,
+    "repos": 12,
     "totalStars": 5,
     "mergedPRs": 3,
     "contributions": 3389

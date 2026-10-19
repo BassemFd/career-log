@@ -90,11 +90,14 @@ It is still **not** part of `npm run build`.
 
 Rules:
 - Never hand-edit the `live` block — run the script.
-- `mergedPRs` counts authored merged PRs in public **and** private repos, as a
-  bare number (no repo named). Only a token that sees the private repos can count
-  them, so it is updated by a local run (`gh auth token`); in CI the script keeps
-  the last total. Never store a token with employer-repo access in this repo's
-  secrets.
+- `repos` (owned) and `mergedPRs` (authored) count public **and** private repos,
+  as bare numbers (no repo named). Only the owner's token sees the private repos,
+  so they (and `liveFetchedAt`) are updated by a local run (`gh auth token`); in
+  CI the script keeps the last values. `mergedPRs` never goes down. Never store a
+  token with employer-repo access in this repo's secrets.
+- The PR card shows `mergedPRsBaseline + live.mergedPRs`. The baseline is manual
+  (both locales): merged PRs in repos GitHub no longer shows the owner, i.e. past
+  employers. Don't count a PR in both.
 - The `activity` block (contribution-type breakdown: PRs / reviews / commits /
   issues) is **manual and cannot be fetched live.** GitHub lumps all private
   contributions into an untyped `restrictedContributionsCount` and never exposes

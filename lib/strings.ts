@@ -37,9 +37,11 @@ export const STRINGS: Record<Locale, {
   numberLocale: string;
   statContributions: string;
   statContributionsNote: string;
-  statPublicRepos: string;
+  statRepos: string;
+  statReposNote: string;
   statMergedPRs: string;
-  statMergedPRsNote: string;
+  statMergedPRsLive: (count: number) => string;
+  statMergedPRsBaseline: (count: number) => string;
   statYearsShipping: string;
   statYearsShippingNote: (year: string) => string;
   liveFiguresNote: (date: string) => string;
@@ -100,9 +102,11 @@ export const STRINGS: Record<Locale, {
     numberLocale: "en-US",
     statContributions: "Contributions",
     statContributionsNote: "since 2021, public + private",
-    statPublicRepos: "Public repositories",
+    statRepos: "Repositories",
+    statReposNote: "public + private",
     statMergedPRs: "PRs merged",
-    statMergedPRsNote: "authored, public + private",
+    statMergedPRsLive: (count) => `${count} on GitHub`,
+    statMergedPRsBaseline: (count) => `${count}+ at work`,
     statYearsShipping: "Years shipping software",
     statYearsShippingNote: (year) => `since ${year}`,
     liveFiguresNote: (date) =>
@@ -164,9 +168,11 @@ export const STRINGS: Record<Locale, {
     numberLocale: "fr-FR",
     statContributions: "Contributions",
     statContributionsNote: "depuis 2021, public + privé",
-    statPublicRepos: "Dépôts publics",
+    statRepos: "Dépôts",
+    statReposNote: "public + privé",
     statMergedPRs: "PR fusionnées",
-    statMergedPRsNote: "auteur, public + privé",
+    statMergedPRsLive: (count) => `${count} sur GitHub`,
+    statMergedPRsBaseline: (count) => `${count}+ en pro`,
     statYearsShipping: "Années à livrer du logiciel",
     statYearsShippingNote: (year) => `depuis ${year}`,
     liveFiguresNote: (date) =>

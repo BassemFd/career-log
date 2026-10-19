@@ -75,9 +75,9 @@ Commit, then run `npm run deploy` to publish. Same flow for
   Live numbers and their source:
   | Stat                 | GitHub API call                                            |
   | -------------------- | ---------------------------------------------------------- |
-  | Public repositories  | `GET /users/BassemFd` → `public_repos`                     |
+  | Repositories         | `GET /user` → `public_repos + owned_private_repos` (local runs only) |
   | Followers            | `GET /users/BassemFd` → `followers`                        |
-  | Pull requests merged | `GET /search/issues?q=is:pr is:merged author:BassemFd` (public + private, local runs only) |
+  | Pull requests merged | `GET /search/issues?q=is:pr is:merged author:BassemFd` (public + private, local runs only), shown on top of the manual `mergedPRsBaseline` |
 
   > Note: GitHub's public API does **not** expose a lifetime total-commit count
   > across repos, so the site does not claim one as a "live" figure. The large
