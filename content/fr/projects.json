@@ -1,5 +1,19 @@
 [
   {
+    "slug": "bassemfd",
+    "title": "BassemFd",
+    "blurb": "My github profile readme",
+    "role": "owner",
+    "stack": [],
+    "year": "2026",
+    "links": {
+      "github": "https://github.com/BassemFd/BassemFd",
+      "live": null
+    },
+    "featured": false,
+    "category": "personal"
+  },
+  {
     "slug": "ai-watch",
     "title": "ai/watch",
     "role": "owner",
