@@ -12,8 +12,7 @@
     "visual": {
       "url": "https://www.exalt-company.com/fr-fr/index.html",
       "domain": "exalt-company.com",
-      "art": "consulting",
-      "image": "/visuals/exalt.webp"
+      "art": "consulting"
     }
   },
   {
@@ -29,8 +28,7 @@
     "visual": {
       "url": "https://www.planity.com",
       "domain": "planity.com",
-      "art": "booking",
-      "image": "/visuals/planity.webp"
+      "art": "booking"
     }
   },
   {
@@ -46,8 +44,7 @@
     "visual": {
       "url": "https://www.monspecialisteauto.com",
       "domain": "monspecialisteauto.com",
-      "art": "inspection",
-      "image": "/visuals/msa.webp"
+      "art": "inspection"
     }
   }
 ]
