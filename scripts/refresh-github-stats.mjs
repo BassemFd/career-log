@@ -74,13 +74,22 @@ async function contributionsSince(year) {
 // the value last counted locally instead of shrinking to public-only ones.
 const LOCAL = !process.env.GITHUB_ACTIONS;
 
-// Repos owned, public and private. Only the owner's own token sees the private
-// count, so a run with anyone else's token (or one without it) keeps the last total.
+// Repos owned, public and private: the list behind the profile's Repositories
+// tab. Only the owner's own token sees the private ones, so a run with anyone
+// else's token keeps the last total.
 async function ownedRepos(previous) {
   if (!LOCAL) return previous;
   const me = await gh("user");
-  if (me.login !== USER || me.owned_private_repos === undefined) return previous;
-  return me.public_repos + me.owned_private_repos;
+  if (me.login !== USER) {
+    console.warn(`Token belongs to ${me.login}, not ${USER}: repo total kept.`);
+    return previous;
+  }
+  let count = 0;
+  for (let page = 1; ; page++) {
+    const list = await gh(`user/repos?affiliation=owner&per_page=100&page=${page}`);
+    count += list.length;
+    if (list.length < 100) return count;
+  }
 }
 
 // Authored merged PRs, public and private. A merged PR stays merged, so the total
