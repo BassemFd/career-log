@@ -110,7 +110,7 @@ export const STRINGS: Record<Locale, {
     statYearsShipping: "Years shipping software",
     statYearsShippingNote: (year) => `since ${year}`,
     liveFiguresNote: (date) =>
-      `GitHub figures fetched from the API on ${date}; years counted to today.`,
+      `GitHub API figures, last full refresh on ${date}; contributions update weekly, years to today.`,
     manualLabel: "manual",
     liveLabel: "live",
     footerBuiltWith: "Built with Next.js · content lives in",
@@ -176,7 +176,7 @@ export const STRINGS: Record<Locale, {
     statYearsShipping: "Années à livrer du logiciel",
     statYearsShippingNote: (year) => `depuis ${year}`,
     liveFiguresNote: (date) =>
-      `Chiffres GitHub récupérés depuis l'API le ${date} ; années comptées jusqu'à aujourd'hui.`,
+      `Chiffres de l'API GitHub, dernière mise à jour complète le ${date} ; contributions chaque semaine, années à ce jour.`,
     manualLabel: "manuel",
     liveLabel: "live",
     footerBuiltWith: "Construit avec Next.js · le contenu vit dans",
