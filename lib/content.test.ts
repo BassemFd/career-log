@@ -76,6 +76,16 @@ describe("site visuals", () => {
     }
   });
 
+  it("uses real screenshots for the owner's own sites only (clients get the drawn scene)", () => {
+    for (const l of ["en", "fr"] as const) {
+      for (const { key, visual } of withVisual(l)) {
+        if (!visual.image) continue;
+        const host = new URL(visual.url).hostname;
+        expect(host.endsWith(".bassemfayed.com"), `${l} ${key}: ${host}`).toBe(true);
+      }
+    }
+  });
+
   it("shows each screenshot once per locale (a site's drawn scene covers its second entry)", () => {
     for (const l of ["en", "fr"] as const) {
       const images = withVisual(l).flatMap(({ visual }) => (visual.image ? [visual.image] : []));
