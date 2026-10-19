@@ -1,4 +1,6 @@
-# Weekly: refresh live GitHub stats + draft new public repos, commit, deploy.
+# Weekly: refresh live GitHub stats + draft new public repos, build and deploy.
+# Nothing is committed: main is protected, so the refreshed numbers only live in
+# the deployed build. Run `npm run refresh-stats` locally to commit them.
 # Free: public repo Actions minutes + Cloudflare Workers free tier.
 # Needs repo secrets CLOUDFLARE_API_TOKEN ("Edit Cloudflare Workers" template)
 # and CLOUDFLARE_ACCOUNT_ID.
@@ -10,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency: refresh
 
@@ -29,12 +31,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm test
       - run: npm run build
-      - name: Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add content
-          git diff --cached --quiet || { git commit -m "chore(stats): refresh live github stats" && git push; }
       - run: npm run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
