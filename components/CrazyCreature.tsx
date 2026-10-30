@@ -1,33 +1,54 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { useLocale } from "./LocaleProvider";
+import { STRINGS } from "@/lib/strings";
 
 const SPIKES = 12;
+const FOV = 12; // narrow, so the blob can swell to fill the screen without clipping the camera
+const CAM_Z = 19.2; // keeps the framing of a 35° lens at 6.4
+const EAT_ANTICIPATE = 0.35; // seconds: squash before the growth
+const EAT_GROW = 3.0; // seconds after which the screen is full
+const EAT_OVER = 3.7; // seconds until the game-over card
+
+type Phase = "idle" | "eating" | "over";
+
+const easeOut = (x: number) => 1 - (1 - x) * (1 - x);
+const easeInOut = (x: number) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
 
 // A glossy black blob with real eyeballs sunk into it, parked in the corner of
 // the WTF theme. The body (a wobbling ball with sparse goo spikes) is turned by
 // the page scroll and the spikes flare while scrolling fast. Each eye is a small
 // globe — sclera, iris, pupil, a glint — set in a rim of the body, that turns to
 // follow the pointer and is blinked shut by a lid of the same black goo.
-// Drawn on its own tiny canvas, so it adds one WebGL context on top of the backdrop.
+// Poke it and it swells, opens a mouth and swallows the page: game over, restart.
+// Drawn on its own tiny canvas (full viewport while it eats), so it adds one WebGL
+// context on top of the backdrop.
 export function CrazyCreature() {
-  const mountRef = useRef<HTMLDivElement>(null);
+  const mountRef = useRef<HTMLButtonElement>(null);
+  const restartRef = useRef<HTMLButtonElement>(null);
+  const apiRef = useRef<{ eat: () => void; reset: () => void } | null>(null);
+  const [phase, setPhase] = useState<Phase>("idle");
+  const { locale } = useLocale();
+  const t = STRINGS[locale];
 
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const size = () => mount.clientWidth;
+    const smallSize = () => mount.clientWidth;
+    let full = false; // true while the canvas covers the viewport (eating / game over)
+    const sizeNow = () => (full ? { w: window.innerWidth, h: window.innerHeight } : { w: smallSize(), h: smallSize() });
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(size(), size());
+    renderer.setSize(smallSize(), smallSize());
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 50);
-    camera.position.z = 6.4;
+    const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 100);
+    camera.position.z = CAM_Z;
 
     scene.add(new THREE.AmbientLight(0x6a5aa8, 0.9));
     const key = new THREE.DirectionalLight(0xffffff, 2.4);
@@ -69,7 +90,9 @@ export function CrazyCreature() {
       spin.add(spike);
       spikes.push(spike);
     }
-    scene.add(spin);
+    const rig = new THREE.Group();
+    rig.add(spin);
+    scene.add(rig);
 
     // Eyes: fixed toward the viewer, sunk into the front of the ball.
     const R = 0.34;
@@ -115,7 +138,41 @@ export function CrazyCreature() {
       eyeGroup.add(eye);
       eyes.push({ ball, lid });
     }
-    scene.add(eyeGroup);
+    rig.add(eyeGroup);
+
+    // Mouth: two dark caps hugging the front of the ball, ringed with teeth.
+    // Hidden until the monster eats.
+    const mouthPivot = new THREE.Group();
+    mouthPivot.rotation.x = 0.32;
+    mouthPivot.visible = false;
+    const mouth = new THREE.Group();
+    mouthPivot.add(mouth);
+    const capGeo = new THREE.SphereGeometry(1.012, 40, 16, 0, Math.PI * 2, 0, 0.55);
+    const throatGeo = new THREE.SphereGeometry(1.016, 40, 16, 0, Math.PI * 2, 0, 0.4);
+    const capMat = new THREE.MeshBasicMaterial({ color: 0x1a0314 });
+    const throatMat = new THREE.MeshBasicMaterial({ color: 0x7a1048 });
+    const faceUp = new THREE.Group();
+    faceUp.rotation.x = Math.PI / 2;
+    faceUp.add(new THREE.Mesh(capGeo, capMat), new THREE.Mesh(throatGeo, throatMat));
+    mouth.add(faceUp);
+    const toothGeo = new THREE.ConeGeometry(0.045, 0.2, 8);
+    toothGeo.translate(0, 0.1, 0);
+    const toothMat = new THREE.MeshStandardMaterial({ color: 0xfaf6ee, roughness: 0.3 });
+    const up = new THREE.Vector3(0, 1, 0);
+    for (const [a0, a1] of [[0.2, 0.8], [1.2, 1.8]]) {
+      for (let i = 0; i < 8; i++) {
+        const phi = (a0 + ((a1 - a0) * i) / 7) * Math.PI;
+        const th = 0.52;
+        const P = new THREE.Vector3(Math.sin(th) * Math.cos(phi), Math.sin(th) * Math.sin(phi), Math.cos(th));
+        const tan = new THREE.Vector3(Math.cos(th) * Math.cos(phi), Math.cos(th) * Math.sin(phi), -Math.sin(th));
+        const dir = tan.multiplyScalar(-0.8).add(P.clone().multiplyScalar(0.6)).normalize();
+        const tooth = new THREE.Mesh(toothGeo, toothMat);
+        tooth.position.copy(P).multiplyScalar(1.01);
+        tooth.quaternion.setFromUnitVectors(up, dir);
+        mouth.add(tooth);
+      }
+    }
+    rig.add(mouthPivot);
 
     const pointer = new THREE.Vector2(0, 0);
     const look = new THREE.Vector2(0, 0);
@@ -123,9 +180,82 @@ export function CrazyCreature() {
     let scrollNow = scrollTarget;
     let flare = 0;
     let raf = 0;
+    let hover = false;
+    let hoverScale = 1;
+    let mode: Phase = "idle";
+    let eatStart = 0;
+    let startX = 0;
+    let startY = 0;
+    let s0 = 1;
+    let sEnd = 1;
+    let overShown = false;
+    const halfH = CAM_Z * Math.tan((FOV / 2) * (Math.PI / 180));
+
+    function setSize() {
+      const { w, h } = sizeNow();
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+
+    function eat() {
+      if (mode !== "idle" || reduced) return;
+      const r = mount!.getBoundingClientRect();
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      const unit = H / 2 / halfH; // pixels per world unit in the full-viewport view
+      s0 = r.height / H;
+      startX = (r.left + r.width / 2 - W / 2) / unit;
+      startY = -(r.top + r.height / 2 - H / 2) / unit;
+      sEnd = (Math.hypot(W, H) / unit) * 1.25;
+      full = true;
+      Object.assign(mount!.style, {
+        position: "fixed",
+        inset: "0",
+        width: "100vw",
+        height: "100vh",
+        zIndex: "90",
+        borderRadius: "0",
+        pointerEvents: "none",
+      });
+      document.documentElement.style.overflow = "hidden";
+      setSize();
+      mouthPivot.visible = true;
+      mode = "eating";
+      overShown = false;
+      eatStart = performance.now();
+      setPhase("eating");
+    }
+
+    function reset() {
+      if (mode === "idle") return;
+      mode = "idle";
+      full = false;
+      mount!.removeAttribute("style");
+      document.documentElement.style.overflow = "";
+      rig.position.set(0, 0, 0);
+      rig.scale.setScalar(1);
+      mouthPivot.visible = false;
+      setSize();
+      setPhase("idle");
+    }
+    apiRef.current = { eat, reset };
+
+    function onOver() {
+      hover = true;
+    }
+    function onOut() {
+      hover = false;
+    }
+    mount.addEventListener("pointerenter", onOver);
+    mount.addEventListener("pointerleave", onOut);
 
     function onMove(e: PointerEvent) {
       const r = mount!.getBoundingClientRect();
+      if (full) {
+        pointer.set(0, 0);
+        return;
+      }
       pointer.set(
         THREE.MathUtils.clamp((e.clientX - (r.left + r.width / 2)) / 400, -1, 1),
         THREE.MathUtils.clamp(-(e.clientY - (r.top + r.height / 2)) / 400, -1, 1),
@@ -154,7 +284,30 @@ export function CrazyCreature() {
 
       spin.rotation.y = scrollNow * 0.006 + t * 0.12;
       spin.rotation.x = Math.sin(scrollNow * 0.003) * 0.6;
-      spin.scale.setScalar(1 + 0.05 * Math.sin(t * 2));
+      hoverScale += ((hover && mode === "idle" ? 1.1 : 1) - hoverScale) * 0.15;
+      spin.scale.setScalar((1 + 0.05 * Math.sin(t * 2)) * hoverScale);
+
+      if (mode === "eating") {
+        const et = (performance.now() - eatStart) / 1000;
+        const g = Math.min(1, Math.max(0, (et - EAT_ANTICIPATE) / (EAT_GROW - EAT_ANTICIPATE)));
+        const squash = et < EAT_ANTICIPATE ? 1 - 0.15 * easeOut(et / EAT_ANTICIPATE) : 0.85;
+        const m = squash + (sEnd / s0 - 0.85) * Math.pow(g, 2.2);
+        rig.scale.setScalar(s0 * m);
+        const move = easeInOut(Math.min(1, Math.max(0, (et - EAT_ANTICIPATE) / 2.3)));
+        rig.position.set(startX * (1 - move), startY * (1 - move), 0);
+        // Mouth: opens wide while it grows, then keeps chewing.
+        const o = easeOut(Math.min(1, Math.max(0, (et - 0.6) / 1.6)));
+        const chew = 0.07 * o * Math.sin(et * 14);
+        mouth.scale.set(1 + 0.75 * o, 0.1 + 0.95 * o + chew, 1);
+        mouthPivot.position.y = -0.05 * o;
+        spin.rotation.x *= 1 - g; // settle, so the face stays toward the viewer
+        for (const sp of spikes) sp.scale.set(1, 0.7 + 0.8 * Math.sin(et * 9 + sp.id) * 0.3 + g, 1);
+        if (!overShown && et >= EAT_OVER) {
+          overShown = true;
+          mode = "over";
+          setPhase("over");
+        }
+      }
       for (const sp of spikes) sp.scale.set(1, 0.7 + flare * 0.9, 1);
 
       look.lerp(pointer, 0.12);
@@ -175,7 +328,7 @@ export function CrazyCreature() {
       raf = requestAnimationFrame(frame);
     }
     function resize() {
-      renderer.setSize(size(), size());
+      setSize();
       if (reduced) draw(0);
     }
 
@@ -190,18 +343,64 @@ export function CrazyCreature() {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", resize);
-      for (const g of [bodyGeo, spikeGeo, irisGeo, ringGeo, pupilGeo, glintGeo, eyeGeo, lidGeo, rimGeo]) g.dispose();
-      for (const m of [gooMat, scleraMat, irisMat, ringMat, pupilMat, glintMat]) m.dispose();
+      mount.removeEventListener("pointerenter", onOver);
+      mount.removeEventListener("pointerleave", onOut);
+      document.documentElement.style.overflow = "";
+      apiRef.current = null;
+      for (const g of [bodyGeo, spikeGeo, irisGeo, ringGeo, pupilGeo, glintGeo, eyeGeo, lidGeo, rimGeo, capGeo, throatGeo, toothGeo]) g.dispose();
+      for (const m of [gooMat, scleraMat, irisMat, ringMat, pupilMat, glintMat, capMat, throatMat, toothMat]) m.dispose();
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
   }, []);
 
+  // Escape always gets you out of the game-over screen.
+  useEffect(() => {
+    if (phase === "idle") return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && apiRef.current?.reset();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase === "over") restartRef.current?.focus();
+  }, [phase]);
+
   return (
-    <div
-      ref={mountRef}
-      aria-hidden="true"
-      className="pointer-events-none fixed bottom-3 left-3 z-[60] h-28 w-28 sm:h-40 sm:w-40 lg:bottom-6 lg:left-auto lg:right-6 lg:h-52 lg:w-52"
-    />
+    <>
+      <button
+        ref={mountRef}
+        type="button"
+        aria-label={t.monsterLabel}
+        onClick={() => apiRef.current?.eat()}
+        className="fixed bottom-3 left-3 z-[60] h-28 w-28 cursor-pointer rounded-full motion-reduce:pointer-events-none sm:h-40 sm:w-40 lg:bottom-6 lg:left-auto lg:right-6 lg:h-52 lg:w-52"
+      />
+      {phase === "over" && (
+        <div
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="monster-over-title"
+          className="monster-over fixed inset-0 z-[100] grid place-items-center px-6 text-center"
+        >
+          <div>
+            <h2
+              id="monster-over-title"
+              className="font-display text-5xl font-bold tracking-tight sm:text-7xl"
+            >
+              {t.gameOverTitle}
+            </h2>
+            <p className="mt-4 text-lg text-muted">{t.gameOverText}</p>
+            <button
+              ref={restartRef}
+              type="button"
+              onClick={() => apiRef.current?.reset()}
+              className="mt-8 rounded-lg bg-accent px-6 py-3 font-mono text-sm font-bold text-paper transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            >
+              {t.gameOverRestart}
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

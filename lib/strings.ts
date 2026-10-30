@@ -66,6 +66,10 @@ export const STRINGS: Record<Locale, {
   typeHelp: string;
   help: string;
   crazyHelp: string;
+  monsterLabel: string;
+  gameOverTitle: string;
+  gameOverText: string;
+  gameOverRestart: string;
   topFeedback: string;
   openingFeedback: (target: string) => string;
   goToFeedback: (label: string) => string;
@@ -132,6 +136,10 @@ export const STRINGS: Record<Locale, {
     typeHelp: "type `help`",
     help: "commands: log, tag, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "PRESS LIGHT OR DARK THEME",
+    monsterLabel: "Poke the monster",
+    gameOverTitle: "GAME OVER",
+    gameOverText: "The monster ate you.",
+    gameOverRestart: "Restart",
     topFeedback: "↑ top",
     openingFeedback: (target) => `opening ${target}…`,
     goToFeedback: (label) => `→ ${label}`,
@@ -198,6 +206,10 @@ export const STRINGS: Record<Locale, {
     typeHelp: "tapez `help`",
     help: "commandes : log, tag, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "APPUYEZ SUR LE THÈME CLAIR OU SOMBRE",
+    monsterLabel: "Toucher le monstre",
+    gameOverTitle: "GAME OVER",
+    gameOverText: "Le monstre t'a mangé.",
+    gameOverRestart: "Recommencer",
     topFeedback: "↑ haut",
     openingFeedback: (target) => `ouverture de ${target}…`,
     goToFeedback: (label) => `→ ${label}`,

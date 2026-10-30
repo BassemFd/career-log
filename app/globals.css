@@ -169,6 +169,28 @@ body {
   box-shadow: 0 10px 40px -12px rgb(255 84 176 / 0.45), 0 0 0 1px rgb(255 255 255 / 0.14);
 }
 
+/* Game over: the monster's mouth fills the screen, then this card fades in. */
+.monster-over {
+  background: radial-gradient(circle at 50% 45%, rgb(60 8 40 / 0.55), rgb(8 2 14 / 0.96) 70%);
+  animation: monster-over-in 0.5s ease-out both;
+}
+.monster-over h2 {
+  background: linear-gradient(100deg, #fff, #ffc4ea 40%, #ff54b0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes monster-over-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .monster-over {
+    animation: none;
+  }
+}
+
 /* Buttons to leave the theme: they breathe softly so the way out is obvious. */
 .exit-glow {
   animation: wtf-exit-glow 2.4s ease-in-out infinite;
