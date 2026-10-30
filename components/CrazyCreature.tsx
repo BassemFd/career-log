@@ -13,7 +13,7 @@ const EAT_CHOMP = 4.8; // seconds: slow then ever faster growth, jaws wide, then
 const EAT_COVER = 5.4; // seconds: the body swells over the whole screen after the bite
 const EAT_OVER = 5.9; // seconds until the game-over card
 
-type Phase = "idle" | "eating" | "chomp" | "over";
+type Phase = "idle" | "eating" | "chomp" | "over" | "dying" | "won";
 
 const easeOut = (x: number) => 1 - (1 - x) * (1 - x);
 const easeIn = (x: number) => x * x;
@@ -25,6 +25,7 @@ const easeInOut = (x: number) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2,
 // globe — sclera, iris, pupil, a glint — set in a rim of the body, that turns to
 // follow the pointer and is blinked shut by a lid of the same black goo.
 // Poke it and it swells, opens a mouth and swallows the page: game over, restart.
+// Unless you poke it in the eye while it grows: then it dies and you win.
 // Drawn on its own tiny canvas (full viewport while it eats), so it adds one WebGL
 // context on top of the backdrop.
 export function CrazyCreature() {
@@ -142,39 +143,108 @@ export function CrazyCreature() {
     }
     rig.add(eyeGroup);
 
-    // Mouth: two dark caps hugging the front of the ball, ringed with teeth.
-    // Hidden until the monster eats.
-    const mouthPivot = new THREE.Group();
-    mouthPivot.rotation.x = 0.32;
-    mouthPivot.visible = false;
-    const mouth = new THREE.Group();
-    mouthPivot.add(mouth);
-    const capGeo = new THREE.SphereGeometry(1.012, 40, 16, 0, Math.PI * 2, 0, 0.55);
-    const throatGeo = new THREE.SphereGeometry(1.016, 40, 16, 0, Math.PI * 2, 0, 0.4);
-    const capMat = new THREE.MeshBasicMaterial({ color: 0x1a0314 });
-    const throatMat = new THREE.MeshBasicMaterial({ color: 0x7a1048 });
-    const faceUp = new THREE.Group();
-    faceUp.rotation.x = Math.PI / 2;
-    faceUp.add(new THREE.Mesh(capGeo, capMat), new THREE.Mesh(throatGeo, throatMat));
-    mouth.add(faceUp);
-    const toothGeo = new THREE.ConeGeometry(0.045, 0.2, 8);
-    toothGeo.translate(0, 0.1, 0);
-    const toothMat = new THREE.MeshStandardMaterial({ color: 0xfaf6ee, roughness: 0.3 });
-    const up = new THREE.Vector3(0, 1, 0);
-    for (const [a0, a1] of [[0.2, 0.8], [1.2, 1.8]]) {
-      for (let i = 0; i < 8; i++) {
-        const phi = (a0 + ((a1 - a0) * i) / 7) * Math.PI;
-        const th = 0.52;
-        const P = new THREE.Vector3(Math.sin(th) * Math.cos(phi), Math.sin(th) * Math.sin(phi), Math.cos(th));
-        const tan = new THREE.Vector3(Math.cos(th) * Math.cos(phi), Math.cos(th) * Math.sin(phi), -Math.sin(th));
-        const dir = tan.multiplyScalar(-0.8).add(P.clone().multiplyScalar(0.6)).normalize();
-        const tooth = new THREE.Mesh(toothGeo, toothMat);
-        tooth.position.copy(P).multiplyScalar(1.01);
-        tooth.quaternion.setFromUnitVectors(up, dir);
-        mouth.add(tooth);
+    // Mouth: a lens-shaped cavity on the front of the ball between two lips, with
+    // a row of teeth riding on each lip. Opening moves the lips apart along the
+    // sphere, so the teeth slide with them at their real size (never stretched);
+    // shut, the two rows interleave. Hidden until the monster eats.
+    const MOUTH_NL = 28;
+    const MOUTH_NA = 10;
+    const mPos = new Float32Array((MOUTH_NL + 1) * (MOUTH_NA + 1) * 3);
+    const mCol = new Float32Array(mPos.length);
+    const lipColor = new THREE.Color(0x7a1148);
+    const throatColor = new THREE.Color(0x10020a);
+    const tmpColor = new THREE.Color();
+    const mIndex: number[] = [];
+    for (let i = 0; i <= MOUTH_NL; i++) {
+      for (let j = 0; j <= MOUTH_NA; j++) {
+        const depth = 1 - Math.abs((2 * j) / MOUTH_NA - 1);
+        tmpColor.copy(lipColor).lerp(throatColor, Math.pow(depth, 0.5));
+        tmpColor.toArray(mCol, (i * (MOUTH_NA + 1) + j) * 3);
+        if (i < MOUTH_NL && j < MOUTH_NA) {
+          const a = i * (MOUTH_NA + 1) + j;
+          const b = a + MOUTH_NA + 1;
+          mIndex.push(a, b, a + 1, b, b + 1, a + 1);
+        }
       }
     }
-    rig.add(mouthPivot);
+    const mouthGeo = new THREE.BufferGeometry();
+    mouthGeo.setAttribute("position", new THREE.BufferAttribute(mPos, 3));
+    mouthGeo.setAttribute("color", new THREE.BufferAttribute(mCol, 3));
+    mouthGeo.setIndex(mIndex);
+    const mouthMat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
+    const mouthGroup = new THREE.Group();
+    mouthGroup.visible = false;
+    mouthGroup.add(new THREE.Mesh(mouthGeo, mouthMat));
+    rig.add(mouthGroup);
+
+    const toothGeo = new THREE.ConeGeometry(0.05, 0.17, 10);
+    toothGeo.translate(0, 0.085, 0);
+    const toothMat = new THREE.MeshStandardMaterial({ color: 0xfbf5e6, emissive: 0x221a10, roughness: 0.35 });
+    const UPPER = 9;
+    const LOWER = 8;
+    const teeth: { mesh: THREE.Mesh; upper: boolean; u: number }[] = [];
+    const addTooth = (upper: boolean, u: number, len: number) => {
+      const mesh = new THREE.Mesh(toothGeo, toothMat);
+      mesh.scale.set(1, len, 1);
+      mouthGroup.add(mesh);
+      teeth.push({ mesh, upper, u });
+    };
+    // Lower teeth sit between the upper ones so the rows interlock; canines are longer.
+    for (let i = 0; i < UPPER; i++) {
+      const u = -0.86 + (1.72 * i) / (UPPER - 1);
+      addTooth(true, u, i === 1 || i === UPPER - 2 ? 1.45 : 1 - 0.2 * Math.abs(u));
+    }
+    for (let i = 0; i < LOWER; i++) {
+      const u = -0.86 + (1.72 * (i + 0.5)) / (UPPER - 1);
+      addTooth(false, u, i === 0 || i === LOWER - 1 ? 1.4 : 1.1 - 0.2 * Math.abs(u));
+    }
+
+    // Where a lip runs on the sphere, as latitude/longitude, for u in [-1, 1].
+    const lip = (u: number, open: number, upper: boolean) => {
+      // Kept near the front of the ball: lower down, the surface turns away
+      // and the bottom row would be seen end-on.
+      const W = 0.45 + 0.45 * open;
+      const half = 0.03 + 0.28 * open;
+      const latC = -0.24 - 0.07 * open + 0.07 * u * u; // corners curl up: a grin
+      const e = Math.sqrt(Math.max(0, 1 - u * u));
+      return { lat: latC + (upper ? half : -half) * e, lon: u * W };
+    };
+    const onSphere = (lat: number, lon: number, r: number, out: THREE.Vector3) =>
+      out.set(r * Math.cos(lat) * Math.sin(lon), r * Math.sin(lat), r * Math.cos(lat) * Math.cos(lon));
+    const vP = new THREE.Vector3();
+    const vT = new THREE.Vector3();
+    const up = new THREE.Vector3(0, 1, 0);
+
+    function setMouth(open: number) {
+      for (let i = 0; i <= MOUTH_NL; i++) {
+        const u = -1 + (2 * i) / MOUTH_NL;
+        const lo = lip(u, open, false);
+        const hi = lip(u, open, true);
+        for (let j = 0; j <= MOUTH_NA; j++) {
+          const lat = lo.lat + ((hi.lat - lo.lat) * j) / MOUTH_NA;
+          onSphere(lat, lo.lon, 1.02, vP).toArray(mPos, (i * (MOUTH_NA + 1) + j) * 3);
+        }
+      }
+      mouthGeo.attributes.position.needsUpdate = true;
+      mouthGeo.computeBoundingSphere();
+      for (const tooth of teeth) {
+        const { lat: l0, lon } = lip(tooth.u, open, tooth.upper);
+        const lat = l0 + (tooth.upper ? -0.015 : 0.015);
+        onSphere(lat, lon, 0.995, vP);
+        // Along the sphere toward the other lip, tipped a little out of the
+        // surface: upper fangs hang down, lower teeth stand up.
+        vT.set(-Math.sin(lat) * Math.sin(lon), Math.cos(lat), -Math.sin(lat) * Math.cos(lon));
+        if (tooth.upper) vT.negate();
+        vT.multiplyScalar(0.9).addScaledVector(vP, 0.3).normalize();
+        tooth.mesh.position.copy(vP);
+        tooth.mesh.quaternion.setFromUnitVectors(up, vT);
+      }
+    }
+    setMouth(0);
+
+    const eyeHits = eyes.map((e) => e.ball.children[0]);
+    const raycaster = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
 
     const pointer = new THREE.Vector2(0, 0);
     const look = new THREE.Vector2(0, 0);
@@ -193,6 +263,10 @@ export function CrazyCreature() {
     let sEnd = 1;
     let forceClose = false;
     let chompShown = false;
+    let lastOpen = 0;
+    let killStart = 0;
+    let killFrom = 1;
+    let wonShown = false;
     let overShown = false;
     const halfH = CAM_Z * Math.tan((FOV / 2) * (Math.PI / 180));
 
@@ -222,13 +296,16 @@ export function CrazyCreature() {
         height: "100vh",
         zIndex: "90",
         borderRadius: "0",
-        pointerEvents: "none",
+        pointerEvents: "auto",
+        cursor: "crosshair",
       });
       document.documentElement.style.overflow = "hidden";
       setSize();
-      mouthPivot.visible = true;
+      setMouth(0);
+      mouthGroup.visible = true;
       mode = "eating";
       overShown = false;
+      wonShown = false;
       chompShown = false;
       eatStart = performance.now();
       setPhase("eating");
@@ -243,11 +320,31 @@ export function CrazyCreature() {
       document.documentElement.style.overflow = "";
       rig.position.set(0, 0, 0);
       rig.scale.setScalar(1);
-      mouthPivot.visible = false;
+      rig.rotation.z = 0;
+      rig.visible = true;
+      mouthGroup.visible = false;
       setSize();
       setPhase("idle");
     }
     apiRef.current = { eat, reset };
+
+    // The secret: poke it in the eye while it is still growing.
+    function kill() {
+      mode = "dying";
+      killStart = performance.now();
+      killFrom = rig.scale.x;
+      mount!.style.transform = "";
+      setPhase("dying");
+    }
+    function onDown(e: PointerEvent) {
+      if (mode !== "eating") return;
+      if ((performance.now() - eatStart) / 1000 >= EAT_CHOMP) return;
+      const r = mount!.getBoundingClientRect();
+      ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      raycaster.setFromCamera(ndc, camera);
+      if (raycaster.intersectObjects(eyeHits, false).length) kill();
+    }
+    mount.addEventListener("pointerdown", onDown);
 
     function onOver() {
       hover = true;
@@ -281,9 +378,10 @@ export function CrazyCreature() {
 
       if (!reduced) {
         const pos = bodyGeo.attributes.position;
+        const wob = mode === "idle" ? 1 : 0.25; // calmer surface while the mouth is out
         for (let i = 0; i < pos.count; i++) {
           const x = rest[i * 3], y = rest[i * 3 + 1], z = rest[i * 3 + 2];
-          const k = 1 + 0.045 * Math.sin(x * 3 + t * 1.5) * Math.cos(y * 3 - t * 1.1) + 0.03 * Math.sin(z * 4 + t);
+          const k = 1 + wob * (0.045 * Math.sin(x * 3 + t * 1.5) * Math.cos(y * 3 - t * 1.1) + 0.03 * Math.sin(z * 4 + t));
           pos.setXYZ(i, x * k, y * k, z * k);
         }
         pos.needsUpdate = true;
@@ -321,8 +419,8 @@ export function CrazyCreature() {
         rig.scale.setScalar(S);
         const move = easeInOut(Math.min(1, Math.max(0, (et - EAT_ANTICIPATE) / 3.2)));
         rig.position.set(startX * (1 - move), startY * (1 - move), 0);
-        mouth.scale.set(1 + 0.75 * open, 0.1 + 0.95 * open, 1);
-        mouthPivot.position.y = -0.05 * open;
+        setMouth(open);
+        lastOpen = open;
         spin.rotation.x *= 0.96;
         const rage = Math.min(1, Math.max(0, (et - 1) / (EAT_CHOMP - 1)));
         for (const sp of spikes) sp.scale.set(1, 0.7 + rage * (0.8 + 0.3 * Math.sin(et * 9 + sp.id)), 1);
@@ -340,6 +438,23 @@ export function CrazyCreature() {
           mode = "over";
           forceClose = false;
           setPhase("over");
+        }
+      } else if (mode === "dying") {
+        // Hit in the eye: it squeezes its eyes shut, puffs, spins and shrinks to nothing.
+        const kt = (performance.now() - killStart) / 1000;
+        const f = Math.min(1, kt / 1.0);
+        const puff = 1 + 0.18 * Math.sin(Math.min(1, kt / 0.25) * Math.PI);
+        rig.scale.setScalar(Math.max(1e-4, killFrom * puff * (1 - easeIn(f))));
+        rig.rotation.z = kt * kt * 9;
+        setMouth(Math.max(0, lastOpen * (1 - kt / 0.2)));
+        for (const sp of spikes) sp.scale.set(1, 0.3, 1);
+        forceClose = true;
+        if (!wonShown && kt >= 1.1) {
+          wonShown = true;
+          rig.visible = false;
+          mode = "won";
+          forceClose = false;
+          setPhase("won");
         }
       }
 
@@ -378,10 +493,11 @@ export function CrazyCreature() {
       window.removeEventListener("resize", resize);
       mount.removeEventListener("pointerenter", onOver);
       mount.removeEventListener("pointerleave", onOut);
+      mount.removeEventListener("pointerdown", onDown);
       document.documentElement.style.overflow = "";
       apiRef.current = null;
-      for (const g of [bodyGeo, spikeGeo, irisGeo, ringGeo, pupilGeo, glintGeo, eyeGeo, lidGeo, rimGeo, capGeo, throatGeo, toothGeo]) g.dispose();
-      for (const m of [gooMat, scleraMat, irisMat, ringMat, pupilMat, glintMat, capMat, throatMat, toothMat]) m.dispose();
+      for (const g of [bodyGeo, spikeGeo, irisGeo, ringGeo, pupilGeo, glintGeo, eyeGeo, lidGeo, rimGeo, mouthGeo, toothGeo]) g.dispose();
+      for (const m of [gooMat, scleraMat, irisMat, ringMat, pupilMat, glintMat, mouthMat, toothMat]) m.dispose();
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
@@ -396,7 +512,7 @@ export function CrazyCreature() {
   }, [phase]);
 
   useEffect(() => {
-    if (phase === "over") restartRef.current?.focus();
+    if (phase === "over" || phase === "won") restartRef.current?.focus();
   }, [phase]);
 
   return (
@@ -408,12 +524,14 @@ export function CrazyCreature() {
         onClick={() => apiRef.current?.eat()}
         className="fixed bottom-3 left-3 z-[60] h-28 w-28 cursor-pointer rounded-full motion-reduce:pointer-events-none sm:h-40 sm:w-40 lg:bottom-6 lg:left-auto lg:right-6 lg:h-52 lg:w-52"
       />
-      {phase === "chomp" && (
+      {(phase === "chomp" || phase === "dying") && (
         <div aria-hidden="true" className="monster-chomp fixed inset-0 z-[95] grid place-items-center">
-          <span className="font-display text-7xl font-black sm:text-9xl">{t.monsterChomp}</span>
+          <span className="font-display text-7xl font-black sm:text-9xl">
+            {phase === "chomp" ? t.monsterChomp : t.monsterSplat}
+          </span>
         </div>
       )}
-      {phase === "over" && (
+      {(phase === "over" || phase === "won") && (
         <div
           role="alertdialog"
           aria-modal="true"
@@ -425,16 +543,16 @@ export function CrazyCreature() {
               id="monster-over-title"
               className="font-display text-5xl font-bold tracking-tight sm:text-7xl"
             >
-              {t.gameOverTitle}
+              {phase === "won" ? t.winTitle : t.gameOverTitle}
             </h2>
-            <p className="mt-4 text-lg text-muted">{t.gameOverText}</p>
+            <p className="mt-4 text-lg text-muted">{phase === "won" ? t.winText : t.gameOverText}</p>
             <button
               ref={restartRef}
               type="button"
               onClick={() => apiRef.current?.reset()}
               className="mt-8 rounded-lg bg-accent px-6 py-3 font-mono text-sm font-bold text-paper transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
-              {t.gameOverRestart}
+              {phase === "won" ? t.winRestart : t.gameOverRestart}
             </button>
           </div>
         </div>
