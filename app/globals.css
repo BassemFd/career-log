@@ -58,29 +58,29 @@
   --color-gutter-accent: 91 124 255;
 }
 
-/* WTF: night-time aurora — indigo paper, magenta/violet/cyan light. The
-   shader backdrop (CrazyScene) supplies the colour; cards are frosted glass. */
+/* WTF: night-time aurora in greens — deep emerald paper, mint and lime light.
+   The shader backdrop (CrazyScene) supplies the colour; cards are frosted glass. */
 [data-theme="crazy"] {
   color-scheme: dark;
-  --color-paper: 8 7 24;
-  --color-card: 22 18 52;
-  --color-ink: 244 240 255;
-  --color-rule: 86 70 150;
-  --color-muted: 178 170 214;
-  --color-accent: 255 84 176;
-  --color-accent-soft: 70 20 66;
-  --color-live: 52 224 180;
-  --color-live-soft: 10 56 52;
-  --color-manual: 255 168 92;
-  --color-manual-soft: 78 44 20;
-  --color-teal: 60 210 235;
-  --color-teal-soft: 10 52 70;
-  --color-violet: 178 140 255;
-  --color-violet-soft: 48 30 94;
-  --color-gutter: 10 8 28;
-  --color-gutter-line: 48 40 96;
-  --color-gutter-muted: 178 170 214;
-  --color-gutter-accent: 255 84 176;
+  --color-paper: 4 14 12;
+  --color-card: 10 34 28;
+  --color-ink: 236 255 244;
+  --color-rule: 40 110 84;
+  --color-muted: 154 204 182;
+  --color-accent: 74 232 138;
+  --color-accent-soft: 12 60 40;
+  --color-live: 140 240 100;
+  --color-live-soft: 24 60 16;
+  --color-manual: 232 214 96;
+  --color-manual-soft: 64 56 14;
+  --color-teal: 60 220 200;
+  --color-teal-soft: 8 58 56;
+  --color-violet: 170 236 110;
+  --color-violet-soft: 36 62 18;
+  --color-gutter: 5 18 15;
+  --color-gutter-line: 24 72 56;
+  --color-gutter-muted: 154 204 182;
+  --color-gutter-accent: 74 232 138;
 }
 
 html {
@@ -113,7 +113,7 @@ body {
 
 /* The hero name is lit by a slow gradient sweep. */
 [data-theme="crazy"] h1 {
-  background: linear-gradient(100deg, #fff 0%, #ffc4ea 30%, #b28cff 55%, #3cd2eb 80%, #fff 100%);
+  background: linear-gradient(100deg, #fff 0%, #c8ffd9 30%, #6df0a0 55%, #3cdcc8 80%, #fff 100%);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -155,8 +155,8 @@ body {
   opacity: 0;
   background: radial-gradient(
     320px circle at var(--mx, 50%) var(--my, 50%),
-    rgb(255 84 176 / 0.16),
-    rgb(60 210 235 / 0.07) 45%,
+    rgb(74 232 138 / 0.16),
+    rgb(60 220 200 / 0.07) 45%,
     transparent 70%
   );
   transition: opacity 0.3s ease;
@@ -166,32 +166,7 @@ body {
 }
 [data-theme="crazy"] .crazy-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 40px -12px rgb(255 84 176 / 0.45), 0 0 0 1px rgb(255 255 255 / 0.14);
-}
-
-/* Sections ease in as they enter the theme — no looping motion on text. */
-[data-theme="crazy"] main > * {
-  animation: wtf-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-[data-theme="crazy"] main > *:nth-child(2) {
-  animation-delay: 0.08s;
-}
-[data-theme="crazy"] main > *:nth-child(3) {
-  animation-delay: 0.16s;
-}
-[data-theme="crazy"] main > *:nth-child(n + 4) {
-  animation-delay: 0.24s;
-}
-
-@keyframes wtf-rise {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  box-shadow: 0 10px 40px -12px rgb(74 232 138 / 0.4), 0 0 0 1px rgb(255 255 255 / 0.14);
 }
 
 /* Buttons to leave the theme: they breathe softly so the way out is obvious. */
@@ -202,10 +177,10 @@ body {
 @keyframes wtf-exit-glow {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgb(255 84 176 / 0);
+    box-shadow: 0 0 0 0 rgb(74 232 138 / 0);
   }
   50% {
-    box-shadow: 0 0 18px 2px rgb(255 84 176 / 0.55);
+    box-shadow: 0 0 18px 2px rgb(74 232 138 / 0.55);
   }
 }
 
@@ -220,9 +195,8 @@ body {
     transition: none;
   }
   /* Reduced motion: keep the palette, glass and a still shader frame; drop
-     the sheen, entrance and hover lift. */
-  [data-theme="crazy"] h1,
-  [data-theme="crazy"] main > * {
+     the sheen and hover lift. */
+  [data-theme="crazy"] h1 {
     animation: none;
   }
   [data-theme="crazy"] .crazy-item,
@@ -232,7 +206,7 @@ body {
   }
   .exit-glow {
     animation: none;
-    box-shadow: 0 0 12px 2px rgb(255 84 176 / 0.5);
+    box-shadow: 0 0 12px 2px rgb(74 232 138 / 0.5);
   }
 }
 
@@ -647,6 +621,133 @@ html[data-intro="play"] .intro-curtain {
 .site-visual:hover .va,
 .site-visual:focus-visible .va {
   transform: scale(1.07);
+}
+
+/* Hover extras (WTF theme only): creatures that jump out from behind the panel.
+   The SVG box extends past the panel on every side; the panel sits above it. */
+.site-visual-window {
+  position: relative;
+  z-index: 1;
+}
+.site-visual-extra {
+  display: none;
+  position: absolute;
+  inset: -24% -28% -14% -28%;
+  width: 156%;
+  height: 138%;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+[data-theme="crazy"] .site-visual[data-armed="true"] .site-visual-extra {
+  display: block;
+}
+.sx-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0) rotate(-30deg);
+  transition: transform 0.45s cubic-bezier(0.34, 1.8, 0.64, 1) calc(var(--i, 0) * 70ms);
+}
+.sx-grow {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.3, 0.9, 0.3, 1) calc(var(--i, 0) * 80ms);
+}
+.sx-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.sx-rocket {
+  transform: translateY(120px);
+  transition: transform 0.6s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.sx-flame {
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+.sx-peek {
+  transform: translateY(44px);
+  transition: transform 0.45s cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+.site-visual:hover .sx-pop,
+.site-visual:focus-visible .sx-pop {
+  transform: scale(1) rotate(0deg);
+}
+.site-visual:hover .sx-grow,
+.site-visual:focus-visible .sx-grow {
+  stroke-dashoffset: 0;
+}
+.site-visual:hover .sx-rocket,
+.site-visual:focus-visible .sx-rocket {
+  transform: translateY(0);
+}
+.site-visual:hover .sx-peek,
+.site-visual:focus-visible .sx-peek {
+  transform: translateY(0);
+}
+.site-visual:hover .sx-wiggle,
+.site-visual:focus-visible .sx-wiggle {
+  animation: sx-wiggle 2.4s ease-in-out infinite;
+  animation-delay: calc(0.7s + var(--i, 0) * -0.3s);
+}
+.site-visual:hover .sx-spin,
+.site-visual:focus-visible .sx-spin {
+  animation: sx-spin 3.5s linear infinite;
+}
+.site-visual:hover .sx-spin-rev,
+.site-visual:focus-visible .sx-spin-rev {
+  animation-direction: reverse;
+}
+.site-visual:hover .sx-twinkle,
+.site-visual:focus-visible .sx-twinkle {
+  animation: sx-twinkle 1.4s ease-in-out infinite;
+  animation-delay: calc(0.5s + var(--i, 0) * 0.2s);
+}
+.site-visual:hover .sx-flame,
+.site-visual:focus-visible .sx-flame {
+  animation: sx-flame 0.18s ease-in-out infinite alternate;
+}
+.site-visual:hover .sx-pupil,
+.site-visual:focus-visible .sx-pupil {
+  animation: sx-look 2.2s ease-in-out infinite;
+}
+@keyframes sx-wiggle {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+@keyframes sx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sx-twinkle {
+  50% {
+    transform: scale(0.7) rotate(25deg);
+  }
+}
+@keyframes sx-flame {
+  to {
+    transform: scaleY(1.35);
+  }
+}
+@keyframes sx-look {
+  0%,
+  100% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-visual-extra {
+    display: none !important;
+  }
 }
 
 /* The comic "GO!" burst, popped over the corner on hover or focus. */

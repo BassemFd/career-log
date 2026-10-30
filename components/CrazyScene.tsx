@@ -12,15 +12,13 @@ void main() {
   gl_Position = vec4(position.xy, 0.0, 1.0);
 }`;
 
-// A slow domain-warped aurora (indigo → violet → magenta, with a cyan edge
-// light) that bends toward the pointer. Every click sends a ripple through it.
+// A slow domain-warped aurora (emerald → green, with a mint edge light) that bends toward the pointer. Every click sends a ripple through it.
 const FRAG = `
 precision highp float;
 varying vec2 vUv;
 uniform float uTime;
 uniform vec2 uRes;
 uniform vec2 uPointer;
-uniform float uScroll;
 uniform vec3 uRipple[${MAX_RIPPLES}]; // xy = origin (uv), z = birth time
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -42,7 +40,7 @@ void main() {
   vec2 m = uPointer * aspect;
 
   float t = uTime * 0.045;
-  vec2 q = p * 1.35 + vec2(0.0, uScroll * 0.6);
+  vec2 q = p * 1.35;
 
   // Pointer pulls the flow field toward itself.
   vec2 toM = m - p;
@@ -64,18 +62,18 @@ void main() {
   vec2 w = vec2(fbm(q + t), fbm(q + vec2(5.2, 1.3) - t));
   float f = fbm(q + 2.4 * w + t * 0.7);
 
-  vec3 deep   = vec3(0.035, 0.03, 0.10);
-  vec3 indigo = vec3(0.20, 0.12, 0.56);
-  vec3 magenta = vec3(0.95, 0.20, 0.64);
-  vec3 cyan   = vec3(0.10, 0.80, 0.90);
+  vec3 deep   = vec3(0.01, 0.05, 0.04);
+  vec3 indigo = vec3(0.02, 0.30, 0.24);   // deep emerald
+  vec3 magenta = vec3(0.35, 0.90, 0.40);  // fresh green
+  vec3 cyan   = vec3(0.50, 0.95, 0.75);   // mint highlight
 
   vec3 col = mix(deep, indigo, smoothstep(0.25, 0.75, f));
   col = mix(col, magenta, smoothstep(0.55, 0.95, f) * (0.55 + 0.45 * w.x));
-  col += cyan * smoothstep(0.62, 0.9, w.y) * 0.22;
+  col += cyan * smoothstep(0.62, 0.9, w.y) * 0.16;
 
   // Soft light that follows the pointer, and a bright crest on click rings.
   col += mix(magenta, cyan, 0.5) * exp(-md * md * 7.0) * 0.28;
-  col += vec3(0.9, 0.7, 1.0) * ring * 0.35;
+  col += vec3(0.8, 1.0, 0.85) * ring * 0.35;
 
   // Vignette + faint film grain so gradients never band.
   col *= 1.0 - 0.45 * pow(length(vUv - 0.5) * 1.25, 2.0);
@@ -85,7 +83,7 @@ void main() {
 }`;
 
 // Ambient backdrop for the WTF theme: one full-screen shader that reacts to
-// the pointer (smoothed), to scroll, and to clicks/taps. It sits under the
+// the pointer (smoothed) and to clicks/taps — the page scroll leaves it still. It sits under the
 // content column, so it listens on window rather than on the canvas.
 export function CrazyScene() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -105,7 +103,6 @@ export function CrazyScene() {
       uTime: { value: 0 },
       uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
       uPointer: { value: new THREE.Vector2(0.5, 0.5) },
-      uScroll: { value: 0 },
       uRipple: { value: ripples },
     };
     const material = new THREE.ShaderMaterial({
@@ -144,7 +141,6 @@ export function CrazyScene() {
       if (reduced) draw();
     }
     function draw() {
-      uniforms.uScroll.value = window.scrollY / Math.max(1, document.body.scrollHeight);
       renderer.render(scene, camera);
     }
     function frame(now: number) {
