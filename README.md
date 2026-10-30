@@ -30,7 +30,7 @@ Un CV tient sur une page ; un parcours, non. Ici, chaque projet est un « commit
 
 - **Lecture façon `git log`** : projets triés du plus récent au plus ancien, hash court style git (cosmétique, déterministe), jalons de carrière en « tags », terminal intégré (`help`).
 - **Bilingue FR / EN** : deux URLs (`/fr`, `/en`) rendues côté serveur, avec leurs propres `<html lang>`, canonical et hreflang ; `/` redirige selon un cookie puis `Accept-Language`.
-- **Trois thèmes** : clair, sombre, et un mode « crazy » en three.js, chargé à la demande seulement pour qui le choisit.
+- **Trois thèmes** : clair, sombre, et un mode « WTF » en three.js, chargé à la demande seulement pour qui le choisit.
 - **Vignettes cliquables** : chaque expérience, formation ou projet peut porter une fenêtre de navigateur qui mène à la page publique concernée (capture réelle pour mes propres sites, scène dessinée pour les sites de clients).
 - **Chiffres vivants** : contributions, dépôts publics et PR fusionnées viennent de l'API GitHub ; les années d'expérience se calculent à la volée.
 - **Carte de partage dédiée** (Open Graph / Twitter) générée par le code, et un CV PDF d'une page à télécharger.
@@ -43,7 +43,7 @@ Un CV tient sur une page ; un parcours, non. Ici, chaque projet est un « commit
 | Framework | Next.js 15 (App Router), React 19, composants serveur par défaut |
 | Langage | TypeScript `strict`, types de contenu dans `lib/types.ts` |
 | Style | Tailwind CSS 3 avec design tokens uniquement |
-| 3D | three.js (mode « crazy ») |
+| 3D | three.js (mode « WTF ») |
 | Déploiement | Cloudflare Workers via [vinext](https://github.com/cloudflare/vinext) et Wrangler |
 | Tests | Vitest (cohérence FR/EN, tri, visuels, règles de confidentialité) |
 | Automatisation | GitHub Actions : rafraîchissement hebdomadaire des stats |
@@ -88,7 +88,7 @@ Les conventions de contribution (pour humains et agents IA) sont dans [`AGENTS.m
 
 - Next.js (App Router) · TypeScript strict · Tailwind · deployed on Cloudflare Workers via vinext
 - Content is typed JSON in `/content`, with a French twin in `/content/fr`; both `/en` and `/fr` are server-rendered
-- Light, dark and a lazy-loaded three.js "crazy" theme; clickable browser-window thumbnails; generated Open Graph card
+- Light, dark and a lazy-loaded three.js "WTF" theme; clickable browser-window thumbnails; generated Open Graph card
 - Weekly GitHub Action refreshes live stats, runs tests and build, then deploys
 - No private employer or client repo is ever named or linked
 
