@@ -58,29 +58,29 @@
   --color-gutter-accent: 91 124 255;
 }
 
-/* Crazy: 70s psychedelic — burnt orange, hot pink, mustard, deep purple,
-   teal. Cream ink on purple paper keeps body copy legible. */
+/* WTF: night-time aurora — indigo paper, magenta/violet/cyan light. The
+   shader backdrop (CrazyScene) supplies the colour; cards are frosted glass. */
 [data-theme="crazy"] {
   color-scheme: dark;
-  --color-paper: 42 15 61;
-  --color-card: 58 22 82;
-  --color-ink: 255 232 176;
-  --color-rule: 124 45 107;
-  --color-muted: 227 158 201;
-  --color-accent: 255 45 149;
-  --color-accent-soft: 82 18 58;
-  --color-live: 6 214 160;
-  --color-live-soft: 10 61 48;
-  --color-manual: 255 122 24;
-  --color-manual-soft: 90 42 10;
-  --color-teal: 0 194 203;
-  --color-teal-soft: 7 62 66;
-  --color-violet: 199 125 255;
-  --color-violet-soft: 61 26 90;
-  --color-gutter: 26 7 38;
-  --color-gutter-line: 82 18 58;
-  --color-gutter-muted: 227 158 201;
-  --color-gutter-accent: 255 45 149;
+  --color-paper: 8 7 24;
+  --color-card: 22 18 52;
+  --color-ink: 244 240 255;
+  --color-rule: 86 70 150;
+  --color-muted: 178 170 214;
+  --color-accent: 255 84 176;
+  --color-accent-soft: 70 20 66;
+  --color-live: 52 224 180;
+  --color-live-soft: 10 56 52;
+  --color-manual: 255 168 92;
+  --color-manual-soft: 78 44 20;
+  --color-teal: 60 210 235;
+  --color-teal-soft: 10 52 70;
+  --color-violet: 178 140 255;
+  --color-violet-soft: 48 30 94;
+  --color-gutter: 10 8 28;
+  --color-gutter-line: 48 40 96;
+  --color-gutter-muted: 178 170 214;
+  --color-gutter-accent: 255 84 176;
 }
 
 html {
@@ -109,154 +109,133 @@ body {
   animation: spine-draw 1.1s ease-out both;
 }
 
-/* ---- Crazy mode ---- */
+/* ---- WTF theme ---- */
 
-/* Rotoscope "Take On Me" look on the one hero heading: pencil-sketch contrast
-   plus a stepped micro-jitter, applied to the site's own type — no video. */
+/* The hero name is lit by a slow gradient sweep. */
 [data-theme="crazy"] h1 {
-  filter: grayscale(0.45) contrast(1.5);
-  animation: rotoscope-jitter 0.26s steps(2, end) infinite;
+  background: linear-gradient(100deg, #fff 0%, #ffc4ea 30%, #b28cff 55%, #3cd2eb 80%, #fff 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: wtf-sheen 9s ease-in-out infinite alternate;
 }
 
-@keyframes rotoscope-jitter {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  25% {
-    transform: translate(0.6px, -0.5px) rotate(-0.35deg);
-  }
-  50% {
-    transform: translate(-0.5px, 0.5px) rotate(0.35deg);
-  }
-  75% {
-    transform: translate(0.5px, 0.4px) rotate(-0.2deg);
-  }
-}
-
-@keyframes crazy-blob-wobble {
-  0%,
-  100% {
-    border-radius: 46% 54% 58% 42% / 54% 46% 54% 46%;
-  }
-  50% {
-    border-radius: 58% 42% 44% 56% / 44% 58% 42% 56%;
-  }
-}
-
-/* The readable content keeps drifting through hues while crazy mode runs —
-   the gutter (nav + theme toggle) is deliberately outside this wrapper, so
-   it stays a stable, unaffected "way out" against the chaos. */
-[data-theme="crazy"] .content-column {
-  animation: crazy-hue-cycle 6s linear infinite;
-}
-
-@keyframes crazy-hue-cycle {
+@keyframes wtf-sheen {
   from {
-    filter: hue-rotate(0deg);
+    background-position: 0% 50%;
   }
   to {
-    filter: hue-rotate(360deg);
+    background-position: 100% 50%;
   }
 }
 
-/* The only two buttons that get you out of crazy mode — they pulse and are
-   set larger in Gutter.tsx so they read as "click me" against everything
-   else going haywire. */
-.exit-glow {
-  animation: crazy-toggle-glow 1.4s ease-in-out infinite;
+/* Cards, rows and the git-log panel become frosted glass over the shader,
+   with a hairline gradient edge and a soft spotlight under the cursor
+   (--mx/--my are set by CrazyMode.tsx). */
+[data-theme="crazy"] .bg-card {
+  background-color: rgb(var(--color-card) / 0.5);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+[data-theme="crazy"] .border-rule {
+  border-color: rgb(255 255 255 / 0.1);
+}
+[data-theme="crazy"] .crazy-item {
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+}
+[data-theme="crazy"] .crazy-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 84 176 / 0.16),
+    rgb(60 210 235 / 0.07) 45%,
+    transparent 70%
+  );
+  transition: opacity 0.3s ease;
+}
+[data-theme="crazy"] .crazy-item:hover::before {
+  opacity: 1;
+}
+[data-theme="crazy"] .crazy-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 40px -12px rgb(255 84 176 / 0.45), 0 0 0 1px rgb(255 255 255 / 0.14);
 }
 
-@keyframes crazy-toggle-glow {
+/* CHOMP: a comic sound-word slammed over the bite. */
+.monster-chomp {
+  pointer-events: none;
+}
+.monster-chomp span {
+  color: #ffe45a;
+  -webkit-text-stroke: 0.06em #1a0b33;
+  paint-order: stroke fill;
+  text-shadow: 0.06em 0.06em 0 #ff54b0;
+  transform: rotate(-6deg);
+  animation: monster-chomp-pop 0.9s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+@keyframes monster-chomp-pop {
+  0% {
+    opacity: 0;
+    transform: rotate(-6deg) scale(0.2);
+  }
+  25% {
+    opacity: 1;
+    transform: rotate(-6deg) scale(1.25);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-6deg) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .monster-chomp span {
+    animation: none;
+  }
+}
+
+/* Game over: the monster's mouth fills the screen, then this card fades in. */
+.monster-over {
+  background: radial-gradient(circle at 50% 45%, rgb(60 8 40 / 0.55), rgb(8 2 14 / 0.96) 70%);
+  animation: monster-over-in 0.5s ease-out both;
+}
+.monster-over h2 {
+  background: linear-gradient(100deg, #fff, #ffc4ea 40%, #ff54b0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes monster-over-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .monster-over {
+    animation: none;
+  }
+}
+
+/* Buttons to leave the theme: they breathe softly so the way out is obvious. */
+.exit-glow {
+  animation: wtf-exit-glow 2.4s ease-in-out infinite;
+}
+
+@keyframes wtf-exit-glow {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-    text-shadow: none;
+    box-shadow: 0 0 0 0 rgb(255 84 176 / 0);
   }
   50% {
-    box-shadow: 0 0 12px 3px currentColor;
-    text-shadow: 0 0 8px currentColor;
+    box-shadow: 0 0 18px 2px rgb(255 84 176 / 0.55);
   }
-}
-
-/* Three tiers of "nothing stays put," each nested inside the last so their
-   transforms stack: whole blocks drift (header/sections/footer, desynced by
-   duration alone since they share one keyframe), item-level cards/rows jitter
-   faster (durations randomized per element in CrazyMode.tsx), and headings/
-   paragraphs shimmy on top of that — reusing the hero's rotoscope jitter
-   without its grayscale filter, so it doesn't wash out the palette. */
-[data-theme="crazy"] main > * {
-  animation: crazy-drift 5s ease-in-out infinite;
-}
-[data-theme="crazy"] main > *:nth-child(1) {
-  animation-duration: 4.3s;
-}
-[data-theme="crazy"] main > *:nth-child(2) {
-  animation-duration: 5.8s;
-}
-[data-theme="crazy"] main > *:nth-child(3) {
-  animation-duration: 3.9s;
-}
-[data-theme="crazy"] main > *:nth-child(4) {
-  animation-duration: 6.5s;
-}
-[data-theme="crazy"] main > *:nth-child(5) {
-  animation-duration: 5.1s;
-}
-[data-theme="crazy"] main > *:nth-child(6) {
-  animation-duration: 4.7s;
-}
-
-@keyframes crazy-drift {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  20% {
-    transform: translate(22px, -16px) rotate(-2.2deg);
-  }
-  40% {
-    transform: translate(-18px, 12px) rotate(2.6deg);
-  }
-  60% {
-    transform: translate(16px, 18px) rotate(-1.8deg);
-  }
-  80% {
-    transform: translate(-12px, -14px) rotate(2deg);
-  }
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-}
-
-[data-theme="crazy"] .crazy-item {
-  animation: crazy-jitter-item 2.4s ease-in-out infinite;
-  animation-duration: var(--crazy-dur, 2.4s);
-  animation-delay: var(--crazy-delay, 0s);
-}
-
-@keyframes crazy-jitter-item {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  30% {
-    transform: translate(10px, -8px) rotate(-3deg);
-  }
-  60% {
-    transform: translate(-9px, 7px) rotate(3deg);
-  }
-}
-
-[data-theme="crazy"] main h2,
-[data-theme="crazy"] main h3,
-[data-theme="crazy"] main p {
-  animation: rotoscope-jitter 0.32s steps(2, end) infinite;
-}
-/* An animated transform makes its element the containing block of absolutely
-   positioned descendants, which would shrink a project card's stretched link
-   (the title's ::after) down to the title. */
-[data-theme="crazy"] main h3.stretched-title {
-  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -269,25 +248,19 @@ body {
   body {
     transition: none;
   }
-  /* Reduced motion: keep crazy funky (palette + static doodles) but drop the
-     jitter/loops. Roaming/scene motion is gated in the components themselves. */
+  /* Reduced motion: keep the palette, glass and a still shader frame; drop
+     the sheen and hover lift. */
   [data-theme="crazy"] h1 {
     animation: none;
   }
-  [data-theme="crazy"] .content-column {
-    animation: none;
-  }
-  [data-theme="crazy"] main > *,
   [data-theme="crazy"] .crazy-item,
-  [data-theme="crazy"] main h2,
-  [data-theme="crazy"] main h3,
-  [data-theme="crazy"] main p {
-    animation: none;
+  [data-theme="crazy"] .crazy-item:hover {
+    transition: none;
+    transform: none;
   }
   .exit-glow {
     animation: none;
-    box-shadow: 0 0 8px 2px currentColor;
-    text-shadow: 0 0 6px currentColor;
+    box-shadow: 0 0 12px 2px rgb(255 84 176 / 0.5);
   }
 }
 
@@ -702,6 +675,133 @@ html[data-intro="play"] .intro-curtain {
 .site-visual:hover .va,
 .site-visual:focus-visible .va {
   transform: scale(1.07);
+}
+
+/* Hover extras (WTF theme only): creatures that jump out from behind the panel.
+   The SVG box extends past the panel on every side; the panel sits above it. */
+.site-visual-window {
+  position: relative;
+  z-index: 1;
+}
+.site-visual-extra {
+  display: none;
+  position: absolute;
+  inset: -24% -28% -14% -28%;
+  width: 156%;
+  height: 138%;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+[data-theme="crazy"] .site-visual[data-armed="true"] .site-visual-extra {
+  display: block;
+}
+.sx-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0) rotate(-30deg);
+  transition: transform 0.45s cubic-bezier(0.34, 1.8, 0.64, 1) calc(var(--i, 0) * 70ms);
+}
+.sx-grow {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.3, 0.9, 0.3, 1) calc(var(--i, 0) * 80ms);
+}
+.sx-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.sx-rocket {
+  transform: translateY(120px);
+  transition: transform 0.6s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.sx-flame {
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+.sx-peek {
+  transform: translateY(44px);
+  transition: transform 0.45s cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+.site-visual:hover .sx-pop,
+.site-visual:focus-visible .sx-pop {
+  transform: scale(1) rotate(0deg);
+}
+.site-visual:hover .sx-grow,
+.site-visual:focus-visible .sx-grow {
+  stroke-dashoffset: 0;
+}
+.site-visual:hover .sx-rocket,
+.site-visual:focus-visible .sx-rocket {
+  transform: translateY(0);
+}
+.site-visual:hover .sx-peek,
+.site-visual:focus-visible .sx-peek {
+  transform: translateY(0);
+}
+.site-visual:hover .sx-wiggle,
+.site-visual:focus-visible .sx-wiggle {
+  animation: sx-wiggle 2.4s ease-in-out infinite;
+  animation-delay: calc(0.7s + var(--i, 0) * -0.3s);
+}
+.site-visual:hover .sx-spin,
+.site-visual:focus-visible .sx-spin {
+  animation: sx-spin 3.5s linear infinite;
+}
+.site-visual:hover .sx-spin-rev,
+.site-visual:focus-visible .sx-spin-rev {
+  animation-direction: reverse;
+}
+.site-visual:hover .sx-twinkle,
+.site-visual:focus-visible .sx-twinkle {
+  animation: sx-twinkle 1.4s ease-in-out infinite;
+  animation-delay: calc(0.5s + var(--i, 0) * 0.2s);
+}
+.site-visual:hover .sx-flame,
+.site-visual:focus-visible .sx-flame {
+  animation: sx-flame 0.18s ease-in-out infinite alternate;
+}
+.site-visual:hover .sx-pupil,
+.site-visual:focus-visible .sx-pupil {
+  animation: sx-look 2.2s ease-in-out infinite;
+}
+@keyframes sx-wiggle {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+@keyframes sx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sx-twinkle {
+  50% {
+    transform: scale(0.7) rotate(25deg);
+  }
+}
+@keyframes sx-flame {
+  to {
+    transform: scaleY(1.35);
+  }
+}
+@keyframes sx-look {
+  0%,
+  100% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-visual-extra {
+    display: none !important;
+  }
 }
 
 /* The comic "GO!" burst, popped over the corner on hover or focus. */

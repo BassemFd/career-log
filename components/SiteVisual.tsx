@@ -6,6 +6,7 @@ import type { Visual } from "@/lib/types";
 import type { STRINGS } from "@/lib/strings";
 import { shortHash } from "@/lib/hash";
 import { VisualArt } from "./VisualArt";
+import { SiteVisualExtras } from "./SiteVisualExtras";
 
 // Starburst behind the hover "GO!", precomputed (10 spikes, 64x64 box).
 const BURST =
@@ -91,6 +92,7 @@ export function SiteVisual({
       className={`site-visual group relative z-10 block w-full max-w-56 shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:max-w-none ${className}`}
     >
       <span className="site-visual-frame">
+        <SiteVisualExtras art={visual.art} />
         <span className="site-visual-window">
           <span className="site-visual-bar" aria-hidden="true">
             <i />

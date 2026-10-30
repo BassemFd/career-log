@@ -66,6 +66,15 @@ export const STRINGS: Record<Locale, {
   typeHelp: string;
   help: string;
   crazyHelp: string;
+  monsterLabel: string;
+  monsterChomp: string;
+  monsterSplat: string;
+  winTitle: string;
+  winText: string;
+  winRestart: string;
+  gameOverTitle: string;
+  gameOverText: string;
+  gameOverRestart: string;
   topFeedback: string;
   openingFeedback: (target: string) => string;
   goToFeedback: (label: string) => string;
@@ -132,6 +141,15 @@ export const STRINGS: Record<Locale, {
     typeHelp: "type `help`",
     help: "commands: log, tag, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "PRESS LIGHT OR DARK THEME",
+    monsterLabel: "Poke the monster",
+    monsterChomp: "CHOMP!",
+    monsterSplat: "SPLAT!",
+    winTitle: "YOU WIN!",
+    winText: "Right in the eye. The monster is gone… for now.",
+    winRestart: "Play again",
+    gameOverTitle: "GAME OVER",
+    gameOverText: "The monster ate you.",
+    gameOverRestart: "Restart",
     topFeedback: "↑ top",
     openingFeedback: (target) => `opening ${target}…`,
     goToFeedback: (label) => `→ ${label}`,
@@ -198,6 +216,15 @@ export const STRINGS: Record<Locale, {
     typeHelp: "tapez `help`",
     help: "commandes : log, tag, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "APPUYEZ SUR LE THÈME CLAIR OU SOMBRE",
+    monsterLabel: "Toucher le monstre",
+    monsterChomp: "CHOMP !",
+    monsterSplat: "SPLAT !",
+    winTitle: "VICTOIRE !",
+    winText: "En plein dans l'œil. Le monstre est vaincu… pour l'instant.",
+    winRestart: "Rejouer",
+    gameOverTitle: "GAME OVER",
+    gameOverText: "Le monstre t'a mangé.",
+    gameOverRestart: "Recommencer",
     topFeedback: "↑ haut",
     openingFeedback: (target) => `ouverture de ${target}…`,
     goToFeedback: (label) => `→ ${label}`,
