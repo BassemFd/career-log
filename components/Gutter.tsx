@@ -148,7 +148,10 @@ export function Gutter() {
       const key = openMatch[1] as "github" | "linkedin" | "email";
       const url =
         key === "email" ? `mailto:${profile.socials.email}` : profile.socials[key];
-      window.open(url, "_blank");
+      // A mailto: in a new tab leaves an empty tab behind (or gets blocked as a
+      // popup); hand it to the mail client from this page instead.
+      if (key === "email") window.location.href = url;
+      else window.open(url, "_blank");
       return setOutput(t.openingFeedback(key));
     }
 
