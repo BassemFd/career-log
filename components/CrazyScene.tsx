@@ -12,7 +12,7 @@ void main() {
   gl_Position = vec4(position.xy, 0.0, 1.0);
 }`;
 
-// A slow domain-warped aurora (emerald → green, with a mint edge light) that bends toward the pointer. Every click sends a ripple through it.
+// A slow domain-warped aurora (indigo → violet → magenta, with a cyan edge light) that bends toward the pointer. Every click sends a ripple through it.
 const FRAG = `
 precision highp float;
 varying vec2 vUv;
@@ -62,18 +62,18 @@ void main() {
   vec2 w = vec2(fbm(q + t), fbm(q + vec2(5.2, 1.3) - t));
   float f = fbm(q + 2.4 * w + t * 0.7);
 
-  vec3 deep   = vec3(0.01, 0.05, 0.04);
-  vec3 indigo = vec3(0.02, 0.30, 0.24);   // deep emerald
-  vec3 magenta = vec3(0.35, 0.90, 0.40);  // fresh green
-  vec3 cyan   = vec3(0.50, 0.95, 0.75);   // mint highlight
+  vec3 deep   = vec3(0.035, 0.03, 0.10);
+  vec3 indigo = vec3(0.20, 0.12, 0.56);
+  vec3 magenta = vec3(0.95, 0.20, 0.64);
+  vec3 cyan   = vec3(0.10, 0.80, 0.90);
 
   vec3 col = mix(deep, indigo, smoothstep(0.25, 0.75, f));
   col = mix(col, magenta, smoothstep(0.55, 0.95, f) * (0.55 + 0.45 * w.x));
-  col += cyan * smoothstep(0.62, 0.9, w.y) * 0.16;
+  col += cyan * smoothstep(0.62, 0.9, w.y) * 0.22;
 
   // Soft light that follows the pointer, and a bright crest on click rings.
   col += mix(magenta, cyan, 0.5) * exp(-md * md * 7.0) * 0.28;
-  col += vec3(0.8, 1.0, 0.85) * ring * 0.35;
+  col += vec3(0.9, 0.7, 1.0) * ring * 0.35;
 
   // Vignette + faint film grain so gradients never band.
   col *= 1.0 - 0.45 * pow(length(vUv - 0.5) * 1.25, 2.0);

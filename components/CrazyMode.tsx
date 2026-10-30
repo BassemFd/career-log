@@ -2,10 +2,8 @@
 
 import { useEffect } from "react";
 import { CrazyScene } from "./CrazyScene";
-import { CrazyCreature } from "./CrazyCreature";
 
-// WTF-theme chrome: the interactive shader backdrop (CrazyScene), the scroll-driven
-// monster (CrazyCreature) and a
+// WTF-theme chrome: the interactive shader backdrop (CrazyScene) and a
 // pointer spotlight on cards — the cursor position is published as --mx/--my
 // on each .crazy-item, which the CSS turns into a soft glow under the cursor.
 // Mounted only while theme === "crazy" (ThemeProvider unmounts it on exit).
@@ -38,7 +36,6 @@ export function CrazyMode() {
   return (
     <>
       <CrazyScene />
-      <CrazyCreature />
     </>
   );
 }
