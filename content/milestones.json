@@ -7,15 +7,15 @@
   },
   {
     "date": "2026-06",
-    "type": "figure",
-    "title": "Tap to Pay shipped: 200+ PRs across 3 repos",
-    "detail": "18 months owning contactless payments end to end on iOS & Android for Planity."
-  },
-  {
-    "date": "2026-06",
     "type": "mission",
     "title": "Planity mission wraps up after four years",
     "detail": "Tap to Pay, the passwordless Magic Link sign-in, the planity.com rebuild and a shared mobile / tablet / web monorepo."
+  },
+  {
+    "date": "2025-10",
+    "type": "figure",
+    "title": "Tap to Pay shipped: 200+ PRs across 3 repos",
+    "detail": "18 months owning contactless payments end to end on iOS & Android for Planity."
   },
   {
     "date": "2022-06",
@@ -30,7 +30,7 @@
     "detail": "Full-stack developer, later technical referent: mentoring, technical interviews and the Pixelator hiring test."
   },
   {
-    "date": "2021-06",
+    "date": "2021-04",
     "type": "role",
     "title": "Hired at Mon Spécialiste Auto",
     "detail": "First full-stack role after the internship, on the pro dashboard and the mobile app."

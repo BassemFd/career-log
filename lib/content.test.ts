@@ -39,16 +39,16 @@ describe("milestones", () => {
 describe("years shipping", () => {
   const roles = [
     { date: "2022-06", type: "role", title: "", detail: "" },
-    { date: "2021-06", type: "role", title: "", detail: "" },
+    { date: "2021-04", type: "role", title: "", detail: "" },
     { date: "2020", type: "education", title: "", detail: "" },
   ] as const;
 
   it("counts full years from the earliest role, ignoring other milestones", () => {
-    expect(yearsShipping([...roles], new Date("2026-05-31T12:00:00Z"))).toEqual({
+    expect(yearsShipping([...roles], new Date("2026-03-31T12:00:00Z"))).toEqual({
       years: 4,
       since: "2021",
     });
-    expect(yearsShipping([...roles], new Date("2026-06-01T12:00:00Z")).years).toBe(5);
+    expect(yearsShipping([...roles], new Date("2026-04-01T12:00:00Z")).years).toBe(5);
   });
 
   it("finds a role milestone to count from in the real content", () => {

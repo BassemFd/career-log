@@ -7,15 +7,15 @@
   },
   {
     "date": "2026-06",
-    "type": "figure",
-    "title": "Tap to Pay livré : 200+ PR sur 3 dépôts",
-    "detail": "18 mois à porter le paiement sans contact de bout en bout sur iOS & Android pour Planity."
-  },
-  {
-    "date": "2026-06",
     "type": "mission",
     "title": "Fin de la mission Planity après quatre ans",
     "detail": "Tap to Pay, la connexion sans mot de passe Magic Link, la refonte de planity.com et un monorepo partagé mobile / tablette / web."
+  },
+  {
+    "date": "2025-10",
+    "type": "figure",
+    "title": "Tap to Pay livré : 200+ PR sur 3 dépôts",
+    "detail": "18 mois à porter le paiement sans contact de bout en bout sur iOS & Android pour Planity."
   },
   {
     "date": "2022-06",
@@ -30,7 +30,7 @@
     "detail": "Développeur Full Stack, puis référent technique : mentoring, entretiens techniques et test de recrutement Pixelator."
   },
   {
-    "date": "2021-06",
+    "date": "2021-04",
     "type": "role",
     "title": "Embauche chez Mon Spécialiste Auto",
     "detail": "Premier poste Full Stack après le stage, sur le dashboard pro et l'app mobile."
