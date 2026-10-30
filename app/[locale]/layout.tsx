@@ -9,6 +9,7 @@ import { Gutter } from "@/components/Gutter";
 import { IntroCurtain } from "@/components/IntroCurtain";
 import { ScrollSkew } from "@/components/ScrollSkew";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { TabTitle } from "@/components/TabTitle";
 import { LocaleProvider } from "@/components/LocaleProvider";
 
 // Applies the saved (or system-preferred) theme before first paint, so there's
@@ -110,6 +111,7 @@ export default async function RootLayout({
       <body className="font-sans antialiased pb-20 lg:pb-0">
         <LocaleProvider locale={locale}>
           <ThemeProvider>
+            <TabTitle />
             <IntroCurtain />
             <div className="lg:flex lg:min-h-screen">
               <Gutter />
