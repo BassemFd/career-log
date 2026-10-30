@@ -67,6 +67,7 @@ export const STRINGS: Record<Locale, {
   help: string;
   crazyHelp: string;
   monsterLabel: string;
+  monsterChomp: string;
   gameOverTitle: string;
   gameOverText: string;
   gameOverRestart: string;
@@ -137,6 +138,7 @@ export const STRINGS: Record<Locale, {
     help: "commands: log, tag, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "PRESS LIGHT OR DARK THEME",
     monsterLabel: "Poke the monster",
+    monsterChomp: "CHOMP!",
     gameOverTitle: "GAME OVER",
     gameOverText: "The monster ate you.",
     gameOverRestart: "Restart",
@@ -207,6 +209,7 @@ export const STRINGS: Record<Locale, {
     help: "commandes : log, tag, shortlog, ls, formation, whoami, open <github|linkedin|email>, top, clear",
     crazyHelp: "APPUYEZ SUR LE THÈME CLAIR OU SOMBRE",
     monsterLabel: "Toucher le monstre",
+    monsterChomp: "CHOMP !",
     gameOverTitle: "GAME OVER",
     gameOverText: "Le monstre t'a mangé.",
     gameOverRestart: "Recommencer",

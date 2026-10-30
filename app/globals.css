@@ -169,6 +169,38 @@ body {
   box-shadow: 0 10px 40px -12px rgb(255 84 176 / 0.45), 0 0 0 1px rgb(255 255 255 / 0.14);
 }
 
+/* CHOMP: a comic sound-word slammed over the bite. */
+.monster-chomp {
+  pointer-events: none;
+}
+.monster-chomp span {
+  color: #ffe45a;
+  -webkit-text-stroke: 0.06em #1a0b33;
+  paint-order: stroke fill;
+  text-shadow: 0.06em 0.06em 0 #ff54b0;
+  transform: rotate(-6deg);
+  animation: monster-chomp-pop 0.9s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+@keyframes monster-chomp-pop {
+  0% {
+    opacity: 0;
+    transform: rotate(-6deg) scale(0.2);
+  }
+  25% {
+    opacity: 1;
+    transform: rotate(-6deg) scale(1.25);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-6deg) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .monster-chomp span {
+    animation: none;
+  }
+}
+
 /* Game over: the monster's mouth fills the screen, then this card fades in. */
 .monster-over {
   background: radial-gradient(circle at 50% 45%, rgb(60 8 40 / 0.55), rgb(8 2 14 / 0.96) 70%);

@@ -9,12 +9,14 @@ const SPIKES = 12;
 const FOV = 12; // narrow, so the blob can swell to fill the screen without clipping the camera
 const CAM_Z = 19.2; // keeps the framing of a 35° lens at 6.4
 const EAT_ANTICIPATE = 0.35; // seconds: squash before the growth
-const EAT_GROW = 3.0; // seconds after which the screen is full
-const EAT_OVER = 3.7; // seconds until the game-over card
+const EAT_CHOMP = 4.8; // seconds: slow then ever faster growth, jaws wide, then CHOMP
+const EAT_COVER = 5.4; // seconds: the body swells over the whole screen after the bite
+const EAT_OVER = 5.9; // seconds until the game-over card
 
-type Phase = "idle" | "eating" | "over";
+type Phase = "idle" | "eating" | "chomp" | "over";
 
 const easeOut = (x: number) => 1 - (1 - x) * (1 - x);
+const easeIn = (x: number) => x * x;
 const easeInOut = (x: number) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
 
 // A glossy black blob with real eyeballs sunk into it, parked in the corner of
@@ -187,7 +189,10 @@ export function CrazyCreature() {
     let startX = 0;
     let startY = 0;
     let s0 = 1;
+    let sPre = 1; // scale when the jaws are about to shut
     let sEnd = 1;
+    let forceClose = false;
+    let chompShown = false;
     let overShown = false;
     const halfH = CAM_Z * Math.tan((FOV / 2) * (Math.PI / 180));
 
@@ -207,6 +212,7 @@ export function CrazyCreature() {
       s0 = r.height / H;
       startX = (r.left + r.width / 2 - W / 2) / unit;
       startY = -(r.top + r.height / 2 - H / 2) / unit;
+      sPre = Math.max(H * 0.72, W * 0.44) / unit;
       sEnd = (Math.hypot(W, H) / unit) * 1.25;
       full = true;
       Object.assign(mount!.style, {
@@ -223,6 +229,7 @@ export function CrazyCreature() {
       mouthPivot.visible = true;
       mode = "eating";
       overShown = false;
+      chompShown = false;
       eatStart = performance.now();
       setPhase("eating");
     }
@@ -232,6 +239,7 @@ export function CrazyCreature() {
       mode = "idle";
       full = false;
       mount!.removeAttribute("style");
+      forceClose = false;
       document.documentElement.style.overflow = "";
       rig.position.set(0, 0, 0);
       rig.scale.setScalar(1);
@@ -289,29 +297,54 @@ export function CrazyCreature() {
 
       if (mode === "eating") {
         const et = (performance.now() - eatStart) / 1000;
-        const g = Math.min(1, Math.max(0, (et - EAT_ANTICIPATE) / (EAT_GROW - EAT_ANTICIPATE)));
-        const squash = et < EAT_ANTICIPATE ? 1 - 0.15 * easeOut(et / EAT_ANTICIPATE) : 0.85;
-        const m = squash + (sEnd / s0 - 0.85) * Math.pow(g, 2.2);
-        rig.scale.setScalar(s0 * m);
-        const move = easeInOut(Math.min(1, Math.max(0, (et - EAT_ANTICIPATE) / 2.3)));
+        let S: number;
+        let open: number;
+        if (et < EAT_ANTICIPATE) {
+          S = s0 * (1 - 0.15 * easeOut(et / EAT_ANTICIPATE));
+          open = 0;
+        } else if (et < EAT_CHOMP) {
+          // Slow at first, then faster and faster.
+          const g = (et - EAT_ANTICIPATE) / (EAT_CHOMP - EAT_ANTICIPATE);
+          S = s0 * 0.85 + (sPre - s0 * 0.85) * Math.pow(g, 3);
+          open = Math.pow(Math.min(1, Math.max(0, (et - 1.0) / (EAT_CHOMP - 1.2))), 1.3);
+          open += 0.05 * open * Math.sin(et * 10);
+        } else {
+          // CHOMP: the jaws slam shut, the body lunges over the screen.
+          const c = Math.min(1, (et - EAT_CHOMP) / (EAT_COVER - EAT_CHOMP));
+          S = sPre * (1 + (sEnd / sPre - 1) * easeIn(c));
+          open = Math.max(0, 1 - (et - EAT_CHOMP) / 0.14);
+          if (!chompShown) {
+            chompShown = true;
+            setPhase("chomp");
+          }
+        }
+        rig.scale.setScalar(S);
+        const move = easeInOut(Math.min(1, Math.max(0, (et - EAT_ANTICIPATE) / 3.2)));
         rig.position.set(startX * (1 - move), startY * (1 - move), 0);
-        // Mouth: opens wide while it grows, then keeps chewing.
-        const o = easeOut(Math.min(1, Math.max(0, (et - 0.6) / 1.6)));
-        const chew = 0.07 * o * Math.sin(et * 14);
-        mouth.scale.set(1 + 0.75 * o, 0.1 + 0.95 * o + chew, 1);
-        mouthPivot.position.y = -0.05 * o;
-        spin.rotation.x *= 1 - g; // settle, so the face stays toward the viewer
-        for (const sp of spikes) sp.scale.set(1, 0.7 + 0.8 * Math.sin(et * 9 + sp.id) * 0.3 + g, 1);
+        mouth.scale.set(1 + 0.75 * open, 0.1 + 0.95 * open, 1);
+        mouthPivot.position.y = -0.05 * open;
+        spin.rotation.x *= 0.96;
+        const rage = Math.min(1, Math.max(0, (et - 1) / (EAT_CHOMP - 1)));
+        for (const sp of spikes) sp.scale.set(1, 0.7 + rage * (0.8 + 0.3 * Math.sin(et * 9 + sp.id)), 1);
+        forceClose = et > EAT_CHOMP - 0.05 && et < EAT_CHOMP + 1.2;
+        // A short shake on impact.
+        const sinceBite = et - EAT_CHOMP;
+        if (sinceBite > 0 && sinceBite < 0.6) {
+          const k = (1 - sinceBite / 0.6) * 18;
+          mount!.style.transform = `translate(${(Math.random() - 0.5) * k}px, ${(Math.random() - 0.5) * k}px)`;
+        } else if (sinceBite >= 0.6) {
+          mount!.style.transform = "";
+        }
         if (!overShown && et >= EAT_OVER) {
           overShown = true;
           mode = "over";
+          forceClose = false;
           setPhase("over");
         }
       }
-      for (const sp of spikes) sp.scale.set(1, 0.7 + flare * 0.9, 1);
 
       look.lerp(pointer, 0.12);
-      const closed = !reduced && Math.sin(t * 1.3) > 0.996;
+      const closed = forceClose || (!reduced && Math.sin(t * 1.3) > 0.996);
       for (const e of eyes) {
         e.ball.rotation.y = look.x * 0.55;
         e.ball.rotation.x = -look.y * 0.45;
@@ -375,6 +408,11 @@ export function CrazyCreature() {
         onClick={() => apiRef.current?.eat()}
         className="fixed bottom-3 left-3 z-[60] h-28 w-28 cursor-pointer rounded-full motion-reduce:pointer-events-none sm:h-40 sm:w-40 lg:bottom-6 lg:left-auto lg:right-6 lg:h-52 lg:w-52"
       />
+      {phase === "chomp" && (
+        <div aria-hidden="true" className="monster-chomp fixed inset-0 z-[95] grid place-items-center">
+          <span className="font-display text-7xl font-black sm:text-9xl">{t.monsterChomp}</span>
+        </div>
+      )}
       {phase === "over" && (
         <div
           role="alertdialog"
