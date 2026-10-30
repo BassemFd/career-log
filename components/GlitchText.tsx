@@ -6,9 +6,8 @@ import { useTheme } from "./ThemeProvider";
 const CHARS = "!<>-_\\/[]{}=+*^?#$%&01";
 const SCRAMBLE_MS = 500;
 
-// Wraps a piece of text so it periodically decrypts itself from noise while
-// crazy mode is active — used on the career content (name, tagline, company
-// names) so the "signal" of who you are keeps destabilizing.
+// Wraps a piece of text so it decrypts itself from noise once when the WTF
+// theme turns on — used on the career content (name, tagline, company names).
 export function GlitchText({ text }: { text: string }) {
   const { theme } = useTheme();
   const [display, setDisplay] = useState(text);
@@ -44,7 +43,6 @@ export function GlitchText({ text }: { text: string }) {
           rafRef.current = requestAnimationFrame(tick);
         } else {
           setDisplay(text);
-          timeoutRef.current = setTimeout(scramble, 1800 + Math.random() * 1800);
         }
       }
       rafRef.current = requestAnimationFrame(tick);

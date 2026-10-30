@@ -3,12 +3,90 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-const HUES = [330, 25, 48, 275, 185]; // hot pink, orange, mustard, purple, teal
+const MAX_RIPPLES = 4;
 
-// The ambient backdrop for crazy mode: a drifting field of glowing particles
-// (confetti reimagined with real depth/parallax instead of flat CSS divs)
-// plus two morphing wireframe shapes — original abstract forms, no IP —
-// standing in for "unexpected things happening" in the background.
+const VERT = `
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = vec4(position.xy, 0.0, 1.0);
+}`;
+
+// A slow domain-warped aurora (indigo → violet → magenta, with a cyan edge
+// light) that bends toward the pointer. Every click sends a ripple through it.
+const FRAG = `
+precision highp float;
+varying vec2 vUv;
+uniform float uTime;
+uniform vec2 uRes;
+uniform vec2 uPointer;
+uniform float uScroll;
+uniform vec3 uRipple[${MAX_RIPPLES}]; // xy = origin (uv), z = birth time
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x),
+             mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
+}
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.02; a *= 0.5; }
+  return v;
+}
+
+void main() {
+  vec2 aspect = vec2(uRes.x / uRes.y, 1.0);
+  vec2 p = vUv * aspect;
+  vec2 m = uPointer * aspect;
+
+  float t = uTime * 0.045;
+  vec2 q = p * 1.35 + vec2(0.0, uScroll * 0.6);
+
+  // Pointer pulls the flow field toward itself.
+  vec2 toM = m - p;
+  float md = length(toM);
+  q += toM * 0.35 * exp(-md * 2.4);
+
+  // Click ripples: expanding rings that warp the field.
+  float ring = 0.0;
+  for (int i = 0; i < ${MAX_RIPPLES}; i++) {
+    float age = uTime - uRipple[i].z;
+    if (age > 0.0 && age < 3.2) {
+      float d = length(p - uRipple[i].xy * aspect);
+      float wave = exp(-pow((d - age * 0.55) * 7.0, 2.0)) * (1.0 - age / 3.2);
+      q += normalize(p - uRipple[i].xy * aspect + 1e-4) * wave * 0.18;
+      ring += wave;
+    }
+  }
+
+  vec2 w = vec2(fbm(q + t), fbm(q + vec2(5.2, 1.3) - t));
+  float f = fbm(q + 2.4 * w + t * 0.7);
+
+  vec3 deep   = vec3(0.035, 0.03, 0.10);
+  vec3 indigo = vec3(0.20, 0.12, 0.56);
+  vec3 magenta = vec3(0.95, 0.20, 0.64);
+  vec3 cyan   = vec3(0.10, 0.80, 0.90);
+
+  vec3 col = mix(deep, indigo, smoothstep(0.25, 0.75, f));
+  col = mix(col, magenta, smoothstep(0.55, 0.95, f) * (0.55 + 0.45 * w.x));
+  col += cyan * smoothstep(0.62, 0.9, w.y) * 0.22;
+
+  // Soft light that follows the pointer, and a bright crest on click rings.
+  col += mix(magenta, cyan, 0.5) * exp(-md * md * 7.0) * 0.28;
+  col += vec3(0.9, 0.7, 1.0) * ring * 0.35;
+
+  // Vignette + faint film grain so gradients never band.
+  col *= 1.0 - 0.45 * pow(length(vUv - 0.5) * 1.25, 2.0);
+  col += (hash(gl_FragCoord.xy + uTime) - 0.5) * 0.02;
+
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+// Ambient backdrop for the WTF theme: one full-screen shader that reacts to
+// the pointer (smoothed), to scroll, and to clicks/taps. It sits under the
+// content column, so it listens on window rather than on the canvas.
 export function CrazyScene() {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -17,107 +95,83 @@ export function CrazyScene() {
     const mount: HTMLDivElement = mountRef.current;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      60,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      100
-    );
-    camera.position.z = 18;
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
     mount.appendChild(renderer.domElement);
 
-    const COUNT = reduced ? 140 : 420;
-    const positions = new Float32Array(COUNT * 3);
-    const colors = new Float32Array(COUNT * 3);
-    const tmpColor = new THREE.Color();
-    for (let i = 0; i < COUNT; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 44;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 26;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
-      tmpColor.setHSL(HUES[i % HUES.length] / 360, 0.85, 0.65);
-      colors[i * 3] = tmpColor.r;
-      colors[i * 3 + 1] = tmpColor.g;
-      colors[i * 3 + 2] = tmpColor.b;
-    }
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    const material = new THREE.PointsMaterial({
-      size: 0.24,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.85,
-      blending: THREE.AdditiveBlending,
+    const ripples = Array.from({ length: MAX_RIPPLES }, () => new THREE.Vector3(0, 0, -100));
+    const uniforms = {
+      uTime: { value: 0 },
+      uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      uPointer: { value: new THREE.Vector2(0.5, 0.5) },
+      uScroll: { value: 0 },
+      uRipple: { value: ripples },
+    };
+    const material = new THREE.ShaderMaterial({
+      vertexShader: VERT,
+      fragmentShader: FRAG,
+      uniforms,
+      depthTest: false,
       depthWrite: false,
     });
-    const particles = new THREE.Points(geometry, material);
-    scene.add(particles);
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const scene = new THREE.Scene();
+    scene.add(new THREE.Mesh(geometry, material));
+    const camera = new THREE.Camera();
 
-    const shapeGeoA = new THREE.IcosahedronGeometry(2.6, 1);
-    const shapeMatA = new THREE.MeshBasicMaterial({
-      color: 0xff2d95,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.55,
-    });
-    const shapeA = new THREE.Mesh(shapeGeoA, shapeMatA);
-    shapeA.position.set(-6, 2, -4);
-    scene.add(shapeA);
-
-    const shapeGeoB = new THREE.TorusKnotGeometry(1.6, 0.5, 120, 16);
-    const shapeMatB = new THREE.MeshBasicMaterial({
-      color: 0x00c2cb,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.55,
-    });
-    const shapeB = new THREE.Mesh(shapeGeoB, shapeMatB);
-    shapeB.position.set(6, -2, -6);
-    scene.add(shapeB);
-
+    const target = new THREE.Vector2(0.5, 0.5);
+    let nextRipple = 0;
     let raf = 0;
+    const start = performance.now();
 
+    const toUv = (e: PointerEvent) =>
+      target.set(e.clientX / window.innerWidth, 1 - e.clientY / window.innerHeight);
+
+    function onMove(e: PointerEvent) {
+      toUv(e);
+      if (reduced) draw();
+    }
+    function onDown(e: PointerEvent) {
+      toUv(e);
+      ripples[nextRipple].set(target.x, target.y, uniforms.uTime.value);
+      nextRipple = (nextRipple + 1) % MAX_RIPPLES;
+      if (reduced) draw();
+    }
     function resize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+      uniforms.uRes.value.set(window.innerWidth, window.innerHeight);
+      if (reduced) draw();
     }
-
-    function frame(now: number) {
-      const t = now * 0.001;
-      particles.rotation.y = t * 0.05;
-      particles.rotation.x = t * 0.02;
-
-      shapeA.rotation.x = t * 0.4;
-      shapeA.rotation.y = t * 0.3;
-      shapeA.position.y = 2 + Math.sin(t * 0.6) * 1.2;
-
-      shapeB.rotation.x = t * -0.25;
-      shapeB.rotation.y = t * 0.5;
-      shapeB.position.y = -2 + Math.cos(t * 0.5) * 1.2;
-
+    function draw() {
+      uniforms.uScroll.value = window.scrollY / Math.max(1, document.body.scrollHeight);
       renderer.render(scene, camera);
-      if (!reduced) raf = requestAnimationFrame(frame);
+    }
+    function frame(now: number) {
+      uniforms.uTime.value = (now - start) / 1000;
+      uniforms.uPointer.value.lerp(target, 0.06);
+      draw();
+      raf = requestAnimationFrame(frame);
     }
 
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
     window.addEventListener("resize", resize);
-    renderer.render(scene, camera);
-    if (!reduced) raf = requestAnimationFrame(frame);
+    if (reduced) {
+      uniforms.uTime.value = 40; // a fixed, pleasant frame — no loop under reduced motion
+      uniforms.uPointer.value.copy(target);
+      draw();
+    } else {
+      raf = requestAnimationFrame(frame);
+    }
 
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
       window.removeEventListener("resize", resize);
       geometry.dispose();
       material.dispose();
-      shapeGeoA.dispose();
-      shapeMatA.dispose();
-      shapeGeoB.dispose();
-      shapeMatB.dispose();
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };

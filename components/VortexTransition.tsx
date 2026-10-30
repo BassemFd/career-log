@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 const DURATION = 1600; // ms — the "sucked into a wormhole" moment
 const PARTICLE_COUNT = 1400;
-const PSYCHEDELIC_HUES = [330, 25, 48, 275, 185]; // hot pink, orange, mustard, purple, teal
+const PSYCHEDELIC_HUES = [330, 280, 250, 185]; // pink, violet, indigo, cyan
 
 // Full-viewport three.js tunnel: particles spiral past the camera while it
 // rolls and the FOV punches in, hue-cycling through the psychedelic palette.
